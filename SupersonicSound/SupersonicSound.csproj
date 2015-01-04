@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A6A47D78-1427-4201-ADE3-F262A8F71F0A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SupersonicSound</RootNamespace>
+    <AssemblyName>SupersonicSound</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;x64</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;x86</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="EquivalentEnumAttribute.cs" />
+    <Compile Include="Exceptions\FmodDspException.cs" />
+    <Compile Include="Exceptions\FmodDmaException.cs" />
+    <Compile Include="Exceptions\FmodChannelStolenException.cs" />
+    <Compile Include="Exceptions\FmodChannelAllocException.cs" />
+    <Compile Include="Exceptions\FmodBadCommandException.cs" />
+    <Compile Include="FmodException.cs" />
+    <Compile Include="LowLevel\AdvancedInitializationSettings.cs" />
+    <Compile Include="LowLevel\Attributes3D.cs" />
+    <Compile Include="LowLevel\Channel.cs" />
+    <Compile Include="LowLevel\ChannelGroup.cs" />
+    <Compile Include="LowLevel\DriverInfo.cs" />
+    <Compile Include="LowLevel\Geometry.cs" />
+    <Compile Include="LowLevel\DSP.cs" />
+    <Compile Include="LowLevel\DspBufferConfiguration.cs" />
+    <Compile Include="LowLevel\DspType.cs" />
+    <Compile Include="LowLevel\LowLevelInitFlags.cs" />
+    <Compile Include="LowLevel\LowLevelSystem.cs" />
+    <Compile Include="LowLevel\IPreInitilizeLowLevelSystem.cs" />
+    <Compile Include="LowLevel\OutputMode.cs" />
+    <Compile Include="LowLevel\ReverbProperties.cs" />
+    <Compile Include="LowLevel\SoftwareFormat.cs" />
+    <Compile Include="LowLevel\Sound.cs" />
+    <Compile Include="LowLevel\SpeakerMode.cs" />
+    <Compile Include="LowLevel\Vector3.cs" />
+    <Compile Include="Studio\BankLoadingFlags.cs" />
+    <Compile Include="Studio\BufferInfo.cs" />
+    <Compile Include="Studio\BufferUsage.cs" />
+    <Compile Include="Studio\Bus.cs" />
+    <Compile Include="Studio\CpuUsage.cs" />
+    <Compile Include="Studio\LoadingState.cs" />
+    <Compile Include="Studio\VCA.cs" />
+    <Compile Include="Studio\Bank.cs" />
+    <Compile Include="Studio\InitFlags.cs" />
+    <Compile Include="Studio\System.cs" />
+    <Compile Include="Wrapper\Fmod\fmod.cs" />
+    <Compile Include="Wrapper\Fmod\fmod_dsp.cs" />
+    <Compile Include="Wrapper\Fmod\fmod_errors.cs" />
+    <Compile Include="Wrapper\Fmod\fmod_studio.cs" />
+    <Compile Include="Wrapper\Native.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Wrapper\Util.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="Wrapper\Dependencies\x86\fmod.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Wrapper\Dependencies\x86\fmodstudio.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Wrapper\Dependencies\x86_64\fmod.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Wrapper\Dependencies\x86_64\fmodstudio.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,9 @@
+*.cache
+*.user
+
+ConsoleTest/bin
+ConsoleTest/obj
+
+SupersonicSound/bin
+SupersonicSound/obj
+/*.suo
