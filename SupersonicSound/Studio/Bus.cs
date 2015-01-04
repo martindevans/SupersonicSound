@@ -10,9 +10,16 @@ namespace SupersonicSound.Studio
     {
         public FMOD.Studio.Bus FmodBus { get; private set; }
 
-        public Bus(FMOD.Studio.Bus bus)
+        private Bus(FMOD.Studio.Bus bus)
         {
             FmodBus = bus;
+        }
+
+        public static Bus FromFmod(FMOD.Studio.Bus bus)
+        {
+            if (bus == null)
+                return null;
+            return new Bus(bus);
         }
 
         #region equality
@@ -122,7 +129,7 @@ namespace SupersonicSound.Studio
             {
                 ChannelGroup group;
                 FmodBus.getChannelGroup(out group).Check();
-                return new LowLevel.ChannelGroup(group);
+                return LowLevel.ChannelGroup.FromFmod(group);
             }
         }
     }

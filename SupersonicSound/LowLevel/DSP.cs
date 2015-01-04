@@ -9,9 +9,16 @@ namespace SupersonicSound.LowLevel
     {
         public FMOD.DSP FmodDSP { get; private set; }
 
-        public DSP(FMOD.DSP dsp)
+        private DSP(FMOD.DSP dsp)
         {
             FmodDSP = dsp;
+        }
+
+        public static DSP FromFmod(FMOD.DSP dsp)
+        {
+            if (dsp == null)
+                return null;
+            return new DSP(dsp);
         }
 
         #region equality

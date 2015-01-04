@@ -7,9 +7,16 @@ namespace SupersonicSound.LowLevel
     {
         public FMOD.Sound FmodSound { get; private set; }
 
-        public Sound(FMOD.Sound sound)
+        private Sound(FMOD.Sound sound)
         {
             FmodSound = sound;
+        }
+
+        public static Sound FromFmod(FMOD.Sound sound)
+        {
+            if (sound == null)
+                return null;
+            return new Sound(sound);
         }
 
         #region equality

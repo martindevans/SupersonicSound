@@ -9,9 +9,16 @@ namespace SupersonicSound.Studio
     {
         public FMOD.Studio.VCA FmodVCA { get; private set; }
 
-        public VCA(FMOD.Studio.VCA vca)
+        private VCA(FMOD.Studio.VCA vca)
         {
             FmodVCA = vca;
+        }
+
+        public static VCA FromFmod(FMOD.Studio.VCA vca)
+        {
+            if (vca == null)
+                return null;
+            return new VCA(vca);
         }
 
         #region equality

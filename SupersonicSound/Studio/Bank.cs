@@ -10,9 +10,16 @@ namespace SupersonicSound.Studio
     {
         public FMOD.Studio.Bank FmodBank { get; private set; }
 
-        public Bank(FMOD.Studio.Bank bank)
+        private Bank(FMOD.Studio.Bank bank)
         {
             FmodBank = bank;
+        }
+
+        public static Bank FromFmod(FMOD.Studio.Bank bank)
+        {
+            if (bank == null)
+                return null;
+            return new Bank(bank);
         }
 
         #region equality

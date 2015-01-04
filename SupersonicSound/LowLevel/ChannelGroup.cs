@@ -1,5 +1,6 @@
-﻿
+﻿using SupersonicSound.Wrapper;
 using System;
+using System.Text;
 
 namespace SupersonicSound.LowLevel
 {
@@ -8,9 +9,16 @@ namespace SupersonicSound.LowLevel
     {
         public FMOD.ChannelGroup FmodGroup { get; private set; }
 
-        public ChannelGroup(FMOD.ChannelGroup group)
+        private ChannelGroup(FMOD.ChannelGroup group)
         {
             FmodGroup = group;
+        }
+
+        public static ChannelGroup FromFmod(FMOD.ChannelGroup group)
+        {
+            if (group == null)
+                return null;
+            return new ChannelGroup(group);
         }
 
         #region equality
@@ -38,62 +46,67 @@ namespace SupersonicSound.LowLevel
         #endregion
 
         #region Nested channel groups.
-        //public RESULT addGroup(ChannelGroup group)
-        //{
-        //    return FMOD5_ChannelGroup_AddGroup(getRaw(), group.getRaw());
-        //}
-        //public RESULT getNumGroups(out int numgroups)
-        //{
-        //    return FMOD5_ChannelGroup_GetNumGroups(getRaw(), out numgroups);
-        //}
-        //public RESULT getGroup(int index, out ChannelGroup group)
-        //{
-        //    group = null;
+        public void AddChannelGroup(ChannelGroup group)
+        {
+            FmodGroup.addGroup(group.ToFmod()).Check();
+        }
 
-        //    IntPtr groupraw;
-        //    RESULT result = FMOD5_ChannelGroup_GetGroup(getRaw(), index, out groupraw);
-        //    group = new ChannelGroup(groupraw);
+        public int GroupCount
+        {
+            get
+            {
+                int groups;
+                FmodGroup.getNumGroups(out groups).Check();
+                return groups;
+            }
+        }
 
-        //    return result;
-        //}
-        //public RESULT getParentGroup(out ChannelGroup group)
-        //{
-        //    group = null;
+        public ChannelGroup GetGroup(int index)
+        {
+            FMOD.ChannelGroup group;
+            FmodGroup.getGroup(index, out group).Check();
+            return new ChannelGroup(group);
+        }
 
-        //    IntPtr groupraw;
-        //    RESULT result = FMOD5_ChannelGroup_GetParentGroup(getRaw(), out groupraw);
-        //    group = new ChannelGroup(groupraw);
-
-        //    return result;
-        //}
+        public ChannelGroup ParentGroup
+        {
+            get
+            {
+                FMOD.ChannelGroup group;
+                FmodGroup.getParentGroup(out group).Check();
+                return new ChannelGroup(group);
+            }
+        }
         #endregion
 
         #region Information only functions.
-        //public RESULT getName(StringBuilder name, int namelen)
-        //{
-        //    IntPtr stringMem = Marshal.AllocHGlobal(name.Capacity);
+        public string Name
+        {
+            get
+            {
+                StringBuilder builder = new StringBuilder(128);
+                FmodGroup.getName(builder, builder.Capacity).Check();
 
-        //    RESULT result = FMOD5_ChannelGroup_GetName(getRaw(), stringMem, namelen);
+                return builder.ToString();
+            }
+        }
 
-        //    StringMarshalHelper.NativeToBuilder(name, stringMem);
-        //    Marshal.FreeHGlobal(stringMem);
+        public int ChannelCount
+        {
+            get
+            {
+                int channels;
+                FmodGroup.getNumChannels(out channels).Check();
+                return channels;
+            }
+        }
 
-        //    return result;
-        //}
-        //public RESULT getNumChannels(out int numchannels)
-        //{
-        //    return FMOD5_ChannelGroup_GetNumChannels(getRaw(), out numchannels);
-        //}
-        //public RESULT getChannel(int index, out Channel channel)
-        //{
-        //    channel = null;
-
-        //    IntPtr channelraw;
-        //    RESULT result = FMOD5_ChannelGroup_GetChannel(getRaw(), index, out channelraw);
-        //    channel = new Channel(channelraw);
-
-        //    return result;
-        //}
+        public Channel GetChannel(int index)
+        {
+            FMOD.Channel channel;
+            FmodGroup.getChannel(index, out channel).Check();
+            return Channel.FromFmod(channel);
+        }
         #endregion
     }
 

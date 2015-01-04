@@ -9,9 +9,16 @@ namespace SupersonicSound.LowLevel
     {
         public FMOD.Channel FmodChannel { get; private set; }
 
-        public Channel(FMOD.Channel channel)
+        private Channel(FMOD.Channel channel)
         {
             FmodChannel = channel;
+        }
+
+        public static Channel FromFmod(FMOD.Channel channel)
+        {
+            if (channel == null)
+                return null;
+            return new Channel(channel);
         }
 
         #region equality

@@ -106,7 +106,7 @@ namespace SupersonicSound.Studio
             FMOD.Studio.Bus bus;
             _system.getBus(path, out bus).Check();
 
-            return new Bus(bus);
+            return Bus.FromFmod(bus);
         }
 
         public Bus GetBus(Guid guid)
@@ -114,7 +114,7 @@ namespace SupersonicSound.Studio
             FMOD.Studio.Bus bus;
             _system.getBusByID(guid.ToFmod(), out bus).Check();
 
-            return new Bus(bus);
+            return Bus.FromFmod(bus);
         }
 
         public VCA GetVCA(string path)
@@ -122,7 +122,7 @@ namespace SupersonicSound.Studio
             FMOD.Studio.VCA vca;
             _system.getVCA(path, out vca).Check();
 
-            return new VCA(vca);
+            return VCA.FromFmod(vca);
         }
 
         public VCA GetVCA(Guid guid)
@@ -130,7 +130,7 @@ namespace SupersonicSound.Studio
             FMOD.Studio.VCA vca;
             _system.getVCAByID(guid.ToFmod(), out vca).Check();
 
-            return new VCA(vca);
+            return VCA.FromFmod(vca);
         }
 
         public Bank GetBank(string path)
@@ -138,7 +138,7 @@ namespace SupersonicSound.Studio
             FMOD.Studio.Bank bank;
             _system.getBank(path, out bank).Check();
 
-            return new Bank(bank);
+            return Bank.FromFmod(bank);
         }
 
         public Bank GetBank(Guid guid)
@@ -146,7 +146,7 @@ namespace SupersonicSound.Studio
             FMOD.Studio.Bank bank;
             _system.getBankByID(guid.ToFmod(), out bank).Check();
 
-            return new Bank(bank);
+            return Bank.FromFmod(bank);
         }
 
         //public RESULT getSoundInfo(string key, out SOUND_INFO info)
@@ -197,14 +197,14 @@ namespace SupersonicSound.Studio
         {
             FMOD.Studio.Bank bank;
             _system.loadBankFile(name, (LOAD_BANK_FLAGS)flags, out bank).Check();
-            return new Bank(bank);
+            return Bank.FromFmod(bank);
         }
 
         public Bank LoadBankFromMemory(byte[] buffer, BankLoadingFlags flags)
         {
             FMOD.Studio.Bank bank;
             _system.loadBankMemory(buffer, (LOAD_BANK_FLAGS)flags, out bank).Check();
-            return new Bank(bank);
+            return Bank.FromFmod(bank);
         }
 
         //public RESULT loadBankCustom(BANK_INFO info, LOAD_BANK_FLAGS flags, out Bank bank)
@@ -266,7 +266,7 @@ namespace SupersonicSound.Studio
                 FMOD.Studio.Bank[] banks;
                 _system.getBankList(out banks).Check();
 
-                return banks.Select(b => new Bank(b));
+                return banks.Select(Bank.FromFmod);
             }
         }
 

@@ -430,14 +430,14 @@ namespace SupersonicSound.LowLevel
             FMOD.DSP dsp;
             _system.createDSPByType((DSP_TYPE)type, out dsp).Check();
 
-            return new DSP(dsp);
+            return DSP.FromFmod(dsp);
         }
 
         public ChannelGroup CreateChannelGroup(string name)
         {
             FMOD.ChannelGroup group;
             _system.createChannelGroup(name, out group).Check();
-            return new ChannelGroup(group);
+            return ChannelGroup.FromFmod(group);
         }
 
         //public RESULT createSoundGroup(string name, out SoundGroup soundgroup)
@@ -478,7 +478,7 @@ namespace SupersonicSound.LowLevel
             FMOD.Channel channel;
             _system.playDSP(dsp.ToFmod(), channelGroup.ToFmod(), paused, out channel).Check();
 
-            return new Channel(channel);
+            return Channel.FromFmod(channel);
         }
 
         public Channel GetChannel(int channelid)
@@ -486,7 +486,7 @@ namespace SupersonicSound.LowLevel
             FMOD.Channel channel;
             _system.getChannel(channelid, out channel).Check();
 
-            return new Channel(channel);
+            return Channel.FromFmod(channel);
         }
 
         //public RESULT getMasterChannelGroup(out ChannelGroup channelgroup)
@@ -604,7 +604,7 @@ namespace SupersonicSound.LowLevel
             FMOD.Geometry geom;
             _system.createGeometry(maxpolygons, maxvertices, out geom).Check();
 
-            return new Geometry(geom);
+            return Geometry.FromFmod(geom);
         }
 
         //public RESULT setGeometrySettings(float maxworldsize)

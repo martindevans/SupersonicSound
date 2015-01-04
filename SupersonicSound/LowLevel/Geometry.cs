@@ -8,9 +8,16 @@ namespace SupersonicSound.LowLevel
     {
         public FMOD.Geometry FmodGeometry { get; private set; }
 
-        public Geometry(FMOD.Geometry geometry)
+        private Geometry(FMOD.Geometry geometry)
         {
             FmodGeometry = geometry;
+        }
+
+        public static Geometry FromFmod(FMOD.Geometry geometry)
+        {
+            if (geometry == null)
+                return null;
+            return new Geometry(geometry);
         }
 
         #region equality
