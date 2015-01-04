@@ -5,8 +5,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using FMOD;
 using FMOD.Studio;
-using System = FMOD.Studio.System;
-using Debug = System.Diagnostics.Debug;
 
 namespace SupersonicSound.Wrapper
 {

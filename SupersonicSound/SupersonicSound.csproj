@@ -59,7 +59,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EquivalentEnumAttribute.cs" />
-    <Compile Include="Exceptions\FmodDspException.cs" />
+    <Compile Include="Exceptions\FmodDoNotProcessException.cs" />
+    <Compile Include="Exceptions\FmodDspFormatException.cs" />
+    <Compile Include="Exceptions\FmodDspConnectionException.cs" />
     <Compile Include="Exceptions\FmodDmaException.cs" />
     <Compile Include="Exceptions\FmodChannelStolenException.cs" />
     <Compile Include="Exceptions\FmodChannelAllocException.cs" />

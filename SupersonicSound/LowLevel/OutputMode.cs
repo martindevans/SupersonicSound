@@ -11,7 +11,6 @@ namespace SupersonicSound.LowLevel
         "MAX"       // Denotes the last item in the enum, don't need this
     )]
     public enum OutputMode
-        : int
     {
         /// <summary>
         /// Picks the best output mode for the platform. This is the default.

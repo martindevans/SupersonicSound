@@ -22,11 +22,11 @@ namespace SupersonicSound.Wrapper
                 case RESULT.ERR_DMA:
                     throw new FmodDmaException();
                 case RESULT.ERR_DSP_CONNECTION:
-                    throw new FmodDspException();
+                    throw new FmodDspConnectionException();
                 case RESULT.ERR_DSP_DONTPROCESS:
-                    break;
+                    throw new FmodDoNotProcessException();
                 case RESULT.ERR_DSP_FORMAT:
-                    break;
+                    throw new FmodDspFormatException();
                 case RESULT.ERR_DSP_INUSE:
                     break;
                 case RESULT.ERR_DSP_NOTFOUND:
