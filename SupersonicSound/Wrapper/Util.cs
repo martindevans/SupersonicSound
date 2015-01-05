@@ -161,7 +161,7 @@ namespace SupersonicSound.Wrapper
                 case RESULT.ERR_EVENT_LIVEUPDATE_TIMEOUT:
                     break;
                 case RESULT.ERR_EVENT_NOTFOUND:
-                    break;
+                    throw new FmodEventNotFoundException();
                 case RESULT.ERR_STUDIO_UNINITIALIZED:
                     break;
                 case RESULT.ERR_STUDIO_NOT_LOADED:

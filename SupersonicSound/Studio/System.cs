@@ -12,17 +12,13 @@ namespace SupersonicSound.Studio
     public class System
         : IDisposable
     {
-        private const int DEFAULT_MAX_CHANNELS = 1024;
-        private const InitFlags DEFAULT_INIT_FLAGS = InitFlags.LiveUpdate;
-        private const LowLevelInitFlags DEFAULT_LOW_LEVEL_FLAGS = LowLevelInitFlags.Normal;
-
         private readonly FMOD.Studio.System _system;
 
         public LowLevelSystem LowLevelSystem { get; private set; }
 
         private bool _disposed;
 
-        public System(int maxChannels = DEFAULT_MAX_CHANNELS, InitFlags flags = DEFAULT_INIT_FLAGS, LowLevelInitFlags lowLevelFlags = DEFAULT_LOW_LEVEL_FLAGS, AdvancedInitializationSettings advancedSettings = default(AdvancedInitializationSettings), Action<IPreInitilizeLowLevelSystem> preInit = null)
+        public System(int maxChannels = 1024, InitFlags flags = InitFlags.LiveUpdate, LowLevelInitFlags lowLevelFlags = LowLevelInitFlags.Normal, AdvancedInitializationSettings advancedSettings = default(AdvancedInitializationSettings), Action<IPreInitilizeLowLevelSystem> preInit = null)
         {
             //Load native dependencies
             Native.Load();

@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EquivalentEnumAttribute.cs" />
+    <Compile Include="Exceptions\FmodEventNotFoundException.cs" />
     <Compile Include="Exceptions\FmodDoNotProcessException.cs" />
     <Compile Include="Exceptions\FmodDspFormatException.cs" />
     <Compile Include="Exceptions\FmodDspConnectionException.cs" />
@@ -96,7 +97,12 @@
     <Compile Include="Studio\EventDescription.cs" />
     <Compile Include="Studio\Bus.cs" />
     <Compile Include="Studio\CpuUsage.cs" />
+    <Compile Include="Studio\EventProperty.cs" />
     <Compile Include="Studio\LoadingState.cs" />
+    <Compile Include="Studio\ParameterDescription.cs" />
+    <Compile Include="Studio\ParameterInstance.cs" />
+    <Compile Include="Studio\ParameterType.cs" />
+    <Compile Include="Studio\PlaybackState.cs" />
     <Compile Include="Studio\VCA.cs" />
     <Compile Include="Studio\Bank.cs" />
     <Compile Include="Studio\InitFlags.cs" />

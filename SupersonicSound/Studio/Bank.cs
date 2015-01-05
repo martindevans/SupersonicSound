@@ -7,12 +7,13 @@ using System;
 
 namespace SupersonicSound.Studio
 {
-    public class Bank
+    public struct Bank
         : IEquatable<Bank>
     {
         public FMOD.Studio.Bank FmodBank { get; private set; }
 
         private Bank(FMOD.Studio.Bank bank)
+            : this()
         {
             FmodBank = bank;
         }
@@ -20,26 +21,24 @@ namespace SupersonicSound.Studio
         public static Bank FromFmod(FMOD.Studio.Bank bank)
         {
             if (bank == null)
-                return null;
+                throw new ArgumentNullException("bank");
+
             return new Bank(bank);
         }
 
         #region equality
         public bool Equals(Bank other)
         {
-            if (other == null)
-                return false;
-
             return other.FmodBank == FmodBank;
         }
 
         public override bool Equals(object obj)
         {
-            var c = obj as Bank;
-            if (c == null)
+            var c = obj is Bank;
+            if (!(obj is Bank))
                 return false;
 
-            return Equals(c);
+            return Equals((Bank)obj);
         }
 
         public override int GetHashCode()
@@ -186,9 +185,6 @@ namespace SupersonicSound.Studio
     {
         public static FMOD.Studio.Bank ToFmod(this Bank bank)
         {
-            if (bank == null)
-                return null;
-
             return bank.FmodBank;
         }
     }

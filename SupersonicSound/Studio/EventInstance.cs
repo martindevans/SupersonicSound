@@ -1,5 +1,6 @@
 ﻿using System;
 using FMOD.Studio;
+using SupersonicSound.LowLevel;
 using SupersonicSound.Wrapper;
 
 namespace SupersonicSound.Studio
@@ -12,6 +13,9 @@ namespace SupersonicSound.Studio
         private EventInstance(FMOD.Studio.EventInstance evtInst)
         {
             FmodEventInstance = evtInst;
+
+            _parameterCollection = new ParameterCollection(this);
+            _propertyCollection = new PropertyCollection(this);
         }
 
         public static EventInstance FromFmod(FMOD.Studio.EventInstance evtInst)
@@ -83,22 +87,52 @@ namespace SupersonicSound.Studio
             }
         }
 
-        //public RESULT get3DAttributes(out _3D_ATTRIBUTES attributes)
-        //{
-        //    return FMOD_Studio_EventInstance_Get3DAttributes(rawPtr, out attributes);
-        //}
-        //public RESULT set3DAttributes(_3D_ATTRIBUTES attributes)
-        //{
-        //    return FMOD_Studio_EventInstance_Set3DAttributes(rawPtr, ref attributes);
-        //}
-        //public RESULT getProperty(EVENT_PROPERTY index, out float value)
-        //{
-        //    return FMOD_Studio_EventInstance_GetProperty(rawPtr, index, out value);
-        //}
-        //public RESULT setProperty(EVENT_PROPERTY index, float value)
-        //{
-        //    return FMOD_Studio_EventInstance_SetProperty(rawPtr, index, value);
-        //}
+        public Attributes3D Attributes3D
+        {
+            get
+            {
+                _3D_ATTRIBUTES attr;
+                FmodEventInstance.get3DAttributes(out attr).Check();
+                return new Attributes3D(attr);
+            }
+            set
+            {
+                FmodEventInstance.set3DAttributes(value.ToFmod());
+            }
+        }
+
+        public struct PropertyCollection
+        {
+            private readonly EventInstance _eventInstance;
+
+            public float this[EventProperty index]
+            {
+                get
+                {
+                    float value;
+                    _eventInstance.FmodEventInstance.getProperty((EVENT_PROPERTY) index, out value).Check();
+                    return value;
+                }
+                set
+                {
+                    _eventInstance.FmodEventInstance.setProperty((EVENT_PROPERTY)index, value);
+                }
+            }
+
+            public PropertyCollection(EventInstance instance)
+            {
+                _eventInstance = instance;
+            }
+        }
+
+        private readonly PropertyCollection _propertyCollection;
+        public PropertyCollection Properties
+        {
+            get
+            {
+                return _propertyCollection;
+            }
+        }
 
         public bool IsPaused
         {
@@ -124,89 +158,114 @@ namespace SupersonicSound.Studio
             FmodEventInstance.stop(allowFadeout ? STOP_MODE.ALLOWFADEOUT : STOP_MODE.IMMEDIATE).Check();
         }
 
-        //public RESULT getTimelinePosition(out int position)
-        //{
-        //    return FMOD_Studio_EventInstance_GetTimelinePosition(rawPtr, out position);
-        //}
-        //public RESULT setTimelinePosition(int position)
-        //{
-        //    return FMOD_Studio_EventInstance_SetTimelinePosition(rawPtr, position);
-        //}
-        //public RESULT getPlaybackState(out PLAYBACK_STATE state)
-        //{
-        //    return FMOD_Studio_EventInstance_GetPlaybackState(rawPtr, out state);
-        //}
-        //public RESULT getChannelGroup(out FMOD.ChannelGroup group)
-        //{
-        //    group = null;
+        public int TimelinePosition
+        {
+            get
+            {
+                int pos;
+                FmodEventInstance.getTimelinePosition(out pos).Check();
+                return pos;
+            }
+            set
+            {
+                FmodEventInstance.setTimelinePosition(value).Check();
+            }
+        }
 
-        //    IntPtr groupraw = new IntPtr();
-        //    RESULT result = FMOD_Studio_EventInstance_GetChannelGroup(rawPtr, out groupraw);
-        //    if (result != RESULT.OK)
-        //    {
-        //        return result;
-        //    }
+        public PlaybackState PlaybackState
+        {
+            get
+            {
+                PLAYBACK_STATE state;
+                FmodEventInstance.getPlaybackState(out state).Check();
+                return (PlaybackState)state;
+            }
+        }
 
-        //    group = new FMOD.ChannelGroup(groupraw);
-
-        //    return result;
-        //}
+        public ChannelGroup Group
+        {
+            get
+            {
+                FMOD.ChannelGroup group;
+                FmodEventInstance.getChannelGroup(out group).Check();
+                return ChannelGroup.FromFmod(group);
+            }
+        }
 
         public void Release()
         {
             FmodEventInstance.release();
         }
 
-        //public RESULT isVirtual(out bool virtualState)
-        //{
-        //    return FMOD_Studio_EventInstance_IsVirtual(rawPtr, out virtualState);
-        //}
-        //public RESULT getParameter(string name, out ParameterInstance instance)
-        //{
-        //    instance = null;
-
-        //    IntPtr newPtr = new IntPtr();
-        //    RESULT result = FMOD_Studio_EventInstance_GetParameter(rawPtr, Encoding.UTF8.GetBytes(name + Char.MinValue), out newPtr);
-        //    if (result != RESULT.OK)
-        //    {
-        //        return result;
-        //    }
-        //    instance = new ParameterInstance(newPtr);
-
-        //    return result;
-        //}
-        //public RESULT getParameterCount(out int count)
-        //{
-        //    return FMOD_Studio_EventInstance_GetParameterCount(rawPtr, out count);
-        //}
-        //public RESULT getParameterByIndex(int index, out ParameterInstance instance)
-        //{
-        //    instance = null;
-
-        //    IntPtr newPtr = new IntPtr();
-        //    RESULT result = FMOD_Studio_EventInstance_GetParameterByIndex(rawPtr, index, out newPtr);
-        //    if (result != RESULT.OK)
-        //    {
-        //        return result;
-        //    }
-        //    instance = new ParameterInstance(newPtr);
-
-        //    return result;
-        //}
-
-        public void SetParameterValue(string name, float value)
+        public bool IsVirtual
         {
-            FmodEventInstance.setParameterValue(name, value).Check();
+            get
+            {
+                bool virt;
+                FmodEventInstance.isVirtual(out virt).Check();
+                return virt;
+            }
         }
 
-        //public RESULT setParameterValue(string name, float value)
-        //{
-        //    return FMOD_Studio_EventInstance_SetParameterValue(rawPtr, Encoding.UTF8.GetBytes(name + Char.MinValue), value);
-        //}
-        //public RESULT setParameterValueByIndex(int index, float value)
-        //{
-        //    return FMOD_Studio_EventInstance_SetParameterValueByIndex(rawPtr, index, value);
-        //}
+        public struct ParameterCollection
+        {
+            private readonly EventInstance _eventInstance;
+
+            public int Count
+            {
+                get
+                {
+                    int count;
+                    _eventInstance.FmodEventInstance.getParameterCount(out count).Check();
+                    return count;
+                }
+            }
+
+            public ParameterInstance this[string name]
+            {
+                get
+                {
+                    FMOD.Studio.ParameterInstance instance;
+                    _eventInstance.FmodEventInstance.getParameter(name, out instance).Check();
+                    return ParameterInstance.FromFmod(instance);
+                }
+            }
+
+            public ParameterInstance this[int index]
+            {
+                get
+                {
+                    FMOD.Studio.ParameterInstance instance;
+                    _eventInstance.FmodEventInstance.getParameterByIndex(index, out instance).Check();
+                    return ParameterInstance.FromFmod(instance);
+                }
+            }
+
+            public ParameterCollection(EventInstance instance)
+            {
+                _eventInstance = instance;
+            }
+
+            public void SetValue(string name, float value)
+            {
+                _eventInstance.FmodEventInstance.setParameterValue(name, value).Check();
+            }
+
+            public void SetValue(int index, float value)
+            {
+                _eventInstance.FmodEventInstance.setParameterValueByIndex(index, value).Check();
+            }
+        }
+
+        private readonly ParameterCollection _parameterCollection;
+        public ParameterCollection Parameters
+        {
+            get
+            {
+                return _parameterCollection;
+            }
+        }
+
         //public RESULT getCue(string name, out CueInstance instance)
         //{
         //    instance = null;
@@ -235,10 +294,17 @@ namespace SupersonicSound.Studio
 
         //    return result;
         //}
-        //public RESULT getCueCount(out int count)
-        //{
-        //    return FMOD_Studio_EventInstance_GetCueCount(rawPtr, out count);
-        //}
+
+        public int CueCount
+        {
+            get
+            {
+                int count;
+                FmodEventInstance.getCueCount(out count).Check();
+                return count;
+            }
+        }
+
         //public RESULT setCallback(EVENT_CALLBACK callback)
         //{
         //    return FMOD_Studio_EventInstance_SetCallback(rawPtr, callback);
