@@ -1,4 +1,5 @@
-﻿using SupersonicSound.LowLevel;
+﻿using System.Threading;
+using SupersonicSound.LowLevel;
 using SupersonicSound.Studio;
 using SupersonicSound.Wrapper;
 using System;
@@ -20,15 +21,28 @@ namespace ConsoleTest
         {
             using (SupersonicSound.Studio.System system = new SupersonicSound.Studio.System())
             {
-                var bank = system.LoadBankFromFile("Vehicles.bank", BankLoadingFlags.Normal);
-                var evt = system.GetEvent(Guid.Parse("7aa5e8f1-8ec2-42c6-b465-1241a603a055"));
+                var bank = system.LoadBankFromFile("Music.bank", BankLoadingFlags.Normal);
+                var evt = system.GetEvent(Guid.Parse("74bbba7c-76e8-488c-9cf9-67f000df1ffd"));
                 var inst = evt.CreateInstance();
 
-                var dsp = system.LowLevelSystem.CreateDSP(DspType.Oscillator);
+                inst.SetParameterValue("Progression", 0.53f);
+                inst.SetParameterValue("Pickup", 1f);
 
-                Channel channel = system.LowLevelSystem.PlayDSP(dsp, system.LowLevelSystem.CreateChannelGroup("foo"), false);
+                inst.Start();
+                inst.Release();
 
-                Console.ReadKey();
+                //var dsp = system.LowLevelSystem.CreateDSP(DspType.Oscillator);
+
+                //Channel channel = system.LowLevelSystem.PlayDSP(dsp, system.LowLevelSystem.CreateChannelGroup("foo"), false);
+
+                while (true)
+                {
+                    if (Console.KeyAvailable)
+                        break;
+
+                    Thread.Sleep(1);
+                    system.Update();
+                }
             }
         }
     }

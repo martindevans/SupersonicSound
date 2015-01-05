@@ -1,4 +1,6 @@
 ﻿using System;
+using FMOD.Studio;
+using SupersonicSound.Wrapper;
 
 namespace SupersonicSound.Studio
 {
@@ -43,35 +45,44 @@ namespace SupersonicSound.Studio
         }
         #endregion
 
-        //public RESULT getDescription(out EventDescription description)
-        //{
-        //    description = null;
+        public EventDescription Description
+        {
+            get
+            {
+                FMOD.Studio.EventDescription desc;
+                FmodEventInstance.getDescription(out desc).Check();
+                return EventDescription.FromFmod(desc);
+            }
+        }
 
-        //    IntPtr newPtr;
-        //    RESULT result = FMOD_Studio_EventInstance_GetDescription(rawPtr, out newPtr);
-        //    if (result != RESULT.OK)
-        //    {
-        //        return result;
-        //    }
-        //    description = new EventDescription(newPtr);
-        //    return result;
-        //}
-        //public RESULT getVolume(out float volume)
-        //{
-        //    return FMOD_Studio_EventInstance_GetVolume(rawPtr, out volume);
-        //}
-        //public RESULT setVolume(float volume)
-        //{
-        //    return FMOD_Studio_EventInstance_SetVolume(rawPtr, volume);
-        //}
-        //public RESULT getPitch(out float pitch)
-        //{
-        //    return FMOD_Studio_EventInstance_GetPitch(rawPtr, out pitch);
-        //}
-        //public RESULT setPitch(float pitch)
-        //{
-        //    return FMOD_Studio_EventInstance_SetPitch(rawPtr, pitch);
-        //}
+        public float Volume
+        {
+            get
+            {
+                float volume;
+                FmodEventInstance.getVolume(out volume).Check();
+                return volume;
+            }
+            set
+            {
+                FmodEventInstance.setVolume(value).Check();
+            }
+        }
+
+        public float Pitch
+        {
+            get
+            {
+                float pitch;
+                FmodEventInstance.getPitch(out pitch).Check();
+                return pitch;
+            }
+            set
+            {
+                FmodEventInstance.setPitch(value).Check();
+            }
+        }
+
         //public RESULT get3DAttributes(out _3D_ATTRIBUTES attributes)
         //{
         //    return FMOD_Studio_EventInstance_Get3DAttributes(rawPtr, out attributes);
@@ -88,22 +99,31 @@ namespace SupersonicSound.Studio
         //{
         //    return FMOD_Studio_EventInstance_SetProperty(rawPtr, index, value);
         //}
-        //public RESULT getPaused(out bool paused)
-        //{
-        //    return FMOD_Studio_EventInstance_GetPaused(rawPtr, out paused);
-        //}
-        //public RESULT setPaused(bool paused)
-        //{
-        //    return FMOD_Studio_EventInstance_SetPaused(rawPtr, paused);
-        //}
-        //public RESULT start()
-        //{
-        //    return FMOD_Studio_EventInstance_Start(rawPtr);
-        //}
-        //public RESULT stop(STOP_MODE mode)
-        //{
-        //    return FMOD_Studio_EventInstance_Stop(rawPtr, mode);
-        //}
+
+        public bool IsPaused
+        {
+            get
+            {
+                bool paused;
+                FmodEventInstance.getPaused(out paused).Check();
+                return paused;
+            }
+            set
+            {
+                FmodEventInstance.setPaused(value).Check();
+            }
+        }
+
+        public void Start()
+        {
+            FmodEventInstance.start().Check();
+        }
+
+        public void Stop(bool allowFadeout)
+        {
+            FmodEventInstance.stop(allowFadeout ? STOP_MODE.ALLOWFADEOUT : STOP_MODE.IMMEDIATE).Check();
+        }
+
         //public RESULT getTimelinePosition(out int position)
         //{
         //    return FMOD_Studio_EventInstance_GetTimelinePosition(rawPtr, out position);
@@ -131,10 +151,12 @@ namespace SupersonicSound.Studio
 
         //    return result;
         //}
-        //public RESULT release()
-        //{
-        //    return FMOD_Studio_EventInstance_Release(rawPtr);
-        //}
+
+        public void Release()
+        {
+            FmodEventInstance.release();
+        }
+
         //public RESULT isVirtual(out bool virtualState)
         //{
         //    return FMOD_Studio_EventInstance_IsVirtual(rawPtr, out virtualState);
@@ -171,6 +193,12 @@ namespace SupersonicSound.Studio
 
         //    return result;
         //}
+
+        public void SetParameterValue(string name, float value)
+        {
+            FmodEventInstance.setParameterValue(name, value).Check();
+        }
+
         //public RESULT setParameterValue(string name, float value)
         //{
         //    return FMOD_Studio_EventInstance_SetParameterValue(rawPtr, Encoding.UTF8.GetBytes(name + Char.MinValue), value);
@@ -215,14 +243,20 @@ namespace SupersonicSound.Studio
         //{
         //    return FMOD_Studio_EventInstance_SetCallback(rawPtr, callback);
         //}
-        //public RESULT getUserData(out IntPtr userData)
-        //{
-        //    return FMOD_Studio_EventInstance_GetUserData(rawPtr, out userData);
-        //}
-        //public RESULT setUserData(IntPtr userData)
-        //{
-        //    return FMOD_Studio_EventInstance_SetUserData(rawPtr, userData);
-        //}
+
+        public IntPtr UserData
+        {
+            get
+            {
+                IntPtr ptr;
+                FmodEventInstance.getUserData(out ptr).Check();
+                return ptr;
+            }
+            set
+            {
+                FmodEventInstance.setUserData(value).Check();
+            }
+        }
     }
 
     public static class EventInstanceExtensions
