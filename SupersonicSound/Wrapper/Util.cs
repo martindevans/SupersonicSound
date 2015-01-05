@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using FMOD;
 using SupersonicSound.Exceptions;
 
@@ -48,7 +49,7 @@ namespace SupersonicSound.Wrapper
                 case RESULT.ERR_FILE_ENDOFDATA:
                     break;
                 case RESULT.ERR_FILE_NOTFOUND:
-                    break;
+                    throw new FileNotFoundException("FMOD File not found");
                 case RESULT.ERR_FORMAT:
                     break;
                 case RESULT.ERR_HEADER_MISMATCH:

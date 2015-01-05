@@ -38,6 +38,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -72,6 +73,9 @@
     <Compile Include="LowLevel\Channel.cs" />
     <Compile Include="LowLevel\ChannelGroup.cs" />
     <Compile Include="LowLevel\DriverInfo.cs" />
+    <Compile Include="LowLevel\DSPConnection.cs" />
+    <Compile Include="LowLevel\DspConnectionType.cs" />
+    <Compile Include="LowLevel\DspMeteringInfo.cs" />
     <Compile Include="LowLevel\Geometry.cs" />
     <Compile Include="LowLevel\DSP.cs" />
     <Compile Include="LowLevel\DspBufferConfiguration.cs" />
@@ -85,9 +89,11 @@
     <Compile Include="LowLevel\Sound.cs" />
     <Compile Include="LowLevel\SpeakerMode.cs" />
     <Compile Include="LowLevel\Vector3.cs" />
+    <Compile Include="Studio\EventInstance.cs" />
     <Compile Include="Studio\BankLoadingFlags.cs" />
     <Compile Include="Studio\BufferInfo.cs" />
     <Compile Include="Studio\BufferUsage.cs" />
+    <Compile Include="Studio\EventDescription.cs" />
     <Compile Include="Studio\Bus.cs" />
     <Compile Include="Studio\CpuUsage.cs" />
     <Compile Include="Studio\LoadingState.cs" />

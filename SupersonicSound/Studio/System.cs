@@ -85,21 +85,21 @@ namespace SupersonicSound.Studio
         }
         #endregion
 
-        //public void GetEvent(string path)
-        //{
-        //    EventDescription evt;
-        //    _system.getEvent(path, out evt).Check();
+        public EventDescription GetEvent(string path)
+        {
+            FMOD.Studio.EventDescription evt;
+            _system.getEvent(path, out evt).Check();
 
-        //    throw new NotImplementedException("return something");
-        //}
+            return EventDescription.FromFmod(evt);
+        }
 
-        //public void GetEvent(Guid id)
-        //{
-        //    EventDescription evt;
-        //    _system.getEventByID(id.ToFmod(), out evt).Check();
+        public EventDescription GetEvent(Guid id)
+        {
+            FMOD.Studio.EventDescription evt;
+            _system.getEventByID(id.ToFmod(), out evt).Check();
 
-        //    throw new NotImplementedException("return something");
-        //}
+            return EventDescription.FromFmod(evt);
+        }
 
         public Bus GetBus(string path)
         {

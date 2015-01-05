@@ -1,5 +1,5 @@
-﻿
-using System;
+﻿using System;
+using FMOD;
 using SupersonicSound.Wrapper;
 
 namespace SupersonicSound.LowLevel
@@ -48,60 +48,62 @@ namespace SupersonicSound.LowLevel
         #endregion
 
         #region Connection / disconnection / input and output enumeration.
+        public DSPConnection  AddInput(DSP target)
+        {
+            FMOD.DSPConnection connection;
+            FmodDSP.addInput(target.FmodDSP, out connection).Check();
+            return DSPConnection.FromFmod(connection);
+        }
 
-        //public RESULT addInput(DSP target, out DSPConnection connection)
-        //{
-        //    connection = null;
+        public void DisconnectFrom(DSP target)
+        {
+            FmodDSP.disconnectFrom(target.FmodDSP);
+        }
 
-        //    IntPtr dspconnectionraw;
-        //    RESULT result = FMOD5_DSP_AddInput(rawPtr, target.getRaw(), out dspconnectionraw);
-        //    connection = new DSPConnection(dspconnectionraw);
+        public void DisconnectAll(bool inputs, bool outputs)
+        {
+            FmodDSP.disconnectAll(inputs, outputs);
+        }
 
-        //    return result;
-        //}
-        //public RESULT disconnectFrom(DSP target)
-        //{
-        //    return FMOD5_DSP_DisconnectFrom(rawPtr, target.getRaw());
-        //}
-        //public RESULT disconnectAll(bool inputs, bool outputs)
-        //{
-        //    return FMOD5_DSP_DisconnectAll(rawPtr, inputs, outputs);
-        //}
-        //public RESULT getNumInputs(out int numinputs)
-        //{
-        //    return FMOD5_DSP_GetNumInputs(rawPtr, out numinputs);
-        //}
-        //public RESULT getNumOutputs(out int numoutputs)
-        //{
-        //    return FMOD5_DSP_GetNumOutputs(rawPtr, out numoutputs);
-        //}
-        //public RESULT getInput(int index, out DSP input, out DSPConnection inputconnection)
-        //{
-        //    input = null;
-        //    inputconnection = null;
+        public int InputCount
+        {
+            get
+            {
+                int num;
+                FmodDSP.getNumInputs(out num).Check();
+                return num;
+            }
+        }
 
-        //    IntPtr dspinputraw;
-        //    IntPtr dspconnectionraw;
-        //    RESULT result = FMOD5_DSP_GetInput(rawPtr, index, out dspinputraw, out dspconnectionraw);
-        //    input = new DSP(dspinputraw);
-        //    inputconnection = new DSPConnection(dspconnectionraw);
+        public int OutputCount
+        {
+            get
+            {
+                int num;
+                FmodDSP.getNumOutputs(out num).Check();
+                return num;
+            }
+        }
 
-        //    return result;
-        //}
-        //public RESULT getOutput(int index, out DSP output, out DSPConnection outputconnection)
-        //{
-        //    output = null;
-        //    outputconnection = null;
+        public DSPConnection GetInput(int index, out DSP input)
+        {
+            FMOD.DSPConnection connection;
+            FMOD.DSP dsp;
+            FmodDSP.getInput(index, out dsp, out connection).Check();
 
-        //    IntPtr dspoutputraw;
-        //    IntPtr dspconnectionraw;
-        //    RESULT result = FMOD5_DSP_GetOutput(rawPtr, index, out dspoutputraw, out dspconnectionraw);
-        //    output = new DSP(dspoutputraw);
-        //    outputconnection = new DSPConnection(dspconnectionraw);
+            input = FromFmod(dsp);
+            return DSPConnection.FromFmod(connection);
+        }
 
-        //    return result;
-        //}
+        public DSPConnection GetOutput(int index, out DSP output)
+        {
+            FMOD.DSPConnection connection;
+            FMOD.DSP dsp;
+            FmodDSP.getOutput(index, out dsp, out connection).Check();
 
+            output = FromFmod(dsp);
+            return DSPConnection.FromFmod(connection);
+        }
         #endregion
 
         #region DSP unit control
@@ -153,10 +155,11 @@ namespace SupersonicSound.LowLevel
         //{
         //    return FMOD5_DSP_GetOutputChannelFormat(rawPtr, inmask, inchannels, inspeakermode, out outmask, out outchannels, out outspeakermode);
         //}
-        //public RESULT reset()
-        //{
-        //    return FMOD5_DSP_Reset(rawPtr);
-        //}
+
+        public void Reset()
+        {
+            FmodDSP.reset().Check();
+        }
         #endregion
 
         #region DSP parameter control
@@ -248,30 +251,61 @@ namespace SupersonicSound.LowLevel
         #endregion
 
         #region Userdata set/get
-        //public RESULT setUserData(IntPtr userdata)
-        //{
-        //    return FMOD5_DSP_SetUserData(rawPtr, userdata);
-        //}
-        //public RESULT getUserData(out IntPtr userdata)
-        //{
-        //    return FMOD5_DSP_GetUserData(rawPtr, out userdata);
-        //}
+        public IntPtr UserData
+        {
+            get
+            {
+                IntPtr ptr;
+                FmodDSP.getUserData(out ptr).Check();
+                return ptr;
+            }
+            set
+            {
+                FmodDSP.setUserData(value).Check();
+            }
+        }
         #endregion
 
         #region Metering
-        //public RESULT setMeteringEnabled(bool inputEnabled, bool outputEnabled)
-        //{
-        //    return FMOD5_DSP_SetMeteringEnabled(rawPtr, inputEnabled, outputEnabled);
-        //}
-        //public RESULT getMeteringEnabled(out bool inputEnabled, out bool outputEnabled)
-        //{
-        //    return FMOD5_DSP_GetMeteringEnabled(rawPtr, out inputEnabled, out outputEnabled);
-        //}
+        public bool IsInputMeteringEnabled
+        {
+            get
+            {
+                bool input;
+                bool _;
+                FmodDSP.getMeteringEnabled(out input, out _).Check();
+                return input;
+            }
+            set
+            {
+                FmodDSP.setMeteringEnabled(value, IsOutputMeteringEnabled).Check();
+            }
+        }
 
-        //public RESULT getMeteringInfo(out DSP_METERING_INFO info)
-        //{
-        //    return FMOD5_DSP_GetMeteringInfo(rawPtr, out info);
-        //}
+        public bool IsOutputMeteringEnabled
+        {
+            get
+            {
+                bool _;
+                bool output;
+                FmodDSP.getMeteringEnabled(out _, out output).Check();
+                return output;
+            }
+            set
+            {
+                FmodDSP.setMeteringEnabled(IsInputMeteringEnabled, value).Check();
+            }
+        }
+
+        public DspMeteringInfo MeteringInfo
+        {
+            get
+            {
+                DSP_METERING_INFO info;
+                FmodDSP.getMeteringInfo(out info).Check();
+                return new DspMeteringInfo(info);
+            }
+        }
         #endregion
 
     }

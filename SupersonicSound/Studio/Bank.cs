@@ -1,4 +1,6 @@
-﻿using FMOD;
+﻿using System.Collections.Generic;
+using System.Linq;
+using FMOD;
 using FMOD.Studio;
 using SupersonicSound.Wrapper;
 using System;
@@ -128,41 +130,15 @@ namespace SupersonicSound.Studio
             }
         }
 
-        //public RESULT getEventList(out EventDescription[] array)
-        //{
-        //    array = null;
-
-        //    RESULT result;
-        //    int capacity;
-        //    result = FMOD_Studio_Bank_GetEventCount(rawPtr, out capacity);
-        //    if (result != RESULT.OK)
-        //    {
-        //        return result;
-        //    }
-        //    if (capacity == 0)
-        //    {
-        //        array = new EventDescription[0];
-        //        return result;
-        //    }
-
-        //    IntPtr[] rawArray = new IntPtr[capacity];
-        //    int actualCount;
-        //    result = FMOD_Studio_Bank_GetEventList(rawPtr, rawArray, capacity, out actualCount);
-        //    if (result != RESULT.OK)
-        //    {
-        //        return result;
-        //    }
-        //    if (actualCount > capacity) // More items added since we queried just now?
-        //    {
-        //        actualCount = capacity;
-        //    }
-        //    array = new EventDescription[actualCount];
-        //    for (int i = 0; i < actualCount; ++i)
-        //    {
-        //        array[i] = new EventDescription(rawArray[i]);
-        //    }
-        //    return RESULT.OK;
-        //}
+        public IEnumerable<EventDescription> Events
+        {
+            get
+            {
+                FMOD.Studio.EventDescription[] evts;
+                FmodBank.getEventList(out evts).Check();
+                return evts.Select(EventDescription.FromFmod);
+            }
+        }
 
         public int BusCount
         {
@@ -174,41 +150,15 @@ namespace SupersonicSound.Studio
             }
         }
 
-        //public RESULT getBusList(out Bus[] array)
-        //{
-        //    array = null;
-
-        //    RESULT result;
-        //    int capacity;
-        //    result = FMOD_Studio_Bank_GetBusCount(rawPtr, out capacity);
-        //    if (result != RESULT.OK)
-        //    {
-        //        return result;
-        //    }
-        //    if (capacity == 0)
-        //    {
-        //        array = new Bus[0];
-        //        return result;
-        //    }
-
-        //    IntPtr[] rawArray = new IntPtr[capacity];
-        //    int actualCount;
-        //    result = FMOD_Studio_Bank_GetBusList(rawPtr, rawArray, capacity, out actualCount);
-        //    if (result != RESULT.OK)
-        //    {
-        //        return result;
-        //    }
-        //    if (actualCount > capacity) // More items added since we queried just now?
-        //    {
-        //        actualCount = capacity;
-        //    }
-        //    array = new Bus[actualCount];
-        //    for (int i = 0; i < actualCount; ++i)
-        //    {
-        //        array[i] = new Bus(rawArray[i]);
-        //    }
-        //    return RESULT.OK;
-        //}
+        public IEnumerable<Bus> Buses
+        {
+            get
+            {
+                FMOD.Studio.Bus[] buses;
+                FmodBank.getBusList(out buses).Check();
+                return buses.Select(Bus.FromFmod);
+            }
+        }
 
         public int VCACount
         {
@@ -220,41 +170,15 @@ namespace SupersonicSound.Studio
             }
         }
 
-        //public RESULT getVCAList(out VCA[] array)
-        //{
-        //    array = null;
-
-        //    RESULT result;
-        //    int capacity;
-        //    result = FMOD_Studio_Bank_GetVCACount(rawPtr, out capacity);
-        //    if (result != RESULT.OK)
-        //    {
-        //        return result;
-        //    }
-        //    if (capacity == 0)
-        //    {
-        //        array = new VCA[0];
-        //        return result;
-        //    }
-
-        //    IntPtr[] rawArray = new IntPtr[capacity];
-        //    int actualCount;
-        //    result = FMOD_Studio_Bank_GetVCAList(rawPtr, rawArray, capacity, out actualCount);
-        //    if (result != RESULT.OK)
-        //    {
-        //        return result;
-        //    }
-        //    if (actualCount > capacity) // More items added since we queried just now?
-        //    {
-        //        actualCount = capacity;
-        //    }
-        //    array = new VCA[actualCount];
-        //    for (int i = 0; i < actualCount; ++i)
-        //    {
-        //        array[i] = new VCA(rawArray[i]);
-        //    }
-        //    return RESULT.OK;
-        //}
+        public IEnumerable<VCA> VCAs
+        {
+            get
+            {
+                FMOD.Studio.VCA[] vcas;
+                FmodBank.getVCAList(out vcas).Check();
+                return vcas.Select(VCA.FromFmod);
+            }
+        }
         #endregion
     }
 

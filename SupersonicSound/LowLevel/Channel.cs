@@ -115,10 +115,16 @@ namespace SupersonicSound.LowLevel
         #endregion
 
         #region Information only functions
-        //public RESULT isVirtual(out bool isvirtual)
-        //{
-        //    return FMOD5_Channel_IsVirtual(getRaw(), out isvirtual);
-        //}
+        public bool IsVirtual
+        {
+            get
+            {
+                bool virt;
+                FmodChannel.isVirtual(out virt).Check();
+                return virt;
+            }
+        }
+
         //public RESULT getCurrentSound(out Sound sound)
         //{
         //    sound = null;
@@ -129,6 +135,7 @@ namespace SupersonicSound.LowLevel
 
         //    return result;
         //}
+
         //public RESULT getIndex(out int index)
         //{
         //    return FMOD5_Channel_GetIndex(getRaw(), out index);
