@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.InteropServices;
+using System.Text;
 using FMOD;
 using SupersonicSound.Wrapper;
 
@@ -133,14 +135,16 @@ namespace SupersonicSound.LowLevel
             }
         }
 
-        //public RESULT setWetDryMix(float wet, float dry)
-        //{
-        //    return FMOD5_DSP_SetWetDryMix(rawPtr, wet, dry);
-        //}
-        //public RESULT getWetDryMix(out float wet, out float dry)
-        //{
-        //    return FMOD5_DSP_GetWetDryMix(rawPtr, out wet, out dry);
-        //}
+        public void SetWetDryMix(float wet, float dry)
+        {
+            FmodDSP.setWetDryMix(wet, dry).Check();
+        }
+
+        public void GetWetDryMix(out float wet, out float dry)
+        {
+            FmodDSP.getWetDryMix(out wet, out dry).Check();
+        }
+
         //public RESULT setChannelFormat(CHANNELMASK channelmask, int numchannels, SPEAKERMODE source_speakermode)
         //{
         //    return FMOD5_DSP_SetChannelFormat(rawPtr, channelmask, numchannels, source_speakermode);
@@ -161,91 +165,116 @@ namespace SupersonicSound.LowLevel
         #endregion
 
         #region DSP parameter control
-//        public RESULT setParameterFloat(int index, float value)
-//        {
-//            return FMOD5_DSP_SetParameterFloat(rawPtr, index, value);
-//        }
-//        public RESULT setParameterInt(int index, int value)
-//        {
-//            return FMOD5_DSP_SetParameterInt(rawPtr, index, value);
-//        }
-//        public RESULT setParameterBool(int index, bool value)
-//        {
-//            return FMOD5_DSP_SetParameterBool(rawPtr, index, value);
-//        }
-//        public RESULT setParameterData(int index, byte[] data)
-//        {
-//            return FMOD5_DSP_SetParameterData(rawPtr, index, Marshal.UnsafeAddrOfPinnedArrayElement(data, 0), (uint)data.Length);
-//        }
-//        public RESULT getParameterFloat(int index, out float value)
-//        {
-//            IntPtr valuestr = IntPtr.Zero;
-//            return FMOD5_DSP_GetParameterFloat(rawPtr, index, out value, valuestr, 0);
-//        }
-//        public RESULT getParameterInt(int index, out int value)
-//        {
-//            IntPtr valuestr = IntPtr.Zero;
-//            return FMOD5_DSP_GetParameterInt(rawPtr, index, out value, valuestr, 0);
-//        }
-//        public RESULT getParameterBool(int index, out bool value)
-//        {
-//            return FMOD5_DSP_GetParameterBool(rawPtr, index, out value, IntPtr.Zero, 0);
-//        }
-//        public RESULT getParameterData(int index, out IntPtr data, out uint length)
-//        {
-//            return FMOD5_DSP_GetParameterData(rawPtr, index, out data, out length, IntPtr.Zero, 0);
-//        }
-//        public RESULT getNumParameters(out int numparams)
-//        {
-//            return FMOD5_DSP_GetNumParameters(rawPtr, out numparams);
-//        }
-//        public RESULT getParameterInfo(int index, out DSP_PARAMETER_DESC desc)
-//        {
-//            IntPtr descPtr;
-//            RESULT result = FMOD5_DSP_GetParameterInfo(rawPtr, index, out descPtr);
-//            if (result == RESULT.OK)
-//            {
-//#if NETFX_CORE
-//                desc = Marshal.PtrToStructure<DSP_PARAMETER_DESC>(descPtr);
-//#else
-//                desc = (DSP_PARAMETER_DESC)Marshal.PtrToStructure(descPtr, typeof(DSP_PARAMETER_DESC));
-//#endif
-//            }
-//            else
-//            {
-//                desc = new DSP_PARAMETER_DESC();
-//            }
-//            return result;
-//        }
-//        public RESULT getDataParameterIndex(int datatype, out int index)
-//        {
-//            return FMOD5_DSP_GetDataParameterIndex(rawPtr, datatype, out index);
-//        }
-//        public RESULT showConfigDialog(IntPtr hwnd, bool show)
-//        {
-//            return FMOD5_DSP_ShowConfigDialog(rawPtr, hwnd, show);
-//        }
+        public void SetParameter(int index, float value)
+        {
+            FmodDSP.setParameterFloat(index, value);
+        }
+
+        public void SetParameter(int index, int value)
+        {
+            FmodDSP.setParameterInt(index, value).Check();
+        }
+
+        public void SetParameter(int index, bool value)
+        {
+            FmodDSP.setParameterBool(index, value).Check();
+        }
+
+        public void SetParameter(int index, byte[] value)
+        {
+            FmodDSP.setParameterData(index, value).Check();
+        }
+
+        public float GetParameterFloat(int index)
+        {
+            float value;
+            FmodDSP.getParameterFloat(index, out value).Check();
+            return value;
+        }
+
+        public int GetParameterInt(int index)
+        {
+            int value;
+            FmodDSP.getParameterInt(index, out value).Check();
+            return value;
+        }
+
+        public bool GetParameterBool(int index)
+        {
+            bool value;
+            FmodDSP.getParameterBool(index, out value).Check();
+            return value;
+        }
+
+        public byte[] GetParameterData(int index)
+        {
+            IntPtr ptr;
+            uint length;
+            FmodDSP.getParameterData(index, out ptr, out length).Check();
+
+            byte[] dst = new byte[length];
+            Marshal.Copy(ptr, dst, 0, (int)length);
+
+            return dst;
+        }
+
+        public int ParameterCount
+        {
+            get
+            {
+                int num;
+                FmodDSP.getNumParameters(out num).Check();
+                return num;
+            }
+        }
+
+        public DspParameterDescription GetParameterInfo(int index)
+        {
+            DSP_PARAMETER_DESC desc;
+            FmodDSP.getParameterInfo(index, out desc).Check();
+            return new DspParameterDescription(desc);
+        }
+
+        public int GetDataParameterIndex(int dataType)
+        {
+            int index;
+            FmodDSP.getDataParameterIndex(dataType, out index).Check();
+            return index;
+        }
+
+        public void ShowConfigDialog(IntPtr hwnd, bool show)
+        {
+            FmodDSP.showConfigDialog(hwnd, show).Check();
+        }
         #endregion
 
         #region  DSP attributes
-        //public RESULT getInfo(StringBuilder name, out uint version, out int channels, out int configwidth, out int configheight)
-        //{
-        //    IntPtr nameMem = Marshal.AllocHGlobal(32);
-        //    RESULT result = FMOD5_DSP_GetInfo(rawPtr, nameMem, out version, out channels, out configwidth, out configheight);
-        //    StringMarshalHelper.NativeToBuilder(name, nameMem);
-        //    Marshal.FreeHGlobal(nameMem);
-        //    return result;
-        //}
+        public void GetInfo(out string name, out uint version, out int channels, out int configWidth, out int configHeight)
+        {
+            StringBuilder n = new StringBuilder();
+            FmodDSP.getInfo(n, out version, out channels, out configWidth, out configHeight).Check();
+            name = n.ToString();
+        }
 
-        //public RESULT getType(out DSP_TYPE type)
-        //{
-        //    return FMOD5_DSP_GetType(rawPtr, out type);
-        //}
+        public DspType Type
+        {
+            get
+            {
+                DSP_TYPE type;
+                FmodDSP.getType(out type).Check();
+                return (DspType)type;
+            }
+        }
 
-        //public RESULT getIdle(out bool idle)
-        //{
-        //    return FMOD5_DSP_GetIdle(rawPtr, out idle);
-        //}
+        public bool Idle
+        {
+            get
+            {
+                bool idle;
+                FmodDSP.getIdle(out idle).Check();
+                return idle;
+            }
+        }
         #endregion
 
         #region Userdata set/get

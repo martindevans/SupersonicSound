@@ -77,6 +77,7 @@
     <Compile Include="LowLevel\DSPConnection.cs" />
     <Compile Include="LowLevel\DspConnectionType.cs" />
     <Compile Include="LowLevel\DspMeteringInfo.cs" />
+    <Compile Include="LowLevel\DspParameterDescription.cs" />
     <Compile Include="LowLevel\Geometry.cs" />
     <Compile Include="LowLevel\DSP.cs" />
     <Compile Include="LowLevel\DspBufferConfiguration.cs" />
@@ -84,11 +85,13 @@
     <Compile Include="LowLevel\LowLevelInitFlags.cs" />
     <Compile Include="LowLevel\LowLevelSystem.cs" />
     <Compile Include="LowLevel\IPreInitilizeLowLevelSystem.cs" />
+    <Compile Include="LowLevel\Mode.cs" />
     <Compile Include="LowLevel\OutputMode.cs" />
     <Compile Include="LowLevel\ReverbProperties.cs" />
     <Compile Include="LowLevel\SoftwareFormat.cs" />
     <Compile Include="LowLevel\Sound.cs" />
     <Compile Include="LowLevel\SpeakerMode.cs" />
+    <Compile Include="LowLevel\TimeUnit.cs" />
     <Compile Include="LowLevel\Vector3.cs" />
     <Compile Include="Studio\CueInstance.cs" />
     <Compile Include="Studio\EventInstance.cs" />

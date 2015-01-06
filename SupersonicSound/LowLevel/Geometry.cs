@@ -1,5 +1,6 @@
 ﻿
 using System;
+using SupersonicSound.Wrapper;
 
 namespace SupersonicSound.LowLevel
 {
@@ -116,14 +117,19 @@ namespace SupersonicSound.LowLevel
         #endregion
 
         #region Userdata set/get.
-        //public RESULT setUserData(IntPtr userdata)
-        //{
-        //    return FMOD5_Geometry_SetUserData(rawPtr, userdata);
-        //}
-        //public RESULT getUserData(out IntPtr userdata)
-        //{
-        //    return FMOD5_Geometry_GetUserData(rawPtr, out userdata);
-        //}
+        public IntPtr UserData
+        {
+            get
+            {
+                IntPtr ptr;
+                FmodGeometry.getUserData(out ptr).Check();
+                return ptr;
+            }
+            set
+            {
+                FmodGeometry.setUserData(value).Check();
+            }
+        }
         #endregion
     }
 

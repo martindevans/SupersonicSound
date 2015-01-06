@@ -1,16 +1,33 @@
 ﻿using System;
+using System.Runtime.InteropServices;
+using System.Text;
+using FMOD;
+using SupersonicSound.Wrapper;
 
 namespace SupersonicSound.LowLevel
 {
+    [StructLayout(LayoutKind.Explicit)]
     public struct Sound
         : IEquatable<Sound>
     {
-        public FMOD.Sound FmodSound { get; private set; }
+        [FieldOffset(0)]
+        private readonly FMOD.Sound _fmodSound;
+
+        [FieldOffset(0)]
+        private readonly ChannelCollection _musicChannelCollection;
+
+        public FMOD.Sound FmodSound
+        {
+            get
+            {
+                return _fmodSound;
+            }
+        }
 
         private Sound(FMOD.Sound sound)
             : this()
         {
-            FmodSound = sound;
+            _fmodSound = sound;
         }
 
         public static Sound FromFmod(FMOD.Sound sound)
@@ -167,52 +184,107 @@ namespace SupersonicSound.LowLevel
         #endregion
 
         #region Synchronization point API.  These points can come from markers embedded in wav files, and can also generate channel callbacks.
-        //public RESULT getNumSyncPoints(out int numsyncpoints)
-        //{
-        //    return FMOD5_Sound_GetNumSyncPoints(rawPtr, out numsyncpoints);
-        //}
-        //public RESULT getSyncPoint(int index, out IntPtr point)
-        //{
-        //    return FMOD5_Sound_GetSyncPoint(rawPtr, index, out point);
-        //}
-        //public RESULT getSyncPointInfo(IntPtr point, StringBuilder name, int namelen, out uint offset, TIMEUNIT offsettype)
-        //{
-        //    IntPtr stringMem = Marshal.AllocHGlobal(name.Capacity);
+        public int SyncPointCount
+        {
+            get
+            {
+                int num;
+                FmodSound.getNumSyncPoints(out num).Check();
+                return num;
+            }
+        }
 
-        //    RESULT result = FMOD5_Sound_GetSyncPointInfo(rawPtr, point, stringMem, namelen, out offset, offsettype);
+        public struct SyncPoint
+            : IEquatable<SyncPoint>
+        {
+            private readonly IntPtr _pointer;
+            private readonly FMOD.Sound _sound;
 
-        //    StringMarshalHelper.NativeToBuilder(name, stringMem);
-        //    Marshal.FreeHGlobal(stringMem);
+            internal SyncPoint(IntPtr ptr, FMOD.Sound sound)
+            {
+                _pointer = ptr;
+                _sound = sound;
+            }
 
-        //    return result;
-        //}
-        //public RESULT addSyncPoint(uint offset, TIMEUNIT offsettype, string name, out IntPtr point)
-        //{
-        //    return FMOD5_Sound_AddSyncPoint(rawPtr, offset, offsettype, name, out point);
-        //}
-        //public RESULT deleteSyncPoint(IntPtr point)
-        //{
-        //    return FMOD5_Sound_DeleteSyncPoint(rawPtr, point);
-        //}
+            #region equality
+            public bool Equals(SyncPoint other)
+            {
+                return _pointer == other._pointer;
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (!(obj is SyncPoint))
+                    return false;
+
+                return Equals((SyncPoint) obj);
+            }
+
+            public override int GetHashCode()
+            {
+// ReSharper disable once ImpureMethodCallOnReadonlyValueField
+                return _pointer.GetHashCode();
+            }
+            #endregion
+
+            public void GetInfo(TimeUnit offsetType, out uint offset, out string name)
+            {
+                StringBuilder n = new StringBuilder(128);
+                _sound.getSyncPointInfo(_pointer, n, n.Capacity, out offset, (TIMEUNIT)offsetType).Check();
+
+                name = n.ToString();
+            }
+
+            public void Delete()
+            {
+                _sound.deleteSyncPoint(_pointer).Check();
+            }
+        }
+
+        public SyncPoint GetSyncPoint(int index)
+        {
+            IntPtr ptr;
+            FmodSound.getSyncPoint(index, out ptr).Check();
+            return new SyncPoint(ptr, FmodSound);
+        }
+
+        public SyncPoint AddSyncPoint(uint offset, TimeUnit unit, string name)
+        {
+            IntPtr ptr;
+            FmodSound.addSyncPoint(offset, (TIMEUNIT)unit, name, out ptr).Check();
+            return new SyncPoint(ptr, FmodSound);
+        }
         #endregion
 
         #region Functions also in Channel class but here they are the 'default' to save having to change it in Channel all the time.
-        //public RESULT setMode(MODE mode)
-        //{
-        //    return FMOD5_Sound_SetMode(rawPtr, mode);
-        //}
-        //public RESULT getMode(out MODE mode)
-        //{
-        //    return FMOD5_Sound_GetMode(rawPtr, out mode);
-        //}
-        //public RESULT setLoopCount(int loopcount)
-        //{
-        //    return FMOD5_Sound_SetLoopCount(rawPtr, loopcount);
-        //}
-        //public RESULT getLoopCount(out int loopcount)
-        //{
-        //    return FMOD5_Sound_GetLoopCount(rawPtr, out loopcount);
-        //}
+        public Mode Mode
+        {
+            get
+            {
+                MODE mode;
+                FmodSound.getMode(out mode).Check();
+                return (Mode)mode;
+            }
+            set
+            {
+                FmodSound.setMode((MODE)value).Check();
+            }
+        }
+
+        public int LoopCount
+        {
+            get
+            {
+                int count;
+                FmodSound.getLoopCount(out count).Check();
+                return count;
+            }
+            set
+            {
+                FmodSound.setLoopCount(value).Check();
+            }
+        }
+
         //public RESULT setLoopPoints(uint loopstart, TIMEUNIT loopstarttype, uint loopend, TIMEUNIT loopendtype)
         //{
         //    return FMOD5_Sound_SetLoopPoints(rawPtr, loopstart, loopstarttype, loopend, loopendtype);
@@ -224,37 +296,72 @@ namespace SupersonicSound.LowLevel
         #endregion
 
         #region For MOD/S3M/XM/IT/MID sequenced formats only.
-        //public RESULT getMusicNumChannels(out int numchannels)
-        //{
-        //    return FMOD5_Sound_GetMusicNumChannels(rawPtr, out numchannels);
-        //}
-        //public RESULT setMusicChannelVolume(int channel, float volume)
-        //{
-        //    return FMOD5_Sound_SetMusicChannelVolume(rawPtr, channel, volume);
-        //}
-        //public RESULT getMusicChannelVolume(int channel, out float volume)
-        //{
-        //    return FMOD5_Sound_GetMusicChannelVolume(rawPtr, channel, out volume);
-        //}
-        //public RESULT setMusicSpeed(float speed)
-        //{
-        //    return FMOD5_Sound_SetMusicSpeed(rawPtr, speed);
-        //}
-        //public RESULT getMusicSpeed(out float speed)
-        //{
-        //    return FMOD5_Sound_GetMusicSpeed(rawPtr, out speed);
-        //}
+        [StructLayout(LayoutKind.Explicit)]
+        public struct ChannelCollection
+        {
+            [FieldOffset(0)]
+            private readonly FMOD.Sound _fmodSound;
+
+            public int Count
+            {
+                get
+                {
+                    int channels;
+                    _fmodSound.getMusicNumChannels(out channels).Check();
+                    return channels;
+                }
+            }
+
+            public float GetVolume(int index)
+            {
+                float volume;
+                _fmodSound.getMusicChannelVolume(index, out volume).Check();
+                return volume;
+            }
+
+            public void SetVolume(int index, float volume)
+            {
+                _fmodSound.setMusicChannelVolume(index, volume).Check();
+            }
+        }
+
+        public ChannelCollection MusicChannels
+        {
+            get
+            {
+                return _musicChannelCollection;
+            }
+        }
+
+        public float MusicSpeed
+        {
+            get
+            {
+                float speed;
+                FmodSound.getMusicSpeed(out speed).Check();
+                return speed;
+            }
+            set
+            {
+                FmodSound.setMusicSpeed(value).Check();
+            }
+        }
         #endregion
 
         #region Userdata set/get.
-        //public RESULT setUserData(IntPtr userdata)
-        //{
-        //    return FMOD5_Sound_SetUserData(rawPtr, userdata);
-        //}
-        //public RESULT getUserData(out IntPtr userdata)
-        //{
-        //    return FMOD5_Sound_GetUserData(rawPtr, out userdata);
-        //}
+        public IntPtr UserData
+        {
+            get
+            {
+                IntPtr ptr;
+                FmodSound.getUserData(out ptr).Check();
+                return ptr;
+            }
+            set
+            {
+                FmodSound.setUserData(value).Check();
+            }
+        }
         #endregion
     }
 
