@@ -13,30 +13,37 @@ namespace SupersonicSound.Wrapper
         [DllImport("Kernel32.dll")]
         private static extern IntPtr LoadLibrary(string path);
 
-        private static IntPtr LoadSystemDependentDll(string name)
+        /// <summary>
+        /// Load a dll from the Wrapper/Dependencies/{{ platform specific name }} directory. Automatically switches based on if this is a 32 or 64 bit process.
+        /// </summary>
+        /// <param name="name"></param>
+        private static void LoadSystemDependentDll(string name)
         {
             string directory = "x86";
             if (Environment.Is64BitProcess)
                 directory = "x86_64";
 
             var path = Path.Combine(Environment.CurrentDirectory, "Wrapper", "Dependencies", directory, name);
-            return LoadLibrary(path);
+            LoadLibrary(path);
         }
 
-        private static bool _isLoaded = false;
+        public static bool IsLoaded { get; private set; }
         private static readonly object _loadLock = new object();
 
+        /// <summary>
+        /// Load native DLLs (if necessary)
+        /// </summary>
         public static void Load()
         {
             //Early exit
-            if (_isLoaded)
+            if (IsLoaded)
                 return;
 
             //Lock
             lock (_loadLock)
             {
                 //Check again
-                if (_isLoaded)
+                if (IsLoaded)
                     return;
 
                 LoadSystemDependentDll(VERSION.dll);
@@ -44,11 +51,28 @@ namespace SupersonicSound.Wrapper
 
                 CheckCompatibility();
 
-                _isLoaded = true;
+                IsLoaded = true;
             }
             
         }
 
+        /// <summary>
+        /// Set the "IsLoaded" flag which will prevent DLLs from being loaded. Use this if you have loaded the necessary DLLs yourself
+        /// </summary>
+        public static void SuppressLoad()
+        {
+            lock (_loadLock)
+            {
+                if (IsLoaded)
+                    throw new FmodException("FMOD already loaded");
+
+                IsLoaded = true;
+            }
+        }
+
+        /// <summary>
+        /// Perform checks on the compatibility of this wrapper with the lower level FMOD wrapper (based on attributes)
+        /// </summary>
         private static void CheckCompatibility()
         {
 #if DEBUG

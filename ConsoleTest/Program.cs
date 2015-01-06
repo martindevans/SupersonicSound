@@ -1,8 +1,15 @@
-﻿using SupersonicSound.LowLevel;
+﻿using FMOD.Studio;
 using SupersonicSound.Studio;
-using SupersonicSound.Wrapper;
 using System;
+using System.Runtime.InteropServices;
 using System.Threading;
+using Bank = SupersonicSound.Studio.Bank;
+using Bus = SupersonicSound.Studio.Bus;
+using CueInstance = SupersonicSound.Studio.CueInstance;
+using EventDescription = SupersonicSound.Studio.EventDescription;
+using EventInstance = SupersonicSound.Studio.EventInstance;
+using ParameterInstance = SupersonicSound.Studio.ParameterInstance;
+using VCA = SupersonicSound.Studio.VCA;
 
 namespace ConsoleTest
 {
@@ -11,8 +18,6 @@ namespace ConsoleTest
         #region entry point
         static void Main(string[] args)
         {
-            Native.Load();
-
             Program p = new Program();
         }
         #endregion
@@ -61,9 +66,7 @@ namespace ConsoleTest
 
         public Program()
         {
-            using (SupersonicSound.Studio.System system = new SupersonicSound.Studio.System(preInit: a => {
-                a.Format = new SoftwareFormat(0, SpeakerMode.FivePointOne, 0);
-            }))
+            using (SupersonicSound.Studio.System system = new SupersonicSound.Studio.System())
             {
                 var master = system.LoadBankFromFile("Master Bank.bank", BankLoadingFlags.Normal);
                 var strings = system.LoadBankFromFile("Master Bank.strings.bank", BankLoadingFlags.Normal);
@@ -73,14 +76,9 @@ namespace ConsoleTest
 
                 var loopingAmbienceInstance = loopingAmbienceDescription.CreateInstance();
 
-                //loopingAmbienceInstance.SetParameterValue();
-
                 var timeParam = loopingAmbienceInstance.Parameters["Time"];
 
                 loopingAmbienceInstance.Start();
-
-                //var dsp = system.LowLevelSystem.CreateDSP(DspType.Oscillator);
-                //Channel channel = system.LowLevelSystem.PlayDSP(dsp, system.LowLevelSystem.CreateChannelGroup("foo"), false);
 
                 while (!Console.KeyAvailable)
                 {
