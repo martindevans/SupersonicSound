@@ -12,6 +12,11 @@ namespace SupersonicSound.Studio
     public struct EventDescription
         : IEquatable<EventDescription>
     {
+        // This trickery deserved some explanation!
+        // FieldOffset sets the position of the field in the struct by bytes, notice all three of the first fields are in the *same place*
+        // The first field in the two collections are also FMOD.Studio.EventDescription, so those fields have the same value as the field just below
+        // This saves us having pointers inside the collections, which saves 8 (x86) or 16 (x64) bytes. Pretty important inside a struct!
+
         [FieldOffset(0)]
         private readonly FMOD.Studio.EventDescription _fmodEventDescription;
 

@@ -81,18 +81,24 @@ namespace SupersonicSound.Studio
             FmodBank.unloadSampleData();
         }
 
-        public LoadingState GetLoadingState()
+        public LoadingState LoadingState
         {
-            LOADING_STATE state;
-            FmodBank.getLoadingState(out state).Check();
-            return (LoadingState)state;
+            get
+            {
+                LOADING_STATE state;
+                FmodBank.getLoadingState(out state).Check();
+                return (LoadingState) state;
+            }
         }
 
-        public LoadingState GetSampleLoadingState()
+        public LoadingState SampleLoadingState
         {
-            LOADING_STATE state;
-            FmodBank.getSampleLoadingState(out state).Check();
-            return (LoadingState)state;
+            get
+            {
+                LOADING_STATE state;
+                FmodBank.getSampleLoadingState(out state).Check();
+                return (LoadingState) state;
+            }
         }
         #endregion
 
