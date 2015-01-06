@@ -22,7 +22,6 @@ namespace SupersonicSound.Studio
         {
             if (bank == null)
                 throw new ArgumentNullException("bank");
-
             return new Bank(bank);
         }
 
@@ -34,7 +33,6 @@ namespace SupersonicSound.Studio
 
         public override bool Equals(object obj)
         {
-            var c = obj is Bank;
             if (!(obj is Bank))
                 return false;
 

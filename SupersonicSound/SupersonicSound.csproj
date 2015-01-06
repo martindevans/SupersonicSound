@@ -90,6 +90,7 @@
     <Compile Include="LowLevel\Sound.cs" />
     <Compile Include="LowLevel\SpeakerMode.cs" />
     <Compile Include="LowLevel\Vector3.cs" />
+    <Compile Include="Studio\CueInstance.cs" />
     <Compile Include="Studio\EventInstance.cs" />
     <Compile Include="Studio\BankLoadingFlags.cs" />
     <Compile Include="Studio\BufferInfo.cs" />
@@ -103,6 +104,7 @@
     <Compile Include="Studio\ParameterInstance.cs" />
     <Compile Include="Studio\ParameterType.cs" />
     <Compile Include="Studio\PlaybackState.cs" />
+    <Compile Include="Studio\UserProperty.cs" />
     <Compile Include="Studio\VCA.cs" />
     <Compile Include="Studio\Bank.cs" />
     <Compile Include="Studio\InitFlags.cs" />

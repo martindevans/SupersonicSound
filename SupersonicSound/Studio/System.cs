@@ -9,7 +9,7 @@ using INITFLAGS = FMOD.Studio.INITFLAGS;
 
 namespace SupersonicSound.Studio
 {
-    public class System
+    public sealed class System
         : IDisposable
     {
         private readonly FMOD.Studio.System _system;
@@ -61,7 +61,7 @@ namespace SupersonicSound.Studio
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!_disposed)
             {

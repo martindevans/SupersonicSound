@@ -1,43 +1,57 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
 using FMOD;
 using FMOD.Studio;
 using SupersonicSound.Wrapper;
+using System;
 
 namespace SupersonicSound.Studio
 {
-    public class EventDescription
+    [StructLayout(LayoutKind.Explicit)]
+    public struct EventDescription
         : IEquatable<EventDescription>
     {
-        public FMOD.Studio.EventDescription FmodEventDescription { get; private set; }
+        [FieldOffset(0)]
+        private readonly FMOD.Studio.EventDescription _fmodEventDescription;
+
+        [FieldOffset(0)]
+        private readonly ParameterCollection _parameterCollection;
+
+        [FieldOffset(0)]
+        private readonly PropertyCollection _propertyCollection;
+
+        public FMOD.Studio.EventDescription FmodEventDescription
+        {
+            get
+            {
+                return _fmodEventDescription;
+            }
+        }
 
         private EventDescription(FMOD.Studio.EventDescription evt)
+            : this()
         {
-            FmodEventDescription = evt;
+            _fmodEventDescription = evt;
         }
 
         public static EventDescription FromFmod(FMOD.Studio.EventDescription evt)
         {
-            if (evt == null)
-                return null;
             return new EventDescription(evt);
         }
 
         #region equality
         public bool Equals(EventDescription other)
         {
-            if (other == null)
-                return false;
-
             return other.FmodEventDescription == FmodEventDescription;
         }
 
         public override bool Equals(object obj)
         {
-            var c = obj as EventDescription;
-            if (c == null)
+            if (!(obj is EventDescription))
                 return false;
 
-            return Equals(c);
+            return Equals((EventDescription)obj);
         }
 
         public override int GetHashCode()
@@ -66,101 +80,153 @@ namespace SupersonicSound.Studio
             }
         }
 
-        public int ParameterCount
+        [StructLayout(LayoutKind.Sequential)]
+        public struct ParameterCollection
         {
-            get
+            private readonly FMOD.Studio.EventDescription _fmodEventDescription;
+
+            public int Count
             {
-                int count;
-                FmodEventDescription.getParameterCount(out count).Check();
-                return count;
+                get
+                {
+                    int count;
+                    _fmodEventDescription.getParameterCount(out count).Check();
+                    return count;
+                }
+            }
+
+            public ParameterDescription this[int index]
+            {
+                get
+                {
+                    PARAMETER_DESCRIPTION desc;
+                    _fmodEventDescription.getParameterByIndex(index, out desc).Check();
+                    return new ParameterDescription(desc);
+                }
+            }
+
+            public ParameterDescription this[string name]
+            {
+                get
+                {
+                    PARAMETER_DESCRIPTION desc;
+                    _fmodEventDescription.getParameter(name, out desc).Check();
+                    return new ParameterDescription(desc);
+                }
             }
         }
 
-        //public RESULT getParameterByIndex(int index, out PARAMETER_DESCRIPTION parameter)
-        //{
-        //    parameter = new PARAMETER_DESCRIPTION();
+        public ParameterCollection Parameters
+        {
+            get
+            {
+                return _parameterCollection;
+            }
+        }
 
-        //    PARAMETER_DESCRIPTION_INTERNAL paramInternal;
-        //    RESULT result = FMOD_Studio_EventDescription_GetParameterByIndex(rawPtr, index, out paramInternal);
-        //    if (result != RESULT.OK)
-        //    {
-        //        return result;
-        //    }
-        //    paramInternal.assign(out parameter);
-        //    return result;
-        //}
-        //public RESULT getParameter(string name, out PARAMETER_DESCRIPTION parameter)
-        //{
-        //    parameter = new PARAMETER_DESCRIPTION();
+        [StructLayout(LayoutKind.Sequential)]
+        public struct PropertyCollection
+        {
+            private readonly FMOD.Studio.EventDescription _fmodEventDescription;
 
-        //    PARAMETER_DESCRIPTION_INTERNAL paramInternal;
-        //    RESULT result = FMOD_Studio_EventDescription_GetParameter(rawPtr, Encoding.UTF8.GetBytes(name + Char.MinValue), out paramInternal);
-        //    if (result != RESULT.OK)
-        //    {
-        //        return result;
-        //    }
-        //    paramInternal.assign(out parameter);
-        //    return result;
-        //}
-        //public RESULT getUserPropertyCount(out int count)
-        //{
-        //    return FMOD_Studio_EventDescription_GetUserPropertyCount(rawPtr, out count);
-        //}
-        //public RESULT getUserPropertyByIndex(int index, out USER_PROPERTY property)
-        //{
-        //    USER_PROPERTY_INTERNAL propertyInternal;
+            public int Count
+            {
+                get
+                {
+                    int count;
+                    _fmodEventDescription.getUserPropertyCount(out count).Check();
+                    return count;
+                }
+            }
 
-        //    RESULT result = FMOD_Studio_EventDescription_GetUserPropertyByIndex(rawPtr, index, out propertyInternal);
-        //    if (result != RESULT.OK)
-        //    {
-        //        property = new USER_PROPERTY();
-        //        return result;
-        //    }
+            public UserProperty this[int index]
+            {
+                get
+                {
+                    USER_PROPERTY prop;
+                    _fmodEventDescription.getUserPropertyByIndex(index, out prop).Check();
+                    return new UserProperty(prop);
+                }
+            }
 
-        //    property = propertyInternal.createPublic();
+            public UserProperty this[string name]
+            {
+                get
+                {
+                    USER_PROPERTY prop;
+                    _fmodEventDescription.getUserProperty(name, out prop).Check();
+                    return new UserProperty(prop);
+                }
+            }
+        }
 
-        //    return RESULT.OK;
-        //}
-        //public RESULT getUserProperty(string name, out USER_PROPERTY property)
-        //{
-        //    USER_PROPERTY_INTERNAL propertyInternal;
+        public PropertyCollection UserProperties
+        {
+            get
+            {
+                return _propertyCollection;
+            }
+        }
 
-        //    RESULT result = FMOD_Studio_EventDescription_GetUserProperty(
-        //        rawPtr, Encoding.UTF8.GetBytes(name + Char.MinValue), out propertyInternal);
-        //    if (result != RESULT.OK)
-        //    {
-        //        property = new USER_PROPERTY();
-        //        return result;
-        //    }
+        public int Length
+        {
+            get
+            {
+                int length;
+                FmodEventDescription.getLength(out length).Check();
+                return length;
+            }
+        }
 
-        //    property = propertyInternal.createPublic();
+        public float MinimumDistance
+        {
+            get
+            {
+                float max;
+                FmodEventDescription.getMinimumDistance(out max).Check();
+                return max;
+            }
+        }
 
-        //    return RESULT.OK;
-        //}
-        //public RESULT getLength(out int length)
-        //{
-        //    return FMOD_Studio_EventDescription_GetLength(rawPtr, out length);
-        //}
-        //public RESULT getMinimumDistance(out float distance)
-        //{
-        //    return FMOD_Studio_EventDescription_GetMinimumDistance(rawPtr, out distance);
-        //}
-        //public RESULT getMaximumDistance(out float distance)
-        //{
-        //    return FMOD_Studio_EventDescription_GetMaximumDistance(rawPtr, out distance);
-        //}
-        //public RESULT isOneshot(out bool oneshot)
-        //{
-        //    return FMOD_Studio_EventDescription_IsOneshot(rawPtr, out oneshot);
-        //}
-        //public RESULT isStream(out bool isStream)
-        //{
-        //    return FMOD_Studio_EventDescription_IsStream(rawPtr, out isStream);
-        //}
-        //public RESULT is3D(out bool is3D)
-        //{
-        //    return FMOD_Studio_EventDescription_Is3D(rawPtr, out is3D);
-        //}
+        public float MaximumDistance
+        {
+            get
+            {
+                float max;
+                FmodEventDescription.getMaximumDistance(out max).Check();
+                return max;
+            }
+        }
+
+        public bool IsOneshot
+        {
+            get
+            {
+                bool isOneshot;
+                FmodEventDescription.isOneshot(out isOneshot).Check();
+                return isOneshot;
+            }
+        }
+
+        public bool IsStream
+        {
+            get
+            {
+                bool isStream;
+                FmodEventDescription.isStream(out isStream).Check();
+                return isStream;
+            }
+        }
+
+        public bool Is3D
+        {
+            get
+            {
+                bool is3D;
+                FmodEventDescription.is3D(out is3D).Check();
+                return is3D;
+            }
+        }
 
         public EventInstance CreateInstance()
         {
@@ -169,79 +235,51 @@ namespace SupersonicSound.Studio
             return EventInstance.FromFmod(instance);
         }
 
-        //public RESULT createInstance(out EventInstance instance)
-        //{
-        //    instance = null;
+        public int InstanceCount
+        {
+            get
+            {
+                int count;
+                FmodEventDescription.getInstanceCount(out count).Check();
+                return count;
+            }
+        }
 
-        //    IntPtr newPtr = new IntPtr();
-        //    RESULT result = FMOD_Studio_EventDescription_CreateInstance(rawPtr, out newPtr);
-        //    if (result != RESULT.OK)
-        //    {
-        //        return result;
-        //    }
-        //    instance = new EventInstance(newPtr);
-        //    return result;
-        //}
+        public IEnumerable<EventInstance> Instances
+        {
+            get
+            {
+                FMOD.Studio.EventInstance[] instances;
+                FmodEventDescription.getInstanceList(out instances).Check();
+                return instances.Select(EventInstance.FromFmod);
+            }
+        }
 
-        //public RESULT getInstanceCount(out int count)
-        //{
-        //    return FMOD_Studio_EventDescription_GetInstanceCount(rawPtr, out count);
-        //}
-        //public RESULT getInstanceList(out EventInstance[] array)
-        //{
-        //    array = null;
+        public void LoadSampleData()
+        {
+            FmodEventDescription.loadSampleData();
+        }
 
-        //    RESULT result;
-        //    int capacity;
-        //    result = FMOD_Studio_EventDescription_GetInstanceCount(rawPtr, out capacity);
-        //    if (result != RESULT.OK)
-        //    {
-        //        return result;
-        //    }
-        //    if (capacity == 0)
-        //    {
-        //        array = new EventInstance[0];
-        //        return result;
-        //    }
+        public void UnloadSampleData()
+        {
+            FmodEventDescription.unloadSampleData();
+        }
 
-        //    IntPtr[] rawArray = new IntPtr[capacity];
-        //    int actualCount;
-        //    result = FMOD_Studio_EventDescription_GetInstanceList(rawPtr, rawArray, capacity, out actualCount);
-        //    if (result != RESULT.OK)
-        //    {
-        //        return result;
-        //    }
-        //    if (actualCount > capacity) // More items added since we queried just now?
-        //    {
-        //        actualCount = capacity;
-        //    }
-        //    array = new EventInstance[actualCount];
-        //    for (int i = 0; i < actualCount; ++i)
-        //    {
-        //        array[i] = new EventInstance(rawArray[i]);
-        //    }
-        //    return RESULT.OK;
-        //}
+        public LoadingState LoadingState
+        {
+            get
+            {
+                LOADING_STATE state;
+                FmodEventDescription.getSampleLoadingState(out state).Check();
+                return (LoadingState)state;
+            }
+        }
 
-        //public RESULT loadSampleData()
-        //{
-        //    return FMOD_Studio_EventDescription_LoadSampleData(rawPtr);
-        //}
+        public void ReleaseAllInstances()
+        {
+            FmodEventDescription.releaseAllInstances();
+        }
 
-        //public RESULT unloadSampleData()
-        //{
-        //    return FMOD_Studio_EventDescription_UnloadSampleData(rawPtr);
-        //}
-
-        //public RESULT getSampleLoadingState(out LOADING_STATE state)
-        //{
-        //    return FMOD_Studio_EventDescription_GetSampleLoadingState(rawPtr, out state);
-        //}
-
-        //public RESULT releaseAllInstances()
-        //{
-        //    return FMOD_Studio_EventDescription_ReleaseAllInstances(rawPtr);
-        //}
         //public RESULT setCallback(EVENT_CALLBACK callback)
         //{
         //    return FMOD_Studio_EventDescription_SetCallback(rawPtr, callback);
@@ -266,9 +304,6 @@ namespace SupersonicSound.Studio
     {
         public static FMOD.Studio.EventDescription ToFmod(this EventDescription evt)
         {
-            if (evt == null)
-                return null;
-
             return evt.FmodEventDescription;
         }
     }

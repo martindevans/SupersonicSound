@@ -5,42 +5,38 @@ using SupersonicSound.Wrapper;
 
 namespace SupersonicSound.Studio
 {
-    public class EventInstance
+    public struct EventInstance
         : IEquatable<EventInstance>
     {
         public FMOD.Studio.EventInstance FmodEventInstance { get; private set; }
 
         private EventInstance(FMOD.Studio.EventInstance evtInst)
+            : this()
         {
             FmodEventInstance = evtInst;
 
-            _parameterCollection = new ParameterCollection(this);
-            _propertyCollection = new PropertyCollection(this);
+            _parameterCollection = new ParameterCollection(evtInst);
+            _propertyCollection = new PropertyCollection(evtInst);
+            _cues = new CueInstanceCollection(evtInst);
         }
 
         public static EventInstance FromFmod(FMOD.Studio.EventInstance evtInst)
         {
-            if (evtInst == null)
-                return null;
             return new EventInstance(evtInst);
         }
 
         #region equality
         public bool Equals(EventInstance other)
         {
-            if (other == null)
-                return false;
-
             return other.FmodEventInstance == FmodEventInstance;
         }
 
         public override bool Equals(object obj)
         {
-            var c = obj as EventInstance;
-            if (c == null)
+            if (!(obj is EventInstance))
                 return false;
 
-            return Equals(c);
+            return Equals((EventInstance)obj);
         }
 
         public override int GetHashCode()
@@ -103,23 +99,23 @@ namespace SupersonicSound.Studio
 
         public struct PropertyCollection
         {
-            private readonly EventInstance _eventInstance;
+            private readonly FMOD.Studio.EventInstance _eventInstance;
 
             public float this[EventProperty index]
             {
                 get
                 {
                     float value;
-                    _eventInstance.FmodEventInstance.getProperty((EVENT_PROPERTY) index, out value).Check();
+                    _eventInstance.getProperty((EVENT_PROPERTY) index, out value).Check();
                     return value;
                 }
                 set
                 {
-                    _eventInstance.FmodEventInstance.setProperty((EVENT_PROPERTY)index, value);
+                    _eventInstance.setProperty((EVENT_PROPERTY)index, value);
                 }
             }
 
-            public PropertyCollection(EventInstance instance)
+            public PropertyCollection(FMOD.Studio.EventInstance instance)
             {
                 _eventInstance = instance;
             }
@@ -209,14 +205,14 @@ namespace SupersonicSound.Studio
 
         public struct ParameterCollection
         {
-            private readonly EventInstance _eventInstance;
+            private readonly FMOD.Studio.EventInstance _eventInstance;
 
             public int Count
             {
                 get
                 {
                     int count;
-                    _eventInstance.FmodEventInstance.getParameterCount(out count).Check();
+                    _eventInstance.getParameterCount(out count).Check();
                     return count;
                 }
             }
@@ -226,7 +222,7 @@ namespace SupersonicSound.Studio
                 get
                 {
                     FMOD.Studio.ParameterInstance instance;
-                    _eventInstance.FmodEventInstance.getParameter(name, out instance).Check();
+                    _eventInstance.getParameter(name, out instance).Check();
                     return ParameterInstance.FromFmod(instance);
                 }
             }
@@ -236,24 +232,24 @@ namespace SupersonicSound.Studio
                 get
                 {
                     FMOD.Studio.ParameterInstance instance;
-                    _eventInstance.FmodEventInstance.getParameterByIndex(index, out instance).Check();
+                    _eventInstance.getParameterByIndex(index, out instance).Check();
                     return ParameterInstance.FromFmod(instance);
                 }
             }
 
-            public ParameterCollection(EventInstance instance)
+            public ParameterCollection(FMOD.Studio.EventInstance instance)
             {
                 _eventInstance = instance;
             }
 
             public void SetValue(string name, float value)
             {
-                _eventInstance.FmodEventInstance.setParameterValue(name, value).Check();
+                _eventInstance.setParameterValue(name, value).Check();
             }
 
             public void SetValue(int index, float value)
             {
-                _eventInstance.FmodEventInstance.setParameterValueByIndex(index, value).Check();
+                _eventInstance.setParameterValueByIndex(index, value).Check();
             }
         }
 
@@ -266,34 +262,44 @@ namespace SupersonicSound.Studio
             }
         }
 
-        //public RESULT getCue(string name, out CueInstance instance)
-        //{
-        //    instance = null;
+        public struct CueInstanceCollection
+        {
+            private readonly FMOD.Studio.EventInstance _instance;
 
-        //    IntPtr newPtr = new IntPtr();
-        //    RESULT result = FMOD_Studio_EventInstance_GetCue(rawPtr, Encoding.UTF8.GetBytes(name + Char.MinValue), out newPtr);
-        //    if (result != RESULT.OK)
-        //    {
-        //        return result;
-        //    }
-        //    instance = new CueInstance(newPtr);
+            public CueInstance this[string name]
+            {
+                get
+                {
+                    FMOD.Studio.CueInstance cue;
+                    _instance.getCue(name, out cue).Check();
+                    return CueInstance.FromFmod(cue);
+                }
+            }
 
-        //    return result;
-        //}
-        //public RESULT getCueByIndex(int index, out CueInstance instance)
-        //{
-        //    instance = null;
+            public CueInstance this[int index]
+            {
+                get
+                {
+                    FMOD.Studio.CueInstance cue;
+                    _instance.getCueByIndex(index, out cue).Check();
+                    return CueInstance.FromFmod(cue);
+                }
+            }
 
-        //    IntPtr newPtr = new IntPtr();
-        //    RESULT result = FMOD_Studio_EventInstance_GetCueByIndex(rawPtr, index, out newPtr);
-        //    if (result != RESULT.OK)
-        //    {
-        //        return result;
-        //    }
-        //    instance = new CueInstance(newPtr);
+            internal CueInstanceCollection(FMOD.Studio.EventInstance instance)
+            {
+                _instance = instance;
+            }
+        }
 
-        //    return result;
-        //}
+        private readonly CueInstanceCollection _cues;
+        public CueInstanceCollection Cues
+        {
+            get
+            {
+                return _cues;
+            }
+        }
 
         public int CueCount
         {
@@ -329,9 +335,6 @@ namespace SupersonicSound.Studio
     {
         public static FMOD.Studio.EventInstance ToFmod(this EventInstance evtInst)
         {
-            if (evtInst == null)
-                return null;
-
             return evtInst.FmodEventInstance;
         }
     }

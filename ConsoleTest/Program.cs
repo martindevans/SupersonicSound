@@ -1,12 +1,8 @@
-﻿using System.Linq;
-using System.Threading;
-using FMOD;
-using FMOD.Studio;
-using SupersonicSound.LowLevel;
+﻿using SupersonicSound.LowLevel;
 using SupersonicSound.Studio;
 using SupersonicSound.Wrapper;
 using System;
-using INITFLAGS = FMOD.Studio.INITFLAGS;
+using System.Threading;
 
 namespace ConsoleTest
 {
@@ -74,6 +70,7 @@ namespace ConsoleTest
                 var bank = system.LoadBankFromFile("Surround_Ambience.bank", BankLoadingFlags.Normal);
 
                 var loopingAmbienceDescription = system.GetEvent("event:/Ambience/Country");
+
                 var loopingAmbienceInstance = loopingAmbienceDescription.CreateInstance();
 
                 //loopingAmbienceInstance.SetParameterValue();

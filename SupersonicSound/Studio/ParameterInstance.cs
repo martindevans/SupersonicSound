@@ -4,12 +4,13 @@ using System;
 
 namespace SupersonicSound.Studio
 {
-    public class ParameterInstance
+    public struct ParameterInstance
         : IEquatable<ParameterInstance>
     {
         public FMOD.Studio.ParameterInstance FmodParameterInstance { get; private set; }
 
         private ParameterInstance(FMOD.Studio.ParameterInstance parameterInstance)
+            : this()
         {
             FmodParameterInstance = parameterInstance;
         }
@@ -17,26 +18,22 @@ namespace SupersonicSound.Studio
         public static ParameterInstance FromFmod(FMOD.Studio.ParameterInstance parameterInstance)
         {
             if (parameterInstance == null)
-                return null;
+                throw new ArgumentNullException("parameterInstance");
             return new ParameterInstance(parameterInstance);
         }
 
         #region equality
         public bool Equals(ParameterInstance other)
         {
-            if (other == null)
-                return false;
-
             return other.FmodParameterInstance == FmodParameterInstance;
         }
 
         public override bool Equals(object obj)
         {
-            var c = obj as ParameterInstance;
-            if (c == null)
+            if (!(obj is ParameterInstance))
                 return false;
 
-            return Equals(c);
+            return Equals((ParameterInstance)obj);
         }
 
         public override int GetHashCode()
@@ -74,9 +71,6 @@ namespace SupersonicSound.Studio
     {
         public static FMOD.Studio.ParameterInstance ToFmod(this ParameterInstance bank)
         {
-            if (bank == null)
-                return null;
-
             return bank.FmodParameterInstance;
         }
     }

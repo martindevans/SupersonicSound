@@ -4,12 +4,13 @@ using SupersonicSound.Wrapper;
 
 namespace SupersonicSound.Studio
 {
-    public class VCA
+    public struct VCA
         : IEquatable<VCA>
     {
         public FMOD.Studio.VCA FmodVCA { get; private set; }
 
         private VCA(FMOD.Studio.VCA vca)
+            : this()
         {
             FmodVCA = vca;
         }
@@ -17,26 +18,22 @@ namespace SupersonicSound.Studio
         public static VCA FromFmod(FMOD.Studio.VCA vca)
         {
             if (vca == null)
-                return null;
+                throw new ArgumentNullException("vca");
             return new VCA(vca);
         }
 
         #region equality
         public bool Equals(VCA other)
         {
-            if (other == null)
-                return false;
-
             return other.FmodVCA == FmodVCA;
         }
 
         public override bool Equals(object obj)
         {
-            var c = obj as VCA;
-            if (c == null)
+            if (!(obj is VCA))
                 return false;
 
-            return Equals(c);
+            return Equals((VCA)obj);
         }
 
         public override int GetHashCode()
@@ -84,9 +81,6 @@ namespace SupersonicSound.Studio
     {
         public static FMOD.Studio.VCA ToFmod(this VCA vca)
         {
-            if (vca == null)
-                return null;
-
             return vca.FmodVCA;
         }
     }

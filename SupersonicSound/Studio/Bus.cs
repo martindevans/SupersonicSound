@@ -5,39 +5,34 @@ using SupersonicSound.Wrapper;
 
 namespace SupersonicSound.Studio
 {
-    public class Bus
+    public struct Bus
         : IEquatable<Bus>
     {
         public FMOD.Studio.Bus FmodBus { get; private set; }
 
         private Bus(FMOD.Studio.Bus bus)
+            : this()
         {
             FmodBus = bus;
         }
 
         public static Bus FromFmod(FMOD.Studio.Bus bus)
         {
-            if (bus == null)
-                return null;
             return new Bus(bus);
         }
 
         #region equality
         public bool Equals(Bus other)
         {
-            if (other == null)
-                return false;
-
             return other.FmodBus == FmodBus;
         }
 
         public override bool Equals(object obj)
         {
-            var c = obj as Bus;
-            if (c == null)
+            if (!(obj is Bus))
                 return false;
 
-            return Equals(c);
+            return Equals((Bus)obj);
         }
 
         public override int GetHashCode()
@@ -138,9 +133,6 @@ namespace SupersonicSound.Studio
     {
         public static FMOD.Studio.Bus ToFmod(this Bus bus)
         {
-            if (bus == null)
-                return null;
-
             return bus.FmodBus;
         }
     }
