@@ -4,12 +4,13 @@ using SupersonicSound.Wrapper;
 
 namespace SupersonicSound.LowLevel
 {
-    public class DSP
+    public struct DSP
         : IEquatable<DSP>
     {
         public FMOD.DSP FmodDSP { get; private set; }
 
         private DSP(FMOD.DSP dsp)
+            : this()
         {
             FmodDSP = dsp;
         }
@@ -17,7 +18,7 @@ namespace SupersonicSound.LowLevel
         public static DSP FromFmod(FMOD.DSP dsp)
         {
             if (dsp == null)
-                return null;
+                throw new ArgumentNullException("dsp");
             return new DSP(dsp);
         }
 
@@ -25,19 +26,16 @@ namespace SupersonicSound.LowLevel
 
         public bool Equals(DSP other)
         {
-            if (other == null)
-                return false;
 
             return other.FmodDSP == FmodDSP;
         }
 
         public override bool Equals(object obj)
         {
-            var c = obj as DSP;
-            if (c == null)
+            if (!(obj is DSP))
                 return false;
 
-            return Equals(c);
+            return Equals((DSP)obj);
         }
 
         public override int GetHashCode()
@@ -314,9 +312,6 @@ namespace SupersonicSound.LowLevel
     {
         public static FMOD.DSP ToFmod(this DSP dsp)
         {
-            if (dsp == null)
-                return null;
-
             return dsp.FmodDSP;
         }
     }

@@ -1,15 +1,6 @@
-﻿using FMOD.Studio;
-using SupersonicSound.Studio;
+﻿using SupersonicSound.Studio;
 using System;
-using System.Runtime.InteropServices;
 using System.Threading;
-using Bank = SupersonicSound.Studio.Bank;
-using Bus = SupersonicSound.Studio.Bus;
-using CueInstance = SupersonicSound.Studio.CueInstance;
-using EventDescription = SupersonicSound.Studio.EventDescription;
-using EventInstance = SupersonicSound.Studio.EventInstance;
-using ParameterInstance = SupersonicSound.Studio.ParameterInstance;
-using VCA = SupersonicSound.Studio.VCA;
 
 namespace ConsoleTest
 {

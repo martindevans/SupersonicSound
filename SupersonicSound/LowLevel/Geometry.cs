@@ -3,12 +3,13 @@ using System;
 
 namespace SupersonicSound.LowLevel
 {
-    public class Geometry
+    public struct Geometry
         : IEquatable<Geometry>
     {
         public FMOD.Geometry FmodGeometry { get; private set; }
 
         private Geometry(FMOD.Geometry geometry)
+            : this()
         {
             FmodGeometry = geometry;
         }
@@ -16,26 +17,22 @@ namespace SupersonicSound.LowLevel
         public static Geometry FromFmod(FMOD.Geometry geometry)
         {
             if (geometry == null)
-                return null;
+                throw new ArgumentNullException("geometry");
             return new Geometry(geometry);
         }
 
         #region equality
         public bool Equals(Geometry other)
         {
-            if (other == null)
-                return false;
-
             return other.FmodGeometry == FmodGeometry;
         }
 
         public override bool Equals(object obj)
         {
-            var c = obj as Geometry;
-            if (c == null)
+            if (!(obj is Geometry))
                 return false;
 
-            return Equals(c);
+            return Equals((Geometry)obj);
         }
 
         public override int GetHashCode()
@@ -134,9 +131,6 @@ namespace SupersonicSound.LowLevel
     {
         public static FMOD.Geometry ToFmod(this Geometry geometry)
         {
-            if (geometry == null)
-                return null;
-
             return geometry.FmodGeometry;
         }
     }

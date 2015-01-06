@@ -2,12 +2,13 @@
 
 namespace SupersonicSound.LowLevel
 {
-    public class Sound
+    public struct Sound
         : IEquatable<Sound>
     {
         public FMOD.Sound FmodSound { get; private set; }
 
         private Sound(FMOD.Sound sound)
+            : this()
         {
             FmodSound = sound;
         }
@@ -15,26 +16,22 @@ namespace SupersonicSound.LowLevel
         public static Sound FromFmod(FMOD.Sound sound)
         {
             if (sound == null)
-                return null;
+                throw new ArgumentNullException("sound");
             return new Sound(sound);
         }
 
         #region equality
         public bool Equals(Sound other)
         {
-            if (other == null)
-                return false;
-
             return other.FmodSound == FmodSound;
         }
 
         public override bool Equals(object obj)
         {
-            var c = obj as Sound;
-            if (c == null)
+            if (!(obj is Sound))
                 return false;
 
-            return Equals(c);
+            return Equals((Sound)obj);
         }
 
         public override int GetHashCode()
@@ -265,9 +262,6 @@ namespace SupersonicSound.LowLevel
     {
         public static FMOD.Sound ToFmod(this Sound sound)
         {
-            if (sound == null)
-                return null;
-
             return sound.FmodSound;
         }
     }

@@ -4,12 +4,13 @@ using System.Text;
 
 namespace SupersonicSound.LowLevel
 {
-    public class ChannelGroup
+    public struct ChannelGroup
         : IEquatable<ChannelGroup>
     {
         public FMOD.ChannelGroup FmodGroup { get; private set; }
 
         private ChannelGroup(FMOD.ChannelGroup group)
+            : this()
         {
             FmodGroup = group;
         }
@@ -17,26 +18,22 @@ namespace SupersonicSound.LowLevel
         public static ChannelGroup FromFmod(FMOD.ChannelGroup group)
         {
             if (group == null)
-                return null;
+                throw new ArgumentException("group");
             return new ChannelGroup(group);
         }
 
         #region equality
         public bool Equals(ChannelGroup other)
         {
-            if (other == null)
-                return false;
-
             return other.FmodGroup == FmodGroup;
         }
 
         public override bool Equals(object obj)
         {
-            var c = obj as ChannelGroup;
-            if (c == null)
+            if (!(obj is ChannelGroup))
                 return false;
 
-            return Equals(c);
+            return Equals((ChannelGroup)obj);
         }
 
         public override int GetHashCode()
@@ -114,9 +111,6 @@ namespace SupersonicSound.LowLevel
     {
         public static FMOD.ChannelGroup ToFmod(this ChannelGroup channelGroup)
         {
-            if (channelGroup == null)
-                return null;
-
             return channelGroup.FmodGroup;
         }
     }

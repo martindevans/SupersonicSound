@@ -4,12 +4,13 @@ using SupersonicSound.Wrapper;
 
 namespace SupersonicSound.LowLevel
 {
-    public class DSPConnection
+    public struct DSPConnection
         : IEquatable<DSPConnection>
     {
         public FMOD.DSPConnection FmodDSPConnection { get; private set; }
 
         private DSPConnection(FMOD.DSPConnection connection)
+            : this()
         {
             FmodDSPConnection = connection;
         }
@@ -17,26 +18,22 @@ namespace SupersonicSound.LowLevel
         public static DSPConnection FromFmod(FMOD.DSPConnection connection)
         {
             if (connection == null)
-                return null;
+                throw new ArgumentNullException("connection");
             return new DSPConnection(connection);
         }
 
         #region equality
         public bool Equals(DSPConnection other)
         {
-            if (other == null)
-                return false;
-
             return other.FmodDSPConnection == FmodDSPConnection;
         }
 
         public override bool Equals(object obj)
         {
-            var c = obj as DSPConnection;
-            if (c == null)
+            if (!(obj is DSPConnection))
                 return false;
 
-            return Equals(c);
+            return Equals((DSPConnection)obj);
         }
 
         public override int GetHashCode()

@@ -4,12 +4,13 @@ using SupersonicSound.Wrapper;
 
 namespace SupersonicSound.LowLevel
 {
-    public class Channel
+    public struct Channel
         : IEquatable<Channel>
     {
         public FMOD.Channel FmodChannel { get; private set; }
 
         private Channel(FMOD.Channel channel)
+            : this()
         {
             FmodChannel = channel;
         }
@@ -17,26 +18,22 @@ namespace SupersonicSound.LowLevel
         public static Channel FromFmod(FMOD.Channel channel)
         {
             if (channel == null)
-                return null;
+                throw new ArgumentNullException("channel");
             return new Channel(channel);
         }
 
         #region equality
         public bool Equals(Channel other)
         {
-            if (other == null)
-                return false;
-
             return other.FmodChannel == FmodChannel;
         }
 
         public override bool Equals(object obj)
         {
-            var c = obj as Channel;
-            if (c == null)
+            if (!(obj is Channel))
                 return false;
 
-            return Equals(c);
+            return Equals((Channel)obj);
         }
 
         public override int GetHashCode()
@@ -147,9 +144,6 @@ namespace SupersonicSound.LowLevel
     {
         public static FMOD.Channel ToFmod(this Channel channel)
         {
-            if (channel == null)
-                return null;
-
             return channel.FmodChannel;
         }
     }
