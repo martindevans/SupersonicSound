@@ -16,6 +16,12 @@ namespace SupersonicSound.LowLevel
         [FieldOffset(0)]
         private readonly ChannelCollection _musicChannelCollection;
 
+        [FieldOffset(0)]
+        private readonly SubSoundCollection _subSoundCollection;
+
+        [FieldOffset(0)]
+        private readonly TagCollection _tagCollection;
+
         public FMOD.Sound FmodSound
         {
             get
@@ -58,6 +64,7 @@ namespace SupersonicSound.LowLevel
         #endregion
 
         #region Standard sound manipulation functions.
+        //todo: implement locking on Sound
         //public RESULT @lock(uint offset, uint length, out IntPtr ptr1, out IntPtr ptr2, out uint len1, out uint len2)
         //{
         //    return FMOD5_Sound_Lock(rawPtr, offset, length, out ptr1, out ptr2, out len1, out len2);
@@ -66,121 +73,218 @@ namespace SupersonicSound.LowLevel
         //{
         //    return FMOD5_Sound_Unlock(rawPtr, ptr1, ptr2, len1, len2);
         //}
-        //public RESULT setDefaults(float frequency, int priority)
-        //{
-        //    return FMOD5_Sound_SetDefaults(rawPtr, frequency, priority);
-        //}
-        //public RESULT getDefaults(out float frequency, out int priority)
-        //{
-        //    return FMOD5_Sound_GetDefaults(rawPtr, out frequency, out priority);
-        //}
-        //public RESULT set3DMinMaxDistance(float min, float max)
-        //{
-        //    return FMOD5_Sound_Set3DMinMaxDistance(rawPtr, min, max);
-        //}
-        //public RESULT get3DMinMaxDistance(out float min, out float max)
-        //{
-        //    return FMOD5_Sound_Get3DMinMaxDistance(rawPtr, out min, out max);
-        //}
-        //public RESULT set3DConeSettings(float insideconeangle, float outsideconeangle, float outsidevolume)
-        //{
-        //    return FMOD5_Sound_Set3DConeSettings(rawPtr, insideconeangle, outsideconeangle, outsidevolume);
-        //}
-        //public RESULT get3DConeSettings(out float insideconeangle, out float outsideconeangle, out float outsidevolume)
-        //{
-        //    return FMOD5_Sound_Get3DConeSettings(rawPtr, out insideconeangle, out outsideconeangle, out outsidevolume);
-        //}
-        //public RESULT set3DCustomRolloff(ref VECTOR points, int numpoints)
-        //{
-        //    return FMOD5_Sound_Set3DCustomRolloff(rawPtr, ref points, numpoints);
-        //}
-        //public RESULT get3DCustomRolloff(out IntPtr points, out int numpoints)
-        //{
-        //    return FMOD5_Sound_Get3DCustomRolloff(rawPtr, out points, out numpoints);
-        //}
-        //public RESULT setSubSound(int index, Sound subsound)
-        //{
-        //    IntPtr subsoundraw = subsound.getRaw();
 
-        //    return FMOD5_Sound_SetSubSound(rawPtr, index, subsoundraw);
-        //}
-        //public RESULT getSubSound(int index, out Sound subsound)
-        //{
-        //    subsound = null;
+        public void SetDefaults(float frequency, int priority)
+        {
+            FmodSound.setDefaults(frequency, priority).Check();
+        }
 
-        //    IntPtr subsoundraw;
-        //    RESULT result = FMOD5_Sound_GetSubSound(rawPtr, index, out subsoundraw);
-        //    subsound = new Sound(subsoundraw);
+        public void GetDefaults(out float frequency, out int priority)
+        {
+            FmodSound.getDefaults(out frequency, out priority);
+        }
 
-        //    return result;
-        //}
-        //public RESULT getSubSoundParent(out Sound parentsound)
-        //{
-        //    parentsound = null;
+        public void Set3DMinMaxDistance(float min, float max)
+        {
+            FmodSound.set3DMinMaxDistance(min, max).Check();
+        }
 
-        //    IntPtr subsoundraw;
-        //    RESULT result = FMOD5_Sound_GetSubSoundParent(rawPtr, out subsoundraw);
-        //    parentsound = new Sound(subsoundraw);
+        public void Get3DMinMaxDistance(out float min, out float max)
+        {
+            FmodSound.get3DMinMaxDistance(out min, out max);
+        }
 
-        //    return result;
-        //}
-        //public RESULT getName(StringBuilder name, int namelen)
-        //{
-        //    IntPtr stringMem = Marshal.AllocHGlobal(name.Capacity);
+        public void Set3DConeSettings(float insideConeAngle, float outsideConeAngle, float outsideVolume)
+        {
+            FmodSound.set3DConeSettings(insideConeAngle, outsideConeAngle, outsideVolume).Check();
+        }
 
-        //    RESULT result = FMOD5_Sound_GetName(rawPtr, stringMem, namelen);
+        public void Get3DConeSettings(out float insideConeAngle, out float outsideConeAngle, out float outsideVolume)
+        {
+            FmodSound.get3DConeSettings(out insideConeAngle, out outsideConeAngle, out outsideVolume).Check();
+        }
 
-        //    StringMarshalHelper.NativeToBuilder(name, stringMem);
-        //    Marshal.FreeHGlobal(stringMem);
+        // todo: Test Custom3DRollOff *very* carefully
+        // Especially consider what happens when GC happens
+        //public Vector3[] Custom3DRollOff
+        //{
+        //    get
+        //    {
+        //        int count;
+        //        IntPtr ptr;
+        //        _fmodSound.get3DCustomRolloff(out ptr, out count).Check();
 
-        //    return result;
-        //}
-        //public RESULT getLength(out uint length, TIMEUNIT lengthtype)
-        //{
-        //    return FMOD5_Sound_GetLength(rawPtr, out length, lengthtype);
-        //}
-        //public RESULT getFormat(out SOUND_TYPE type, out SOUND_FORMAT format, out int channels, out int bits)
-        //{
-        //    return FMOD5_Sound_GetFormat(rawPtr, out type, out format, out channels, out bits);
-        //}
-        //public RESULT getNumSubSounds(out int numsubsounds)
-        //{
-        //    return FMOD5_Sound_GetNumSubSounds(rawPtr, out numsubsounds);
-        //}
-        //public RESULT getNumTags(out int numtags, out int numtagsupdated)
-        //{
-        //    return FMOD5_Sound_GetNumTags(rawPtr, out numtags, out numtagsupdated);
-        //}
-        //public RESULT getTag(string name, int index, out TAG tag)
-        //{
-        //    return FMOD5_Sound_GetTag(rawPtr, name, index, out tag);
-        //}
-        //public RESULT getOpenState(out OPENSTATE openstate, out uint percentbuffered, out bool starving, out bool diskbusy)
-        //{
-        //    return FMOD5_Sound_GetOpenState(rawPtr, out openstate, out percentbuffered, out starving, out diskbusy);
-        //}
-        //public RESULT readData(IntPtr buffer, uint lenbytes, out uint read)
-        //{
-        //    return FMOD5_Sound_ReadData(rawPtr, buffer, lenbytes, out read);
-        //}
-        //public RESULT seekData(uint pcm)
-        //{
-        //    return FMOD5_Sound_SeekData(rawPtr, pcm);
-        //}
-        //public RESULT setSoundGroup(SoundGroup soundgroup)
-        //{
-        //    return FMOD5_Sound_SetSoundGroup(rawPtr, soundgroup.getRaw());
-        //}
-        //public RESULT getSoundGroup(out SoundGroup soundgroup)
-        //{
-        //    soundgroup = null;
+        //        Vector3[] result = new Vector3[count];
 
-        //    IntPtr soundgroupraw;
-        //    RESULT result = FMOD5_Sound_GetSoundGroup(rawPtr, out soundgroupraw);
-        //    soundgroup = new SoundGroup(soundgroupraw);
+        //        unsafe
+        //        {
+        //            VECTOR* v0 = (VECTOR*)ptr.ToPointer();
+        //            for (int i = 0; i < count; i++)
+        //            {
+        //                VECTOR v = *(v0 + i);
+        //                result[i] = new Vector3(v);
+        //            }
+        //        }
 
-        //    return result;
+        //        return result;
+        //    }
+        //    set
+        //    {
+        //        VECTOR[] v = new VECTOR[value.Length];
+        //        for (int i = 0; i < v.Length; i++)
+        //            v[i] = value[i].ToFmod();
+
+        //        _fmodSound.set3DCustomRolloff(ref v[0], v.Length).Check();
+        //    }
         //}
+
+        [StructLayout(LayoutKind.Explicit)]
+        public struct SubSoundCollection
+        {
+            [FieldOffset(0)]
+            private readonly FMOD.Sound _fmodSound;
+
+            public Sound this[int index]
+            {
+                get
+                {
+                    FMOD.Sound sound;
+                    _fmodSound.getSubSound(index, out sound).Check();
+                    return FromFmod(sound);
+                }
+                set
+                {
+                    _fmodSound.setSubSound(index, value._fmodSound).Check();
+                }
+            }
+
+            public Sound Parent
+            {
+                get
+                {
+                    FMOD.Sound parent;
+                    _fmodSound.getSubSoundParent(out parent).Check();
+                    return FromFmod(parent);
+                }
+            }
+
+            public int Count
+            {
+                get
+                {
+                    int num;
+                    _fmodSound.getNumSubSounds(out num).Check();
+                    return num;
+                }
+            }
+        }
+
+        public SubSoundCollection SubSound
+        {
+            get
+            {
+                return _subSoundCollection;
+            }
+        }
+
+        public string Name
+        {
+            get
+            {
+                StringBuilder builder = new StringBuilder(128);
+                FmodSound.getName(builder, builder.Capacity).Check();
+                return builder.ToString();
+            }
+        }
+
+        public uint GetLength(TimeUnit unit)
+        {
+            uint length;
+            FmodSound.getLength(out length, (TIMEUNIT)unit).Check();
+            return length;
+        }
+
+        public void GetFormat(out SoundType type, out SoundFormat format, out int channels, out int bits)
+        {
+            SOUND_TYPE t;
+            SOUND_FORMAT f;
+            FmodSound.getFormat(out t, out f, out channels, out bits).Check();
+
+            type = (SoundType)t;
+            format = (SoundFormat)f;
+        }
+
+        [StructLayout(LayoutKind.Explicit)]
+        public struct TagCollection
+        {
+            [FieldOffset(0)]
+            private readonly FMOD.Sound _fmodSound;
+
+            public void Count(out int numTags, out int numTagsUpdated)
+            {
+                _fmodSound.getNumTags(out numTags, out numTagsUpdated).Check();
+            }
+
+            public Tag this[string name, int index]
+            {
+                get
+                {
+                    TAG tag;
+                    _fmodSound.getTag(name, index, out tag).Check();
+                    return new Tag(tag);
+                }
+            }
+        }
+
+        public TagCollection Tags
+        {
+            get
+            {
+                return _tagCollection;
+            }
+        }
+
+        public void GetOpenState(out OpenState openState, out uint percentBuffered, out bool starving, out bool diskBusy)
+        {
+            OPENSTATE oState;
+            _fmodSound.getOpenState(out oState, out percentBuffered, out starving, out diskBusy).Check();
+            openState = (OpenState)oState;
+        }
+
+        public uint ReadData(byte[] buffer, uint length)
+        {
+            if (length > buffer.Length)
+                throw new ArgumentOutOfRangeException("Length to read must be less than buffer length");
+
+            unsafe
+            {
+                fixed (byte* ptr = &buffer[0])
+                {
+                    uint read;
+                    FmodSound.readData(new IntPtr(ptr), length, out read).Check();
+                    return read;
+                }
+            }
+        }
+
+        public void SeekData(uint pcm)
+        {
+            FmodSound.seekData(pcm).Check();
+        }
+
+        public SoundGroup SoundGroup
+        {
+            get
+            {
+                FMOD.SoundGroup group;
+                FmodSound.getSoundGroup(out group).Check();
+                return new SoundGroup(group);
+            }
+            set
+            {
+                FmodSound.setSoundGroup(value.ToFmod()).Check();
+            }
+        }
         #endregion
 
         #region Synchronization point API.  These points can come from markers embedded in wav files, and can also generate channel callbacks.
@@ -285,14 +389,15 @@ namespace SupersonicSound.LowLevel
             }
         }
 
-        //public RESULT setLoopPoints(uint loopstart, TIMEUNIT loopstarttype, uint loopend, TIMEUNIT loopendtype)
-        //{
-        //    return FMOD5_Sound_SetLoopPoints(rawPtr, loopstart, loopstarttype, loopend, loopendtype);
-        //}
-        //public RESULT getLoopPoints(out uint loopstart, TIMEUNIT loopstarttype, out uint loopend, TIMEUNIT loopendtype)
-        //{
-        //    return FMOD5_Sound_GetLoopPoints(rawPtr, out loopstart, loopstarttype, out loopend, loopendtype);
-        //}
+        public void SetLoopPoints(uint start, TimeUnit startUnit, uint end, TimeUnit endUnit)
+        {
+            FmodSound.setLoopPoints(start, (TIMEUNIT)startUnit, end, (TIMEUNIT)endUnit);
+        }
+
+        public void GetLoopPoints(out uint start, TimeUnit startUnit, out uint end, TimeUnit endUnit)
+        {
+            FmodSound.getLoopPoints(out start, (TIMEUNIT)startUnit, out end, (TIMEUNIT)endUnit);
+        }
         #endregion
 
         #region For MOD/S3M/XM/IT/MID sequenced formats only.

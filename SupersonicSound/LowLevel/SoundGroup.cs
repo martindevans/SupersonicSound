@@ -1,0 +1,193 @@
+﻿using System;
+using System.Runtime.InteropServices;
+using System.Text;
+using FMOD;
+using SupersonicSound.Wrapper;
+
+namespace SupersonicSound.LowLevel
+{
+    [StructLayout(LayoutKind.Explicit)]
+    public struct SoundGroup
+    {
+        [FieldOffset(0)]
+        private readonly FMOD.SoundGroup _fmodGroup;
+
+        public FMOD.SoundGroup FmodGroup
+        {
+            get
+            {
+                return _fmodGroup;
+            }
+        }
+
+        public SoundGroup(FMOD.SoundGroup fmodGroup)
+        {
+            _fmodGroup = fmodGroup;
+        }
+
+        #region equality
+
+        public bool Equals(SoundGroup other)
+        {
+
+            return other.FmodGroup == FmodGroup;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (!(obj is SoundGroup))
+                return false;
+
+            return Equals((SoundGroup)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return (FmodGroup != null ? FmodGroup.GetHashCode() : 0);
+        }
+
+        #endregion
+
+        public void Release()
+        {
+            _fmodGroup.release().Check();
+        }
+
+        //todo: implement "System" property on SoundGroup
+        //public LowLevelSystem System
+        //{
+        //    get
+        //    {
+        //        FMOD.System sys;
+        //        _fmodGroup.getSystemObject(out sys).Check();
+        //        return new LowLevelSystem(sys);
+        //    }
+        //}
+
+        #region SoundGroup control functions.
+        public int MaxAudible
+        {
+            get
+            {
+                int max;
+                _fmodGroup.getMaxAudible(out max).Check();
+                return max;
+            }
+            set
+            {
+                _fmodGroup.setMaxAudible(value).Check();
+            }
+        }
+
+        public SoundGroupBehaviour MaxAudibleBehaviour
+        {
+            get
+            {
+                SOUNDGROUP_BEHAVIOR b;
+                _fmodGroup.getMaxAudibleBehavior(out b).Check();
+                return (SoundGroupBehaviour)b;
+            }
+            set
+            {
+                _fmodGroup.setMaxAudibleBehavior((SOUNDGROUP_BEHAVIOR)value).Check();
+            }
+        }
+
+        public float MuteFadeSpeed
+        {
+            get
+            {
+                float speed;
+                _fmodGroup.getMuteFadeSpeed(out speed).Check();
+                return speed;
+            }
+            set
+            {
+                _fmodGroup.setMuteFadeSpeed(value).Check();
+            }
+        }
+
+        public float Volume
+        {
+            get
+            {
+                float vol;
+                _fmodGroup.getVolume(out vol).Check();
+                return vol;
+            }
+            set
+            {
+                _fmodGroup.setVolume(value).Check();
+            }
+        }
+
+        public void Stop()
+        {
+            _fmodGroup.stop();
+        }
+        #endregion
+
+        #region Information only functions.
+        public string Name
+        {
+            get
+            {
+                StringBuilder builder = new StringBuilder(128);
+                _fmodGroup.getName(builder, builder.Capacity).Check();
+                return builder.ToString();
+            }
+        }
+
+        public int SoundCount
+        {
+            get
+            {
+                int num;
+                _fmodGroup.getNumSounds(out num).Check();
+                return num;
+            }
+        }
+
+        public Sound GetSound(int index)
+        {
+            FMOD.Sound sound;
+            _fmodGroup.getSound(index, out sound).Check();
+            return Sound.FromFmod(sound);
+        }
+
+        public int SoundPlayingCount
+        {
+            get
+            {
+                int num;
+                _fmodGroup.getNumPlaying(out num).Check();
+                return num;
+            }
+        }
+        #endregion
+
+        #region Userdata set/get.
+        public IntPtr UserData
+        {
+            get
+            {
+                IntPtr ptr;
+                _fmodGroup.getUserData(out ptr).Check();
+                return ptr;
+            }
+            set
+            {
+                _fmodGroup.setUserData(value).Check();
+            }
+        }
+        #endregion
+    }
+
+    public static class SoundGroupExtensions
+    {
+        public static FMOD.SoundGroup ToFmod(this SoundGroup group)
+        {
+            return group.FmodGroup;
+        }
+    }
+}

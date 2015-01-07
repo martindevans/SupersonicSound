@@ -86,11 +86,16 @@
     <Compile Include="LowLevel\LowLevelSystem.cs" />
     <Compile Include="LowLevel\IPreInitilizeLowLevelSystem.cs" />
     <Compile Include="LowLevel\Mode.cs" />
+    <Compile Include="LowLevel\OpenState.cs" />
     <Compile Include="LowLevel\OutputMode.cs" />
     <Compile Include="LowLevel\ReverbProperties.cs" />
     <Compile Include="LowLevel\SoftwareFormat.cs" />
     <Compile Include="LowLevel\Sound.cs" />
+    <Compile Include="LowLevel\SoundFormat.cs" />
+    <Compile Include="LowLevel\SoundGroup.cs" />
+    <Compile Include="LowLevel\SoundGroupBehaviour.cs" />
     <Compile Include="LowLevel\SpeakerMode.cs" />
+    <Compile Include="LowLevel\Tag.cs" />
     <Compile Include="LowLevel\TimeUnit.cs" />
     <Compile Include="LowLevel\Vector3.cs" />
     <Compile Include="Studio\CueInstance.cs" />
@@ -107,6 +112,7 @@
     <Compile Include="Studio\ParameterInstance.cs" />
     <Compile Include="Studio\ParameterType.cs" />
     <Compile Include="Studio\PlaybackState.cs" />
+    <Compile Include="LowLevel\SoundType.cs" />
     <Compile Include="Studio\UserProperty.cs" />
     <Compile Include="Studio\VCA.cs" />
     <Compile Include="Studio\Bank.cs" />
