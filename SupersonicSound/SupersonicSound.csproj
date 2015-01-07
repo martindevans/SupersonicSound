@@ -73,6 +73,7 @@
     <Compile Include="LowLevel\Attributes3D.cs" />
     <Compile Include="LowLevel\Channel.cs" />
     <Compile Include="LowLevel\ChannelGroup.cs" />
+    <Compile Include="LowLevel\ChannelMask.cs" />
     <Compile Include="LowLevel\DriverInfo.cs" />
     <Compile Include="LowLevel\DSPConnection.cs" />
     <Compile Include="LowLevel\DspConnectionType.cs" />

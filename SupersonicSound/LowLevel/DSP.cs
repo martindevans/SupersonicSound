@@ -145,18 +145,30 @@ namespace SupersonicSound.LowLevel
             FmodDSP.getWetDryMix(out wet, out dry).Check();
         }
 
-        //public RESULT setChannelFormat(CHANNELMASK channelmask, int numchannels, SPEAKERMODE source_speakermode)
-        //{
-        //    return FMOD5_DSP_SetChannelFormat(rawPtr, channelmask, numchannels, source_speakermode);
-        //}
-        //public RESULT getChannelFormat(out CHANNELMASK channelmask, out int numchannels, out SPEAKERMODE source_speakermode)
-        //{
-        //    return FMOD5_DSP_GetChannelFormat(rawPtr, out channelmask, out numchannels, out source_speakermode);
-        //}
-        //public RESULT getOutputChannelFormat(CHANNELMASK inmask, int inchannels, SPEAKERMODE inspeakermode, out CHANNELMASK outmask, out int outchannels, out SPEAKERMODE outspeakermode)
-        //{
-        //    return FMOD5_DSP_GetOutputChannelFormat(rawPtr, inmask, inchannels, inspeakermode, out outmask, out outchannels, out outspeakermode);
-        //}
+        public void SetChannelFormat(ChannelMask channelMask, int numChannels, SpeakerMode sourceSpeakerMode)
+        {
+            FmodDSP.setChannelFormat((CHANNELMASK)channelMask, numChannels, (SPEAKERMODE)sourceSpeakerMode).Check();
+        }
+
+        public void GetChannelFormat(out ChannelMask channelMask, out int numChannels, out SpeakerMode sourceSpeakerMode)
+        {
+            CHANNELMASK mask;
+            SPEAKERMODE sourceMode;
+            FmodDSP.getChannelFormat(out mask, out numChannels, out sourceMode).Check();
+
+            channelMask = (ChannelMask)mask;
+            sourceSpeakerMode = (SpeakerMode)sourceMode;
+        }
+
+        public void GetOutputChannelFormat(ChannelMask inmask, int inchannels, SpeakerMode inspeakermode, out ChannelMask outmask, out int outchannels, out SpeakerMode outspeakermode)
+        {
+            CHANNELMASK mask;
+            SPEAKERMODE mode;
+            FmodDSP.getOutputChannelFormat((CHANNELMASK)inmask, inchannels, (SPEAKERMODE)inspeakermode, out mask, out outchannels, out mode).Check();
+
+            outmask = (ChannelMask)mask;
+            outspeakermode = (SpeakerMode)mode;
+        }
 
         public void Reset()
         {

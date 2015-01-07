@@ -1,5 +1,6 @@
 ﻿
 using System;
+using FMOD;
 using SupersonicSound.Wrapper;
 
 namespace SupersonicSound.LowLevel
@@ -71,44 +72,55 @@ namespace SupersonicSound.LowLevel
             }
         }
 
-        //public RESULT setPosition(uint position, TIMEUNIT postype)
-        //{
-        //    return FMOD5_Channel_SetPosition(getRaw(), position, postype);
-        //}
-        //public RESULT getPosition(out uint position, TIMEUNIT postype)
-        //{
-        //    return FMOD5_Channel_GetPosition(getRaw(), out position, postype);
-        //}
-        //public RESULT setChannelGroup(ChannelGroup channelgroup)
-        //{
-        //    return FMOD5_Channel_SetChannelGroup(getRaw(), channelgroup.getRaw());
-        //}
-        //public RESULT getChannelGroup(out ChannelGroup channelgroup)
-        //{
-        //    channelgroup = null;
+        public void SetPosition(uint position, TimeUnit unit)
+        {
+            FmodChannel.setPosition(position, (TIMEUNIT)unit).Check();
+        }
 
-        //    IntPtr channelgroupraw;
-        //    RESULT result = FMOD5_Channel_GetChannelGroup(getRaw(), out channelgroupraw);
-        //    channelgroup = new ChannelGroup(channelgroupraw);
+        public uint GetPosition(TimeUnit unit)
+        {
+            uint pos;
+            FmodChannel.getPosition(out pos, (TIMEUNIT)unit).Check();
+            return pos;
+        }
 
-        //    return result;
-        //}
-        //public RESULT setLoopCount(int loopcount)
-        //{
-        //    return FMOD5_Channel_SetLoopCount(getRaw(), loopcount);
-        //}
-        //public RESULT getLoopCount(out int loopcount)
-        //{
-        //    return FMOD5_Channel_GetLoopCount(getRaw(), out loopcount);
-        //}
-        //public RESULT setLoopPoints(uint loopstart, TIMEUNIT loopstarttype, uint loopend, TIMEUNIT loopendtype)
-        //{
-        //    return FMOD5_Channel_SetLoopPoints(getRaw(), loopstart, loopstarttype, loopend, loopendtype);
-        //}
-        //public RESULT getLoopPoints(out uint loopstart, TIMEUNIT loopstarttype, out uint loopend, TIMEUNIT loopendtype)
-        //{
-        //    return FMOD5_Channel_GetLoopPoints(getRaw(), out loopstart, loopstarttype, out loopend, loopendtype);
-        //}
+        public ChannelGroup ChannelGroup
+        {
+            get
+            {
+                FMOD.ChannelGroup group;
+                FmodChannel.getChannelGroup(out group).Check();
+                return ChannelGroup.FromFmod(group);
+            }
+            set
+            {
+                FmodChannel.setChannelGroup(value.FmodGroup).Check();
+            }
+        }
+
+        public int LoopCount
+        {
+            get
+            {
+                int count;
+                FmodChannel.getLoopCount(out count).Check();
+                return count;
+            }
+            set
+            {
+                FmodChannel.setLoopCount(value).Check();
+            }
+        }
+
+        public void SetLoopPoints(uint start, TimeUnit startUnit, uint end, TimeUnit endUnit)
+        {
+            FmodChannel.setLoopPoints(start, (TIMEUNIT)startUnit, end, (TIMEUNIT)endUnit);
+        }
+
+        public void GetLoopPoints(out uint start, TimeUnit startUnit, out uint end, TimeUnit endUnit)
+        {
+            FmodChannel.getLoopPoints(out start, (TIMEUNIT)startUnit, out end, (TIMEUNIT)endUnit);
+        }
         #endregion
 
         #region Information only functions
@@ -122,21 +134,25 @@ namespace SupersonicSound.LowLevel
             }
         }
 
-        //public RESULT getCurrentSound(out Sound sound)
-        //{
-        //    sound = null;
+        public Sound CurrentSound
+        {
+            get
+            {
+                FMOD.Sound sound;
+                FmodChannel.getCurrentSound(out sound).Check();
+                return Sound.FromFmod(sound);
+            }
+        }
 
-        //    IntPtr soundraw;
-        //    RESULT result = FMOD5_Channel_GetCurrentSound(getRaw(), out soundraw);
-        //    sound = new Sound(soundraw);
-
-        //    return result;
-        //}
-
-        //public RESULT getIndex(out int index)
-        //{
-        //    return FMOD5_Channel_GetIndex(getRaw(), out index);
-        //}
+        public int Index
+        {
+            get
+            {
+                int index;
+                FmodChannel.getIndex(out index).Check();
+                return index;
+            }
+        }
         #endregion
     }
 
