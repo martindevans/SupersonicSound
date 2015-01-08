@@ -2,12 +2,12 @@
 
 namespace SupersonicSound.Exceptions
 {
-    public class FmodFileException
+    public abstract class BaseFmodFileException
         : FmodException
     {
         public string FileName { get; private set; }
 
-        public FmodFileException(RESULT fmodError, string fileName)
+        public BaseFmodFileException(RESULT fmodError, string fileName)
             : base(fmodError)
         {
             FileName = fileName;
@@ -15,7 +15,7 @@ namespace SupersonicSound.Exceptions
     }
 
     public class FmodFileNotFoundException
-        : FmodFileException
+        : BaseFmodFileException
     {
         public FmodFileNotFoundException(string fileName = null)
             : base(RESULT.ERR_FILE_NOTFOUND, fileName)
@@ -33,7 +33,7 @@ namespace SupersonicSound.Exceptions
     }
 
     public class FmodEndOfDataException
-        : FmodFileException
+        : BaseFmodFileException
     {
         public FmodEndOfDataException(string fileName = null)
             : base(RESULT.ERR_FILE_ENDOFDATA, fileName)
@@ -42,7 +42,7 @@ namespace SupersonicSound.Exceptions
     }
 
     public class FmodBadFileException
-        : FmodFileException
+        : BaseFmodFileException
     {
         public FmodBadFileException(string fileName = null)
             : base(RESULT.ERR_FILE_BAD, fileName)
@@ -51,7 +51,7 @@ namespace SupersonicSound.Exceptions
     }
 
     public class FmodCouldNotSeekException
-        : FmodFileException
+        : BaseFmodFileException
     {
         public FmodCouldNotSeekException(string fileName = null)
             : base(RESULT.ERR_FILE_BAD, fileName)
@@ -60,7 +60,7 @@ namespace SupersonicSound.Exceptions
     }
 
     public class FmodDiskEjectedException
-        : FmodFileException
+        : BaseFmodFileException
     {
         public FmodDiskEjectedException(string fileName = null)
             : base(RESULT.ERR_FILE_BAD, fileName)

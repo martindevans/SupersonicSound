@@ -2,8 +2,17 @@
 
 namespace SupersonicSound.Exceptions
 {
-    public class FmodInvalidFloatException
+    public class BaseFmodInvalidException
         : FmodException
+    {
+        public BaseFmodInvalidException(RESULT fmodError)
+            : base(fmodError)
+        {
+        }
+    }
+
+    public class FmodInvalidFloatException
+        : BaseFmodInvalidException
     {
         public FmodInvalidFloatException()
             : base(RESULT.ERR_INVALID_FLOAT)
@@ -12,7 +21,7 @@ namespace SupersonicSound.Exceptions
     }
 
     public class FmodInvalidHandleException
-        : FmodException
+        : BaseFmodInvalidException
     {
         public FmodInvalidHandleException()
             : base(RESULT.ERR_INVALID_HANDLE)
@@ -21,7 +30,7 @@ namespace SupersonicSound.Exceptions
     }
 
     public class FmodInvalidParamException
-        : FmodException
+        : BaseFmodInvalidException
     {
         public FmodInvalidParamException()
             : base(RESULT.ERR_INVALID_PARAM)
@@ -30,7 +39,7 @@ namespace SupersonicSound.Exceptions
     }
 
     public class FmodInvalidPositionException
-        : FmodException
+        : BaseFmodInvalidException
     {
         public FmodInvalidPositionException()
             : base(RESULT.ERR_INVALID_POSITION)
@@ -39,7 +48,7 @@ namespace SupersonicSound.Exceptions
     }
 
     public class FmodInvalidSpeakerException
-        : FmodException
+        : BaseFmodInvalidException
     {
         public FmodInvalidSpeakerException()
             : base(RESULT.ERR_INVALID_SPEAKER)
@@ -48,7 +57,7 @@ namespace SupersonicSound.Exceptions
     }
 
     public class FmodInvalidSyncPointException
-        : FmodException
+        : BaseFmodInvalidException
     {
         public FmodInvalidSyncPointException()
             : base(RESULT.ERR_INVALID_SYNCPOINT)
@@ -57,7 +66,7 @@ namespace SupersonicSound.Exceptions
     }
 
     public class FmodInvalidThreadException
-        : FmodException
+        : BaseFmodInvalidException
     {
         public FmodInvalidThreadException()
             : base(RESULT.ERR_INVALID_THREAD)
@@ -66,7 +75,7 @@ namespace SupersonicSound.Exceptions
     }
 
     public class FmodInvalidVectorException
-        : FmodException
+        : BaseFmodInvalidException
     {
         public FmodInvalidVectorException()
             : base(RESULT.ERR_INVALID_VECTOR)
@@ -75,7 +84,7 @@ namespace SupersonicSound.Exceptions
     }
 
     public class FmodInvalidStringException
-        : FmodException
+        : BaseFmodInvalidException
     {
         public FmodInvalidStringException()
             : base(RESULT.ERR_INVALID_STRING)

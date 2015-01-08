@@ -197,6 +197,15 @@ namespace SupersonicSound.LowLevel
                 _seeked(handle, pos);
             return RESULT.OK;
         }
+
+        void IPreInitilizeLowLevelSystem.SetCallback(Action<LowLevelSystem, SystemCallbackType, IntPtr, IntPtr> callback, SystemCallbackType callbackMask)
+        {
+            _system.setCallback((_, type, cd1, cd2, __) => {
+
+                callback(this, (SystemCallbackType)type, cd1, cd2);
+                return RESULT.OK;
+            }, (SYSTEM_CALLBACK_TYPE)callbackMask).Check();
+        }
         #endregion
 
         #region init/close

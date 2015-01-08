@@ -6,6 +6,7 @@ using SupersonicSound.LowLevel;
 using SupersonicSound.Wrapper;
 using System;
 using INITFLAGS = FMOD.Studio.INITFLAGS;
+using SYSTEM_CALLBACK_TYPE = FMOD.Studio.SYSTEM_CALLBACK_TYPE;
 
 namespace SupersonicSound.Studio
 {
@@ -276,10 +277,13 @@ namespace SupersonicSound.Studio
             _system.resetBufferUsage();
         }
 
-        //public RESULT setCallback(SYSTEM_CALLBACK callback, SYSTEM_CALLBACK_TYPE callbackmask)
-        //{
-        //    return FMOD_Studio_System_SetCallback(rawPtr, callback, callbackmask);
-        //}
+        public void SetCallback(Action<System, SystemCallbackType, IntPtr> callback, SystemCallbackType callbackMask)
+        {
+            _system.setCallback((_, type, param, __) => {
+                callback(this, (SystemCallbackType)type, param);
+                return RESULT.OK;
+            }, (SYSTEM_CALLBACK_TYPE)callbackMask).Check();
+        }
 
         public IntPtr UserData
         {

@@ -22,6 +22,6 @@ namespace SupersonicSound.LowLevel
 
         void AttachFileSystem(Action<string, uint, IntPtr> opened = null, Action<IntPtr> closed = null, Action<IntPtr, uint, uint> read = null, Action<IntPtr, int> seeked = null);
 
-        //void setCallback(SYSTEM_CALLBACK callback, SYSTEM_CALLBACK_TYPE callbackmask);
+        void SetCallback(Action<LowLevelSystem, SystemCallbackType, IntPtr, IntPtr> callback, SystemCallbackType callbackMask);
     }
 }

@@ -97,7 +97,7 @@
     <Compile Include="Exceptions\FmodVersionException.cs" />
     <Compile Include="Exceptions\FmodUnsupportedException.cs" />
     <Compile Include="Exceptions\FmodUninitializedException.cs" />
-    <Compile Include="Exceptions\FmodFileException.cs" />
+    <Compile Include="Exceptions\BaseFmodFileException.cs" />
     <Compile Include="Exceptions\FmodEventLiveUpdateExceptions.cs" />
     <Compile Include="LowLevel\ChannelOrder.cs" />
     <Compile Include="LowLevel\RealFileSystem.cs" />
@@ -133,6 +133,7 @@
     <Compile Include="LowLevel\SoundGroup.cs" />
     <Compile Include="LowLevel\SoundGroupBehaviour.cs" />
     <Compile Include="LowLevel\SpeakerMode.cs" />
+    <Compile Include="LowLevel\SystemCallbackType.cs" />
     <Compile Include="LowLevel\Tag.cs" />
     <Compile Include="LowLevel\TimeUnit.cs" />
     <Compile Include="LowLevel\Vector3.cs" />
@@ -154,6 +155,7 @@
     <Compile Include="LowLevel\SoundType.cs" />
     <Compile Include="Studio\RecordCommandsFlags.cs" />
     <Compile Include="Studio\SoundInfo.cs" />
+    <Compile Include="Studio\SystemCallbackType.cs" />
     <Compile Include="Studio\UserProperty.cs" />
     <Compile Include="Studio\VCA.cs" />
     <Compile Include="Studio\Bank.cs" />
