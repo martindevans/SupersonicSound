@@ -9,7 +9,7 @@ namespace SupersonicSound.Exceptions
         : FmodException
     {
         public FmodDoNotProcessException()
-            : base(Error.String(RESULT.ERR_DSP_DONTPROCESS))
+            : base(RESULT.ERR_DSP_DONTPROCESS)
         {
         }
     }

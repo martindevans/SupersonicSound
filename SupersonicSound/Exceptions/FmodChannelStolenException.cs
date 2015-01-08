@@ -9,7 +9,7 @@ namespace SupersonicSound.Exceptions
         : FmodException
     {
         public FmodDmaException()
-            : base(Error.String(RESULT.ERR_DMA))
+            : base(RESULT.ERR_DMA)
         {
         }
     }

@@ -76,14 +76,15 @@ namespace SupersonicSound.LowLevel
             }
         }
 
-        //public RESULT setMixMatrix(float[] matrix, int outchannels, int inchannels, int inchannel_hop)
-        //{
-        //    return FMOD5_DSPConnection_SetMixMatrix(rawPtr, matrix, outchannels, inchannels, inchannel_hop);
-        //}
-        //public RESULT getMixMatrix(float[] matrix, out int outchannels, out int inchannels, int inchannel_hop)
-        //{
-        //    return FMOD5_DSPConnection_GetMixMatrix(rawPtr, matrix, out outchannels, out inchannels, inchannel_hop);
-        //}
+        public void SetMixMatrix(float[] matrix, int outChannels, int inChannels, int inChannelHop)
+        {
+            FmodDSPConnection.setMixMatrix(matrix, outChannels, inChannels, inChannelHop).Check();
+        }
+
+        public void GetMatrixMatrix(float[] matrix, out int outChannels, out int inChannels, int inChannelHop)
+        {
+            FmodDSPConnection.getMixMatrix(matrix, out outChannels, out inChannels, inChannelHop).Check();
+        }
 
         public DspConnectionType ConnectionType
         {

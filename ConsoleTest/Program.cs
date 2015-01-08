@@ -1,4 +1,6 @@
-﻿using SupersonicSound.Studio;
+﻿using SupersonicSound.Exceptions;
+using SupersonicSound.LowLevel;
+using SupersonicSound.Studio;
 using System;
 using System.Threading;
 
@@ -57,16 +59,14 @@ namespace ConsoleTest
 
         public Program()
         {
-            using (SupersonicSound.Studio.System system = new SupersonicSound.Studio.System())
+            using (SupersonicSound.Studio.System system = new SupersonicSound.Studio.System(preInit: PreInit))
             {
                 var master = system.LoadBankFromFile("Master Bank.bank", BankLoadingFlags.Normal);
                 var strings = system.LoadBankFromFile("Master Bank.strings.bank", BankLoadingFlags.Normal);
                 var bank = system.LoadBankFromFile("Surround_Ambience.bank", BankLoadingFlags.Normal);
 
                 var loopingAmbienceDescription = system.GetEvent("event:/Ambience/Country");
-
                 var loopingAmbienceInstance = loopingAmbienceDescription.CreateInstance();
-
                 var timeParam = loopingAmbienceInstance.Parameters["Time"];
 
                 loopingAmbienceInstance.Start();
@@ -81,6 +81,10 @@ namespace ConsoleTest
                     timeParam.Value = time;
                 }
             }
+        }
+
+        private void PreInit(IPreInitilizeLowLevelSystem ll)
+        {
         }
     }
 }

@@ -15,6 +15,8 @@ namespace SupersonicSound.LowLevel
 
         public LowLevelSystem(FMOD.System system)
         {
+            _disposed = false;
+
             _system = system;
 
             _reverbController = new ReverbPropertiesController(_system);
@@ -127,6 +129,74 @@ namespace SupersonicSound.LowLevel
                 _system.setDSPBufferSize(value.BufferLength, value.NumBuffers).Check();
             }
         }
+
+        private IFileSystemWrapper _fileSystem;
+        void IPreInitilizeLowLevelSystem.SetFileSystem<THandle>(IFileSystem<THandle> fileSystem)
+        {
+            _fileSystem = new FileSystemWrapper<THandle>(fileSystem);
+            _system.setFileSystem(
+                _fileSystem.UserOpen,
+                _fileSystem.UserClose,
+                null,                       // | Null because UserAsyncRead is specified
+                null,                       // | and will be used instead
+                _fileSystem.UserAsyncRead,
+                _fileSystem.UserAsyncCancel,
+                fileSystem.BlockAlign
+            ).Check();
+        }
+
+        private Action<string, uint, IntPtr> _opened;
+        private Action<IntPtr> _closed;
+        private Action<IntPtr, uint, uint> _read;
+        private Action<IntPtr, int> _seeked;
+
+        void IPreInitilizeLowLevelSystem.AttachFileSystem(
+            Action<string, uint, IntPtr> opened,
+            Action<IntPtr> closed,
+            Action<IntPtr, uint, uint> read,
+            Action<IntPtr, int> seeked
+        )
+        {
+            _opened = opened;
+            _closed = closed;
+            _read = read;
+            _seeked = seeked;
+
+            _system.attachFileSystem(
+                OpenedCallback,
+                ClosedCallback,
+                ReadCallback,
+                SeekedCallback
+            ).Check();
+        }
+
+        private RESULT OpenedCallback(string name, ref uint filesize, ref IntPtr handle, IntPtr userdata)
+        {
+            if (_opened != null)
+                _opened(name, filesize, handle);
+            return RESULT.OK;
+        }
+
+        private RESULT ClosedCallback(IntPtr handle, IntPtr userdata)
+        {
+            if (_closed != null)
+                _closed(handle);
+            return RESULT.OK;
+        }
+
+        private RESULT ReadCallback(IntPtr handle, IntPtr buffer, uint sizebytes, ref uint bytesread, IntPtr userdata)
+        {
+            if (_read != null)
+                _read(handle, sizebytes, bytesread);
+            return RESULT.OK;
+        }
+
+        private RESULT SeekedCallback(IntPtr handle, int pos, IntPtr userdata)
+        {
+            if (_seeked != null)
+                _seeked(handle, pos);
+            return RESULT.OK;
+        }
         #endregion
 
         #region init/close
@@ -167,60 +237,60 @@ namespace SupersonicSound.LowLevel
             _system.setPluginPath(path).Check();
         }
 
-        //public RESULT loadPlugin(string filename, out uint handle, uint priority)
-        //{
-        //    return FMOD5_System_LoadPlugin(rawPtr, Encoding.UTF8.GetBytes(filename + Char.MinValue), out handle, priority);
-        //}
-        //public RESULT loadPlugin(string filename, out uint handle)
-        //{
-        //    return loadPlugin(filename, out handle, 0);
-        //}
-        //public RESULT unloadPlugin(uint handle)
-        //{
-        //    return FMOD5_System_UnloadPlugin(rawPtr, handle);
-        //}
-        //public RESULT getNumPlugins(PLUGINTYPE plugintype, out int numplugins)
-        //{
-        //    return FMOD5_System_GetNumPlugins(rawPtr, plugintype, out numplugins);
-        //}
-        //public RESULT getPluginHandle(PLUGINTYPE plugintype, int index, out uint handle)
-        //{
-        //    return FMOD5_System_GetPluginHandle(rawPtr, plugintype, index, out handle);
-        //}
-        //public RESULT getPluginInfo(uint handle, out PLUGINTYPE plugintype, StringBuilder name, int namelen, out uint version)
-        //{
-        //    IntPtr stringMem = Marshal.AllocHGlobal(name.Capacity);
+        public Plugin LoadPlugin(string filename, uint priority)
+        {
+            uint handle;
+            _system.loadPlugin(filename, out handle, priority).Check();
+            return new Plugin(handle, _system);
+        }
 
-        //    RESULT result = FMOD5_System_GetPluginInfo(rawPtr, handle, out plugintype, stringMem, namelen, out version);
+        public Plugin LoadPlugin(string filename)
+        {
+            uint handle;
+            _system.loadPlugin(filename, out handle).Check();
+            return new Plugin(handle, _system);
+        }
 
-        //    StringMarshalHelper.NativeToBuilder(name, stringMem);
-        //    Marshal.FreeHGlobal(stringMem);
+        public int GetNumPlugins(PluginType pluginType)
+        {
+            int num;
+            _system.getNumPlugins((PLUGINTYPE)pluginType, out num).Check();
+            return num;
+        }
 
-        //    return result;
-        //}
-        //public RESULT setOutputByPlugin(uint handle)
-        //{
-        //    return FMOD5_System_SetOutputByPlugin(rawPtr, handle);
-        //}
-        //public RESULT getOutputByPlugin(out uint handle)
-        //{
-        //    return FMOD5_System_GetOutputByPlugin(rawPtr, out handle);
-        //}
-        //public RESULT createDSPByPlugin(uint handle, out DSP dsp)
-        //{
-        //    dsp = null;
+        public Plugin GetPlugin(PluginType type, int index)
+        {
+            uint handle;
+            _system.getPluginHandle((PLUGINTYPE)type, index, out handle).Check();
+            return new Plugin(handle, _system);
+        }
 
-        //    IntPtr dspraw;
-        //    RESULT result = FMOD5_System_CreateDSPByPlugin(rawPtr, handle, out dspraw);
-        //    dsp = new DSP(dspraw);
+        public Plugin OutputByPlugin
+        {
+            get
+            {
+                uint handle;
+                _system.getOutputByPlugin(out handle).Check();
+                return new Plugin(handle, _system);
+            }
+            set
+            {
+                _system.setOutputByPlugin(value.Handle).Check();
+            }
+        }
 
-        //    return result;
-        //}
+        public DSP CreateDSPByPlugin(Plugin plugin)
+        {
+            FMOD.DSP dsp;
+            _system.createDSPByPlugin(plugin.Handle, out dsp).Check();
+            return DSP.FromFmod(dsp);
+        }
+
         //public RESULT getDSPInfoByPlugin(uint handle, out IntPtr description)
         //{
         //    return FMOD5_System_GetDSPInfoByPlugin(rawPtr, handle, out description);
         //}
-        ///*
+
         //public RESULT registerCodec(ref CODEC_DESCRIPTION description, out uint handle, uint priority)
         //{
         //    return FMOD5_System_RegisterCodec(rawPtr, ref description, out handle, priority);
@@ -345,84 +415,58 @@ namespace SupersonicSound.LowLevel
         #endregion
 
         #region Sound/DSP/Channel/FX creation and retrieval
-        //public RESULT createSound(string name, MODE mode, ref CREATESOUNDEXINFO exinfo, out Sound sound)
+        //public Sound CreateSound(string name, Mode mode, ref CreateSoundExInfo info)
         //{
-        //    sound = null;
-
-        //    byte[] stringData;
-        //    stringData = Encoding.UTF8.GetBytes(name + Char.MinValue);
-
-        //    exinfo.cbsize = Marshal.SizeOf(exinfo);
-
-        //    IntPtr soundraw;
-        //    RESULT result = FMOD5_System_CreateSound(rawPtr, stringData, mode, ref exinfo, out soundraw);
-        //    sound = new Sound(soundraw);
-
-        //    return result;
-        //}
-        //public RESULT createSound(byte[] data, MODE mode, ref CREATESOUNDEXINFO exinfo, out Sound sound)
-        //{
-        //    sound = null;
-
-        //    exinfo.cbsize = Marshal.SizeOf(exinfo);
-
-        //    IntPtr soundraw;
-        //    RESULT result = FMOD5_System_CreateSound(rawPtr, data, mode, ref exinfo, out soundraw);
-        //    sound = new Sound(soundraw);
-
-        //    return result;
-        //}
-        //public RESULT createSound(string name, MODE mode, out Sound sound)
-        //{
-        //    CREATESOUNDEXINFO exinfo = new CREATESOUNDEXINFO();
-        //    exinfo.cbsize = Marshal.SizeOf(exinfo);
-
-        //    return createSound(name, mode, ref exinfo, out sound);
-        //}
-        //public RESULT createStream(string name, MODE mode, ref CREATESOUNDEXINFO exinfo, out Sound sound)
-        //{
-        //    sound = null;
-
-        //    byte[] stringData;
-        //    stringData = Encoding.UTF8.GetBytes(name + Char.MinValue);
-
-        //    exinfo.cbsize = Marshal.SizeOf(exinfo);
-
-        //    IntPtr soundraw;
-        //    RESULT result = FMOD5_System_CreateStream(rawPtr, stringData, mode, ref exinfo, out soundraw);
-        //    sound = new Sound(soundraw);
-
-        //    return result;
-        //}
-        //public RESULT createStream(byte[] data, MODE mode, ref CREATESOUNDEXINFO exinfo, out Sound sound)
-        //{
-        //    sound = null;
-
-        //    exinfo.cbsize = Marshal.SizeOf(exinfo);
-
-        //    IntPtr soundraw;
-        //    RESULT result = FMOD5_System_CreateStream(rawPtr, data, mode, ref exinfo, out soundraw);
-        //    sound = new Sound(soundraw);
-
-        //    return result;
-        //}
-        //public RESULT createStream(string name, MODE mode, out Sound sound)
-        //{
-        //    CREATESOUNDEXINFO exinfo = new CREATESOUNDEXINFO();
-        //    exinfo.cbsize = Marshal.SizeOf(exinfo);
-
-        //    return createStream(name, mode, ref exinfo, out sound);
+        //    CREATESOUNDEXINFO i = info.ToFmod();
+        //    FMOD.Sound sound;
+        //    _system.createSound(name, (MODE)mode, ref i, out sound).Check();
+        //    return Sound.FromFmod(sound);
         //}
 
-        //public RESULT createDSP(ref DSP_DESCRIPTION description, out DSP dsp)
+        public Sound CreateSound(string name, Mode mode)
+        {
+            FMOD.Sound sound;
+            _system.createSound(name, (MODE)mode, out sound).Check();
+            return Sound.FromFmod(sound);
+        }
+
+        //public Sound CreateSound(byte[] data, Mode mode, ref CreateSoundExInfo info)
         //{
-        //    dsp = null;
+        //    CREATESOUNDEXINFO i = info.ToFmod();
+        //    FMOD.Sound sound;
+        //    _system.createSound(data, (MODE)mode, ref i, out sound).Check();
+        //    return Sound.FromFmod(sound);
+        //}
 
-        //    IntPtr dspraw;
-        //    RESULT result = FMOD5_System_CreateDSP(rawPtr, ref description, out dspraw);
-        //    dsp = new DSP(dspraw);
+        //public Sound CreateStream(string name, Mode mode, ref CreateSoundExInfo info)
+        //{
+        //    CREATESOUNDEXINFO i = info.ToFmod();
+        //    FMOD.Sound sound;
+        //    _system.createStream(name, (MODE) mode, ref i, out sound).Check();
+        //    return Sound.FromFmod(sound);
+        //}
 
-        //    return result;
+        public Sound CreateStream(string name, Mode mode)
+        {
+            FMOD.Sound sound;
+            _system.createStream(name, (MODE)mode, out sound).Check();
+            return Sound.FromFmod(sound);
+        }
+
+        //public Sound CreateStream(byte[] data, Mode mode, ref CreateSoundExInfo info)
+        //{
+        //    CREATESOUNDEXINFO i = info.ToFmod();
+        //    FMOD.Sound sound;
+        //    _system.createStream(data, (MODE)mode, ref i, out sound).Check();
+        //    return Sound.FromFmod(sound);
+        //}
+
+        //public DSP CreateDSP(ref DspDescription description)
+        //{
+        //    DSP_DESCRIPTION d = description.ToFmod();
+        //    FMOD.DSP dsp;
+        //    _system.createDSP(ref d, out dsp).Check();
+        //    return DSP.FromFmod(dsp);
         //}
 
         public DSP CreateDSP(DspType type)
@@ -440,38 +484,26 @@ namespace SupersonicSound.LowLevel
             return ChannelGroup.FromFmod(group);
         }
 
-        //public RESULT createSoundGroup(string name, out SoundGroup soundgroup)
-        //{
-        //    soundgroup = null;
+        public SoundGroup CreateSoundGroup(string name)
+        {
+            FMOD.SoundGroup group;
+            _system.createSoundGroup(name, out group).Check();
+            return new SoundGroup(group);
+        }
 
-        //    byte[] stringData = Encoding.UTF8.GetBytes(name + Char.MinValue);
+        public Reverb3D CreateReverb3D()
+        {
+            FMOD.Reverb3D reverb;
+            _system.createReverb3D(out reverb).Check();
+            return new Reverb3D(reverb);
+        }
 
-        //    IntPtr soundgroupraw;
-        //    RESULT result = FMOD5_System_CreateSoundGroup(rawPtr, stringData, out soundgroupraw);
-        //    soundgroup = new SoundGroup(soundgroupraw);
-
-        //    return result;
-        //}
-        //public RESULT createReverb3D(out Reverb3D reverb)
-        //{
-        //    IntPtr reverbraw;
-        //    RESULT result = FMOD5_System_CreateReverb3D(rawPtr, out reverbraw);
-        //    reverb = new Reverb3D(reverbraw);
-
-        //    return result;
-        //}
-        //public RESULT playSound(Sound sound, ChannelGroup channelGroup, bool paused, out Channel channel)
-        //{
-        //    channel = null;
-
-        //    IntPtr channelGroupRaw = (channelGroup != null) ? channelGroup.getRaw() : IntPtr.Zero;
-
-        //    IntPtr channelraw;
-        //    RESULT result = FMOD5_System_PlaySound(rawPtr, sound.getRaw(), channelGroupRaw, paused, out channelraw);
-        //    channel = new Channel(channelraw);
-
-        //    return result;
-        //}
+        public Channel PlaySound(Sound sound, ChannelGroup channelGroup, bool paused)
+        {
+            FMOD.Channel channel;
+            _system.playSound(sound.ToFmod(), channelGroup.ToFmod(), paused, out channel).Check();
+            return Channel.FromFmod(channel);
+        }
 
         public Channel PlayDSP(DSP dsp, ChannelGroup channelGroup, bool paused)
         {
@@ -489,26 +521,25 @@ namespace SupersonicSound.LowLevel
             return Channel.FromFmod(channel);
         }
 
-        //public RESULT getMasterChannelGroup(out ChannelGroup channelgroup)
-        //{
-        //    channelgroup = null;
+        public ChannelGroup MasterChannelGroup
+        {
+            get
+            {
+                FMOD.ChannelGroup group;
+                _system.getMasterChannelGroup(out group).Check();
+                return ChannelGroup.FromFmod(group);
+            }
+        }
 
-        //    IntPtr channelgroupraw;
-        //    RESULT result = FMOD5_System_GetMasterChannelGroup(rawPtr, out channelgroupraw);
-        //    channelgroup = new ChannelGroup(channelgroupraw);
-
-        //    return result;
-        //}
-        //public RESULT getMasterSoundGroup(out SoundGroup soundgroup)
-        //{
-        //    soundgroup = null;
-
-        //    IntPtr soundgroupraw;
-        //    RESULT result = FMOD5_System_GetMasterSoundGroup(rawPtr, out soundgroupraw);
-        //    soundgroup = new SoundGroup(soundgroupraw);
-
-        //    return result;
-        //}
+        public SoundGroup MasterSoundGroup
+        {
+            get
+            {
+                FMOD.SoundGroup group;
+                _system.getMasterSoundGroup(out group).Check();
+                return new SoundGroup(group);
+            }
+        }
         #endregion
 
         #region Routing to ports
@@ -540,6 +571,7 @@ namespace SupersonicSound.LowLevel
         {
             _system.lockDSP().Check();
         }
+
         public void UnlockDSP()
         {
             _system.unlockDSP().Check();
@@ -604,31 +636,43 @@ namespace SupersonicSound.LowLevel
             FMOD.Geometry geom;
             _system.createGeometry(maxpolygons, maxvertices, out geom).Check();
 
-            return Geometry.FromFmod(geom);
+            return new Geometry(geom);
         }
 
-        //public RESULT setGeometrySettings(float maxworldsize)
-        //{
-        //    return FMOD5_System_SetGeometrySettings(rawPtr, maxworldsize);
-        //}
-        //public RESULT getGeometrySettings(out float maxworldsize)
-        //{
-        //    return FMOD5_System_GetGeometrySettings(rawPtr, out maxworldsize);
-        //}
-        //public RESULT loadGeometry(IntPtr data, int datasize, out Geometry geometry)
-        //{
-        //    geometry = null;
+        public float GeometryMaxWorldSize
+        {
+            get
+            {
+                float maxWorld;
+                _system.getGeometrySettings(out maxWorld).Check();
+                return maxWorld;
+            }
+            set
+            {
+                _system.setGeometrySettings(value).Check();
+            }
+        }
 
-        //    IntPtr geometryraw;
-        //    RESULT result = FMOD5_System_LoadGeometry(rawPtr, data, datasize, out geometryraw);
-        //    geometry = new Geometry(geometryraw);
+        public Geometry LoadGeometry(byte[] data)
+        {
+            unsafe
+            {
+                fixed (byte* ptr = &data[0])
+                {
+                    FMOD.Geometry geometry;
+                    _system.loadGeometry(new IntPtr(ptr), data.Length, out geometry).Check();
+                    return new Geometry(geometry);
+                }
+            }
+        }
 
-        //    return result;
-        //}
-        //public RESULT getGeometryOcclusion(ref VECTOR listener, ref VECTOR source, out float direct, out float reverb)
-        //{
-        //    return FMOD5_System_GetGeometryOcclusion(rawPtr, ref listener, ref source, out direct, out reverb);
-        //}
+        public void GetGeometryOcclusion(Vector3 listener, Vector3 source, out float direct, out float reverb)
+        {
+            var l = listener.ToFmod();
+            var s = source.ToFmod();
+            _system.getGeometryOcclusion(ref l, ref s, out direct, out reverb).Check();
+        }
+
         #endregion
 
         #region Network functions

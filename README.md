@@ -81,3 +81,7 @@ The supplied wrapper allocates objects to wrap up C++ handles in C# objects. If 
 ## Contributions
 
 Contributions are welcome! Please open up an issue before you write any code though, just in case I'm already working on something similar.
+
+## Known Issues
+
+ - All stuff to do with file systems (setFileSystem and attachFileSystem) seems to be broken, with null pointers cropping up frequently. This is probably a bug in the underlying wrapper and I need to contact FMOD about it.

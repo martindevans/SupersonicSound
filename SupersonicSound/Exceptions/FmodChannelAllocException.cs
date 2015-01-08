@@ -9,7 +9,7 @@ namespace SupersonicSound.Exceptions
         : FmodException
     {
         public FmodChannelAllocException()
-            : base(Error.String(RESULT.ERR_CHANNEL_ALLOC))
+            : base(RESULT.ERR_CHANNEL_ALLOC)
         {
             
         }

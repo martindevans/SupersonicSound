@@ -64,7 +64,7 @@ namespace SupersonicSound.Wrapper
             lock (_loadLock)
             {
                 if (IsLoaded)
-                    throw new FmodException("FMOD already loaded");
+                    throw new InvalidOperationException("FMOD already loaded");
 
                 IsLoaded = true;
             }

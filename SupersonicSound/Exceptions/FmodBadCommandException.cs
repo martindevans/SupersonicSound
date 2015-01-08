@@ -9,7 +9,7 @@ namespace SupersonicSound.Exceptions
         : FmodException
     {
         public FmodBadCommandException()
-            : base(Error.String(RESULT.ERR_BADCOMMAND))
+            : base(RESULT.ERR_BADCOMMAND)
         {
             
         }

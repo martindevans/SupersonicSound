@@ -9,7 +9,7 @@ namespace SupersonicSound.Exceptions
         : FmodException
     {
         public FmodDspConnectionException()
-            : base(Error.String(RESULT.ERR_DSP_CONNECTION))
+            : base(RESULT.ERR_DSP_CONNECTION)
         {
             
         }

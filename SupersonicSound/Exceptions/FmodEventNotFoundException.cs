@@ -9,7 +9,7 @@ namespace SupersonicSound.Exceptions
         : FmodException
     {
         public FmodEventNotFoundException()
-            : base(Error.String(RESULT.ERR_EVENT_NOTFOUND))
+            : base(RESULT.ERR_EVENT_NOTFOUND)
         {
         }
     }

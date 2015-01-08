@@ -1082,7 +1082,7 @@ namespace FMOD
     public delegate RESULT SOUND_PCMREADCALLBACK    (IntPtr soundraw, IntPtr data, uint datalen);
     public delegate RESULT SOUND_PCMSETPOSCALLBACK  (IntPtr soundraw, int subsound, uint position, TIMEUNIT postype);
 
-    public delegate RESULT FILE_OPENCALLBACK        ([MarshalAs(UnmanagedType.LPWStr)]string name, ref uint filesize, ref IntPtr handle, IntPtr userdata);
+    public delegate RESULT FILE_OPENCALLBACK        ([MarshalAs(UnmanagedType.AnsiBStr)]string name, ref uint filesize, ref IntPtr handle, IntPtr userdata);
     public delegate RESULT FILE_CLOSECALLBACK       (IntPtr handle, IntPtr userdata);
     public delegate RESULT FILE_READCALLBACK        (IntPtr handle, IntPtr buffer, uint sizebytes, ref uint bytesread, IntPtr userdata);
     public delegate RESULT FILE_SEEKCALLBACK        (IntPtr handle, int pos, IntPtr userdata);

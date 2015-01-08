@@ -77,7 +77,7 @@ namespace SupersonicSound.Studio
         private void Expect(UserPropertyType type)
         {
             if (type != Type)
-                throw new FmodException(string.Format("Attempted to access user property {0} of type {1} as a user property of type {2}", Name, Type, type));
+                throw new InvalidOperationException(string.Format("Attempted to access user property {0} of type {1} as a user property of type {2}", Name, Type, type));
         }
     }
 

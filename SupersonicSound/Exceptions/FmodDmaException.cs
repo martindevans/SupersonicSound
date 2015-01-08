@@ -9,7 +9,7 @@ namespace SupersonicSound.Exceptions
         : FmodException
     {
         public FmodChannelStolenException()
-            : base(Error.String(RESULT.ERR_CHANNEL_STOLEN))
+            : base(RESULT.ERR_CHANNEL_STOLEN)
         {
             
         }

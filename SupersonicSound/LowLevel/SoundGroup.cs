@@ -20,9 +20,12 @@ namespace SupersonicSound.LowLevel
             }
         }
 
-        public SoundGroup(FMOD.SoundGroup fmodGroup)
+        public SoundGroup(FMOD.SoundGroup fmodSoundGroup)
         {
-            _fmodGroup = fmodGroup;
+            if (fmodSoundGroup == null)
+                throw new ArgumentNullException("fmodSoundGroup");
+
+            _fmodGroup = fmodSoundGroup;
         }
 
         #region equality
@@ -53,7 +56,8 @@ namespace SupersonicSound.LowLevel
             _fmodGroup.release().Check();
         }
 
-        //todo: implement "System" property on SoundGroup
+        //This is not implemented because it would be dangerous!
+        //This would return *another* wrapper of the same low level system object, and when that was disposed it would release the low level object and break everything...
         //public LowLevelSystem System
         //{
         //    get

@@ -35,7 +35,7 @@ namespace SupersonicSound
                 throw new ArgumentException("checkAgainst");
 
             if (Enum.GetUnderlyingType(Equivalent) != Enum.GetUnderlyingType(checkAgainst))
-                throw new FmodException(string.Format("Incompatible - Enum underlying types are not equivalent between enum {0} and base enum {1} ", checkAgainst, Equivalent));
+                throw new Exception(string.Format("Incompatible - Enum underlying types are not equivalent between enum {0} and base enum {1} ", checkAgainst, Equivalent));
 
             GetType()
                 .GetMethod("ValidateGeneric", BindingFlags.NonPublic | BindingFlags.Instance)
@@ -58,7 +58,7 @@ namespace SupersonicSound
                 // Check this array (unexpectedNames) to see which names should not be there
                 Console.WriteLine(unexpectedNames);
 
-                throw new FmodException(string.Format("Incompatible - Found {0} names in enum {1} which are not in base enum {2}", unexpectedValues.Length, checkAgainst.Name, Equivalent.Name));
+                throw new Exception(string.Format("Incompatible - Found {0} names in enum {1} which are not in base enum {2}", unexpectedValues.Length, checkAgainst.Name, Equivalent.Name));
             }
 
             var unmatchedValues = expectedValues.Where(n => !actualValues.Contains(n)).ToArray();
@@ -70,7 +70,7 @@ namespace SupersonicSound
                 // Check this array (unmatchedNames) to see which names are missing
                 Console.WriteLine(unmatchedNames);
 
-                throw new FmodException(string.Format("Incompatible - Found {0} names in base enum {1} which are not in enum {2}", unmatchedValues.Length, Equivalent.Name, checkAgainst.Name));
+                throw new Exception(string.Format("Incompatible - Found {0} names in base enum {1} which are not in enum {2}", unmatchedValues.Length, Equivalent.Name, checkAgainst.Name));
             }
         }
 

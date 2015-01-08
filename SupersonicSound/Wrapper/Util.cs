@@ -1,7 +1,6 @@
-﻿using System;
-using System.IO;
-using FMOD;
+﻿using FMOD;
 using SupersonicSound.Exceptions;
+using System;
 
 namespace SupersonicSound.Wrapper
 {
@@ -45,11 +44,11 @@ namespace SupersonicSound.Wrapper
                 case RESULT.ERR_FILE_DISKEJECTED:
                     break;
                 case RESULT.ERR_FILE_EOF:
-                    break;
+                    throw new FmodEndOfFileException();
                 case RESULT.ERR_FILE_ENDOFDATA:
                     break;
                 case RESULT.ERR_FILE_NOTFOUND:
-                    throw new FileNotFoundException("FMOD File not found");
+                    throw new FmodFileNotFoundException();
                 case RESULT.ERR_FORMAT:
                     break;
                 case RESULT.ERR_HEADER_MISMATCH:
@@ -176,7 +175,7 @@ namespace SupersonicSound.Wrapper
                     throw new ArgumentOutOfRangeException("result");
             }
 
-            //todo: throw a specific type of exception for ever type of FMOD error
+            //todo: throw a specific type of exception for every type of FMOD error
             throw new NotImplementedException("Generic FMOD Error (" + result + "): " + Error.String(result));
         }
 

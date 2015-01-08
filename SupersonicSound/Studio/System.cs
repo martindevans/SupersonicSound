@@ -145,21 +145,12 @@ namespace SupersonicSound.Studio
             return Bank.FromFmod(bank);
         }
 
-        //public RESULT getSoundInfo(string key, out SOUND_INFO info)
-        //{
-        //    SOUND_INFO_INTERNAL internalInfo;
-
-        //    RESULT result = FMOD_Studio_System_GetSoundInfo(rawPtr, Encoding.UTF8.GetBytes(key + Char.MinValue), out internalInfo);
-        //    if (result != RESULT.OK)
-        //    {
-        //        info = new SOUND_INFO();
-        //        return result;
-        //    }
-
-        //    internalInfo.assign(out info);
-
-        //    return result;
-        //}
+        public SoundInfo GetSoundInfo(string key)
+        {
+            SOUND_INFO info;
+            _system.getSoundInfo(key, out info).Check();
+            return new SoundInfo(info);
+        }
 
         public Guid LookupId(string path)
         {
@@ -230,10 +221,10 @@ namespace SupersonicSound.Studio
             _system.flushCommands();
         }
 
-        //public RESULT startRecordCommands(string path, RECORD_COMMANDS_FLAGS flags)
-        //{
-        //    return FMOD_Studio_System_StartRecordCommands(rawPtr, Encoding.UTF8.GetBytes(path + Char.MinValue), flags);
-        //}
+        public void StartRecordCommands(string path, RecordCommandsFlags flags)
+        {
+            _system.startRecordCommands(path, (RECORD_COMMANDS_FLAGS)flags).Check();
+        }
 
         public void StopRecordedCommands()
         {

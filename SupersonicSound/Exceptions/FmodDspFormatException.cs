@@ -9,7 +9,7 @@ namespace SupersonicSound.Exceptions
         : FmodException
     {
         public FmodDspFormatException()
-            : base(Error.String(RESULT.ERR_DSP_FORMAT))
+            : base(RESULT.ERR_DSP_FORMAT)
         {
             
         }

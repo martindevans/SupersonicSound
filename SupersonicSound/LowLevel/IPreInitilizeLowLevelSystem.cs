@@ -1,4 +1,5 @@
-﻿
+﻿using System;
+
 namespace SupersonicSound.LowLevel
 {
     public interface IPreInitilizeLowLevelSystem
@@ -17,9 +18,9 @@ namespace SupersonicSound.LowLevel
 
         DspBufferConfiguration DspBufferConfiguration { get; set; }
 
-        //void setFileSystem(FILE_OPENCALLBACK useropen, FILE_CLOSECALLBACK userclose, FILE_READCALLBACK userread, FILE_SEEKCALLBACK userseek, FILE_ASYNCREADCALLBACK userasyncread, FILE_ASYNCCANCELCALLBACK userasynccancel, int blockalign);
+        void SetFileSystem<THandle>(IFileSystem<THandle> fileSystem);
 
-        //void attachFileSystem(FILE_OPENCALLBACK useropen, FILE_CLOSECALLBACK userclose, FILE_READCALLBACK userread, FILE_SEEKCALLBACK userseek);
+        void AttachFileSystem(Action<string, uint, IntPtr> opened = null, Action<IntPtr> closed = null, Action<IntPtr, uint, uint> read = null, Action<IntPtr, int> seeked = null);
 
         //void setCallback(SYSTEM_CALLBACK callback, SYSTEM_CALLBACK_TYPE callbackmask);
     }

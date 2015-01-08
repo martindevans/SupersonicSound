@@ -1,25 +1,35 @@
-﻿
-using System;
+﻿using System.Linq;
+using System.Runtime.InteropServices;
+using FMOD;
 using SupersonicSound.Wrapper;
+using System;
 
 namespace SupersonicSound.LowLevel
 {
+    [StructLayout(LayoutKind.Explicit)]
     public struct Geometry
         : IEquatable<Geometry>
     {
-        public FMOD.Geometry FmodGeometry { get; private set; }
+        [FieldOffset(0)]
+        private readonly FMOD.Geometry _fmodGeometry;
 
-        private Geometry(FMOD.Geometry geometry)
-            : this()
+        [FieldOffset(0)]
+        private readonly PolygonCollection _polygonCollection;
+
+        public FMOD.Geometry FmodGeometry
         {
-            FmodGeometry = geometry;
+            get
+            {
+                return _fmodGeometry;
+            }
         }
 
-        public static Geometry FromFmod(FMOD.Geometry geometry)
+        public Geometry(FMOD.Geometry geometry)
+            : this()
         {
             if (geometry == null)
                 throw new ArgumentNullException("geometry");
-            return new Geometry(geometry);
+            _fmodGeometry = geometry;
         }
 
         #region equality
@@ -43,77 +53,288 @@ namespace SupersonicSound.LowLevel
         #endregion
 
         #region Polygon manipulation.
-        //public RESULT addPolygon(float directocclusion, float reverbocclusion, bool doublesided, int numvertices, VECTOR[] vertices, out int polygonindex)
-        //{
-        //    return FMOD5_Geometry_AddPolygon(rawPtr, directocclusion, reverbocclusion, doublesided, numvertices, vertices, out polygonindex);
-        //}
-        //public RESULT getNumPolygons(out int numpolygons)
-        //{
-        //    return FMOD5_Geometry_GetNumPolygons(rawPtr, out numpolygons);
-        //}
-        //public RESULT getMaxPolygons(out int maxpolygons, out int maxvertices)
-        //{
-        //    return FMOD5_Geometry_GetMaxPolygons(rawPtr, out maxpolygons, out maxvertices);
-        //}
-        //public RESULT getPolygonNumVertices(int index, out int numvertices)
-        //{
-        //    return FMOD5_Geometry_GetPolygonNumVertices(rawPtr, index, out numvertices);
-        //}
-        //public RESULT setPolygonVertex(int index, int vertexindex, ref VECTOR vertex)
-        //{
-        //    return FMOD5_Geometry_SetPolygonVertex(rawPtr, index, vertexindex, ref vertex);
-        //}
-        //public RESULT getPolygonVertex(int index, int vertexindex, out VECTOR vertex)
-        //{
-        //    return FMOD5_Geometry_GetPolygonVertex(rawPtr, index, vertexindex, out vertex);
-        //}
-        //public RESULT setPolygonAttributes(int index, float directocclusion, float reverbocclusion, bool doublesided)
-        //{
-        //    return FMOD5_Geometry_SetPolygonAttributes(rawPtr, index, directocclusion, reverbocclusion, doublesided);
-        //}
-        //public RESULT getPolygonAttributes(int index, out float directocclusion, out float reverbocclusion, out bool doublesided)
-        //{
-        //    return FMOD5_Geometry_GetPolygonAttributes(rawPtr, index, out directocclusion, out reverbocclusion, out doublesided);
-        //}
+        public int AddPolygon(float directOcclusion, float reverbOcclusion, bool doubleSided, Vector3[] vertices)
+        {
+            int index;
+            FmodGeometry.addPolygon(directOcclusion, reverbOcclusion, doubleSided, vertices.Length, vertices.Select(a => a.ToFmod()).ToArray(), out index).Check();
+            return index;
+        }
+
+        public int PolygonCount
+        {
+            get
+            {
+                int num;
+                FmodGeometry.getNumPolygons(out num).Check();
+                return num;
+            }
+        }
+
+        public int MaxPolygons
+        {
+            get
+            {
+                int maxvertices;
+                int maxpolygons;
+                FmodGeometry.getMaxPolygons(out maxpolygons, out maxvertices).Check();
+                return maxpolygons;
+            }
+        }
+
+        public int MaxVertices
+        {
+            get
+            {
+                int maxvertices;
+                int maxpolygons;
+                FmodGeometry.getMaxPolygons(out maxpolygons, out maxvertices).Check();
+                return maxvertices;
+            }
+        }
+
+        [StructLayout(LayoutKind.Explicit)]
+        public struct PolygonCollection
+        {
+            [FieldOffset(0)]
+            private readonly FMOD.Geometry _fmodGeometry;
+
+            public Poly this[int index]
+            {
+                get
+                {
+                    return new Poly(index, _fmodGeometry);
+                }
+            }
+        }
+
+        public struct Poly
+        {
+            public readonly int Index;
+            private readonly FMOD.Geometry _fmodGeometry;
+
+            public Poly(int index, FMOD.Geometry fmodGeometry)
+            {
+                Index = index;
+                _fmodGeometry = fmodGeometry;
+            }
+
+            public int VertexCount
+            {
+                get
+                {
+                    int num;
+                    _fmodGeometry.getPolygonNumVertices(Index, out num).Check();
+                    return num;
+                }
+            }
+
+            public Vector3 this[int vertexIndex]
+            {
+                get
+                {
+                    VECTOR vector;
+                    _fmodGeometry.getPolygonVertex(Index, vertexIndex, out vector).Check();
+                    return new Vector3(vector);
+                }
+                set
+                {
+                    VECTOR vector = value.ToFmod();
+                    _fmodGeometry.setPolygonVertex(Index, vertexIndex, ref vector).Check();
+                }
+            }
+
+            public float DirectOcclusion
+            {
+                get
+                {
+                    float d;
+                    float r;
+                    bool s;
+                    GetAttributes(out d, out r, out s);
+                    return d;
+                }
+                set
+                {
+                    float d;
+                    float r;
+                    bool s;
+                    GetAttributes(out d, out r, out s);
+
+                    SetAttributes(value, r, s);
+                }
+            }
+
+            public float ReverbOcclusion
+            {
+                get
+                {
+                    float d;
+                    float r;
+                    bool s;
+                    GetAttributes(out d, out r, out s);
+                    return r;
+                }
+                set
+                {
+                    float d;
+                    float r;
+                    bool s;
+                    GetAttributes(out d, out r, out s);
+
+                    SetAttributes(d, value, s);
+                }
+            }
+
+            public bool DoubleSided
+            {
+                get
+                {
+                    float d;
+                    float r;
+                    bool s;
+                    GetAttributes(out d, out r, out s);
+                    return s;
+                }
+                set
+                {
+                    float d;
+                    float r;
+                    bool s;
+                    GetAttributes(out d, out r, out s);
+
+                    SetAttributes(d, r, value);
+                }
+            }
+
+            public void GetAttributes(out float directOcclusion, out float reverbOcclusion, out bool doubleSided)
+            {
+                _fmodGeometry.getPolygonAttributes(Index, out directOcclusion, out reverbOcclusion, out doubleSided).Check();
+            }
+
+            public void SetAttributes(float directOcclusion, float reverbOcclusion, bool doubleSided)
+            {
+                if (directOcclusion < 0 || directOcclusion > 1)
+                    throw new ArgumentOutOfRangeException("direct occlusion must be 0 < Direct < 1");
+                if (reverbOcclusion < 0 || reverbOcclusion > 1)
+                    throw new ArgumentOutOfRangeException("reverb occlusion must be 0 < Reverb < 1");
+
+                _fmodGeometry.setPolygonAttributes(Index, directOcclusion, reverbOcclusion, doubleSided).Check();
+            }
+        }
+
+        public PolygonCollection Polygon
+        {
+            get
+            {
+                return _polygonCollection;
+            }
+        }
         #endregion
 
         #region Object manipulation.
-        //public RESULT setActive(bool active)
-        //{
-        //    return FMOD5_Geometry_SetActive(rawPtr, active);
-        //}
-        //public RESULT getActive(out bool active)
-        //{
-        //    return FMOD5_Geometry_GetActive(rawPtr, out active);
-        //}
-        //public RESULT setRotation(ref VECTOR forward, ref VECTOR up)
-        //{
-        //    return FMOD5_Geometry_SetRotation(rawPtr, ref forward, ref up);
-        //}
-        //public RESULT getRotation(out VECTOR forward, out VECTOR up)
-        //{
-        //    return FMOD5_Geometry_GetRotation(rawPtr, out forward, out up);
-        //}
-        //public RESULT setPosition(ref VECTOR position)
-        //{
-        //    return FMOD5_Geometry_SetPosition(rawPtr, ref position);
-        //}
-        //public RESULT getPosition(out VECTOR position)
-        //{
-        //    return FMOD5_Geometry_GetPosition(rawPtr, out position);
-        //}
-        //public RESULT setScale(ref VECTOR scale)
-        //{
-        //    return FMOD5_Geometry_SetScale(rawPtr, ref scale);
-        //}
-        //public RESULT getScale(out VECTOR scale)
-        //{
-        //    return FMOD5_Geometry_GetScale(rawPtr, out scale);
-        //}
-        //public RESULT save(IntPtr data, out int datasize)
-        //{
-        //    return FMOD5_Geometry_Save(rawPtr, data, out datasize);
-        //}
+        public bool Active
+        {
+            get
+            {
+                bool active;
+                FmodGeometry.getActive(out active).Check();
+                return active;
+            }
+            set
+            {
+                FmodGeometry.setActive(value).Check();
+            }
+        }
+
+        public void SetRotation(Vector3 forward, Vector3 up)
+        {
+            VECTOR f = forward.ToFmod();
+            VECTOR u = up.ToFmod();
+            FmodGeometry.setRotation(ref f, ref u).Check();
+        }
+
+        public void GetRotation(out Vector3 forward, out Vector3 up)
+        {
+            VECTOR f;
+            VECTOR u;
+            FmodGeometry.getRotation(out f, out u).Check();
+
+            forward = new Vector3(f);
+            up = new Vector3(u);
+        }
+
+        /// <summary>
+        /// Set rotation from quaternion values
+        /// </summary>
+        /// <param name="w"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
+        public void SetRotation(float w, float x, float y, float z)
+        {
+            // http://nic-gamedev.blogspot.co.uk/2011/11/quaternion-math-getting-local-axis.html
+
+            var f = new VECTOR {
+                x = 2 * (x * z + w * y),
+                y = 2 * (y * x - w * x),
+                z = 1 - 2 * (x * x + y * y)
+            };
+
+            var u = new VECTOR {
+                x = 2 * (x * y - w * z), 
+                y = 1 - 2 * (x * x + z * z),
+                z = 2 * (y * z + w * x)
+            };
+
+            FmodGeometry.setRotation(ref f, ref u).Check();
+        }
+
+        public Vector3 Position
+        {
+            get
+            {
+                VECTOR position;
+                FmodGeometry.getPosition(out position).Check();
+                return new Vector3(position);
+            }
+            set
+            {
+                var pos = value.ToFmod();
+                FmodGeometry.setPosition(ref pos).Check();
+            }
+        }
+
+        public Vector3 Scale
+        {
+            get
+            {
+                VECTOR scale;
+                FmodGeometry.getScale(out scale).Check();
+                return new Vector3(scale);
+            }
+            set
+            {
+                var scale = value.ToFmod();
+                FmodGeometry.setScale(ref scale).Check();
+            }
+        }
+
+        public ArraySegment<byte> Save()
+        {
+            int size;
+            FmodGeometry.save(IntPtr.Zero, out size).Check();
+
+            byte[] buffer = new byte[size];
+            unsafe
+            {
+                fixed (byte* ptr = &buffer[0])
+                {
+                    FmodGeometry.save(new IntPtr(ptr), out size).Check();
+                }
+            }
+
+            return new ArraySegment<byte>(buffer, 0, size);
+        }
         #endregion
 
         #region Userdata set/get.
