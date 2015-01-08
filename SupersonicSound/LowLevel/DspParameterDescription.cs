@@ -12,7 +12,7 @@ namespace SupersonicSound.LowLevel
 
         public string Description { get; private set; }
 
-        public DspParameterDescription(DSP_PARAMETER_DESC desc)
+        public DspParameterDescription(ref DSP_PARAMETER_DESC desc)
             : this()
         {
             Type = (DspParameterType)desc.type;

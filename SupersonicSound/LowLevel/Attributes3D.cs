@@ -19,7 +19,7 @@ namespace SupersonicSound.LowLevel
             Up = up;
         }
 
-        public Attributes3D(_3D_ATTRIBUTES attr)
+        public Attributes3D(ref _3D_ATTRIBUTES attr)
             : this(new Vector3(attr.position), new Vector3(attr.velocity), new Vector3(attr.forward), new Vector3(attr.up))
         {
         }

@@ -244,7 +244,7 @@ namespace SupersonicSound.LowLevel
         {
             DSP_PARAMETER_DESC desc;
             FmodDSP.getParameterInfo(index, out desc).Check();
-            return new DspParameterDescription(desc);
+            return new DspParameterDescription(ref desc);
         }
 
         public int GetDataParameterIndex(int dataType)
@@ -342,7 +342,7 @@ namespace SupersonicSound.LowLevel
             {
                 DSP_METERING_INFO info;
                 FmodDSP.getMeteringInfo(out info).Check();
-                return new DspMeteringInfo(info);
+                return new DspMeteringInfo(ref info);
             }
         }
         #endregion

@@ -138,7 +138,7 @@ namespace SupersonicSound.LowLevel
             WetLevel = wetLevel;
         }
 
-        internal ReverbProperties(REVERB_PROPERTIES props)
+        internal ReverbProperties(ref REVERB_PROPERTIES props)
             : this()
         {
             // All field of REVERB_PROPERTIES are private in the wrapper, I had to modify the wrapper here to expose those fields
@@ -180,7 +180,7 @@ namespace SupersonicSound.LowLevel
             {
                 REVERB_PROPERTIES prop;
                 _system.getReverbProperties(instance, out prop).Check();
-                return new ReverbProperties(prop);
+                return new ReverbProperties(ref prop);
             }
             set
             {

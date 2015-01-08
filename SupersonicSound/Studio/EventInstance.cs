@@ -110,7 +110,7 @@ namespace SupersonicSound.Studio
             {
                 _3D_ATTRIBUTES attr;
                 FmodEventInstance.get3DAttributes(out attr).Check();
-                return new Attributes3D(attr);
+                return new Attributes3D(ref attr);
             }
             set
             {

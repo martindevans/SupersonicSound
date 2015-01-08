@@ -13,7 +13,7 @@ namespace SupersonicSound.LowLevel
 
         public short ChannelCount { get; private set; }
 
-        public DspMeteringInfo(DSP_METERING_INFO info)
+        public DspMeteringInfo(ref DSP_METERING_INFO info)
             : this()
         {
             SampleCount = info.numsamples;

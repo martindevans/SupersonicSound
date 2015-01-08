@@ -100,7 +100,7 @@ namespace SupersonicSound.LowLevel
             {
                 REVERB_PROPERTIES props = new REVERB_PROPERTIES();
                 FmodReverb.getProperties(ref props).Check();
-                return new ReverbProperties(props);
+                return new ReverbProperties(ref props);
             }
             set
             {
