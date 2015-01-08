@@ -1,9 +1,11 @@
 # Supersonic Sound
 ## C# Wrapper For FMOD Studio Programmers API
 
-FMOD Studio is a game changing Pro Audio content creation pipeline for sound designers and musicians. FMOD Studio programmer’s API is the interface for programmers to load FMOD Studio projects and play them back in realtime. Also includes a low level API for simple sounds/channels/dsp/geometry.
+ > FMOD Studio is a game changing Pro Audio content creation pipeline for sound designers and musicians. FMOD Studio programmer’s API is the interface for programmers to load FMOD Studio projects and play them back in realtime. Also includes a low level API for simple sounds/channels/dsp/geometry.
 
-There are a few wrappers for FMOD ex, the legacy sound system, but as far as I am aware *SupersonicSound* is the only C# wrapper for the modern FMOD Studio programmers API.
+SupersonicSound is a C# wrapper for the FMOD studio API. There are a few wrappers for FMOD ex, the legacy sound system, but as far as I am aware *SupersonicSound* is the only C# wrapper for the modern FMOD Studio programmers API.
+
+The aim of the *SupersonicSound* is to present a much more C# friendly experience for using FMOD studio programmers API.
 
 ## Licensing
 
