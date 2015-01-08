@@ -8,11 +8,11 @@ namespace SupersonicSound.Wrapper
     {
         public static void Check(this RESULT result)
         {
-            if (result == RESULT.OK)
-                return;
-
             switch (result)
             {
+                case RESULT.OK:
+                    return;
+
                 case RESULT.ERR_BADCOMMAND:
                     throw new FmodBadCommandException();
                 case RESULT.ERR_CHANNEL_ALLOC:
@@ -88,7 +88,7 @@ namespace SupersonicSound.Wrapper
                 case RESULT.ERR_MAXAUDIBLE:
                     break;
                 case RESULT.ERR_MEMORY:
-                    break;
+                    throw new FmodMemoryException();
                 case RESULT.ERR_MEMORY_CANTPOINT:
                     break;
                 case RESULT.ERR_NEEDS3D:
@@ -144,13 +144,13 @@ namespace SupersonicSound.Wrapper
                 case RESULT.ERR_TRUNCATED:
                     break;
                 case RESULT.ERR_UNIMPLEMENTED:
-                    break;
+                    throw new FmodUnimplementedException();
                 case RESULT.ERR_UNINITIALIZED:
-                    break;
+                    throw new FmodUninitializedException();
                 case RESULT.ERR_UNSUPPORTED:
-                    break;
+                    throw new FmodUnsupportedException();
                 case RESULT.ERR_VERSION:
-                    break;
+                    throw new FmodVersionException();
                 case RESULT.ERR_EVENT_ALREADY_LOADED:
                     break;
                 case RESULT.ERR_EVENT_LIVEUPDATE_BUSY:

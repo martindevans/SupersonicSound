@@ -3,7 +3,7 @@
 namespace SupersonicSound.Exceptions
 {
     public class FmodFileNotFoundException
-        : FmodException
+        : FmodFileException
     {
         public string FileName { get; private set; }
 
