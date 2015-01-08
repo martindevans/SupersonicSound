@@ -66,12 +66,4 @@ namespace SupersonicSound.Studio
             }
         }
     }
-
-    public static class ParameterInstanceExtensions
-    {
-        public static FMOD.Studio.ParameterInstance ToFmod(this ParameterInstance bank)
-        {
-            return bank.FmodParameterInstance;
-        }
-    }
 }

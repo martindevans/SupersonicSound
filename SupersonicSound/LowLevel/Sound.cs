@@ -46,7 +46,7 @@ namespace SupersonicSound.LowLevel
         #region equality
         public bool Equals(Sound other)
         {
-            return other.FmodSound == FmodSound;
+            return other._fmodSound == _fmodSound;
         }
 
         public override bool Equals(object obj)
@@ -59,7 +59,7 @@ namespace SupersonicSound.LowLevel
 
         public override int GetHashCode()
         {
-            return (FmodSound != null ? FmodSound.GetHashCode() : 0);
+            return (_fmodSound != null ? _fmodSound.GetHashCode() : 0);
         }
         #endregion
 
@@ -76,32 +76,32 @@ namespace SupersonicSound.LowLevel
 
         public void SetDefaults(float frequency, int priority)
         {
-            FmodSound.setDefaults(frequency, priority).Check();
+            _fmodSound.setDefaults(frequency, priority).Check();
         }
 
         public void GetDefaults(out float frequency, out int priority)
         {
-            FmodSound.getDefaults(out frequency, out priority);
+            _fmodSound.getDefaults(out frequency, out priority);
         }
 
         public void Set3DMinMaxDistance(float min, float max)
         {
-            FmodSound.set3DMinMaxDistance(min, max).Check();
+            _fmodSound.set3DMinMaxDistance(min, max).Check();
         }
 
         public void Get3DMinMaxDistance(out float min, out float max)
         {
-            FmodSound.get3DMinMaxDistance(out min, out max);
+            _fmodSound.get3DMinMaxDistance(out min, out max);
         }
 
         public void Set3DConeSettings(float insideConeAngle, float outsideConeAngle, float outsideVolume)
         {
-            FmodSound.set3DConeSettings(insideConeAngle, outsideConeAngle, outsideVolume).Check();
+            _fmodSound.set3DConeSettings(insideConeAngle, outsideConeAngle, outsideVolume).Check();
         }
 
         public void Get3DConeSettings(out float insideConeAngle, out float outsideConeAngle, out float outsideVolume)
         {
-            FmodSound.get3DConeSettings(out insideConeAngle, out outsideConeAngle, out outsideVolume).Check();
+            _fmodSound.get3DConeSettings(out insideConeAngle, out outsideConeAngle, out outsideVolume).Check();
         }
 
         // todo: Test Custom3DRollOff *very* carefully
@@ -192,7 +192,7 @@ namespace SupersonicSound.LowLevel
             get
             {
                 StringBuilder builder = new StringBuilder(128);
-                FmodSound.getName(builder, builder.Capacity).Check();
+                _fmodSound.getName(builder, builder.Capacity).Check();
                 return builder.ToString();
             }
         }
@@ -200,7 +200,7 @@ namespace SupersonicSound.LowLevel
         public uint GetLength(TimeUnit unit)
         {
             uint length;
-            FmodSound.getLength(out length, (TIMEUNIT)unit).Check();
+            _fmodSound.getLength(out length, (TIMEUNIT)unit).Check();
             return length;
         }
 
@@ -208,7 +208,7 @@ namespace SupersonicSound.LowLevel
         {
             SOUND_TYPE t;
             SOUND_FORMAT f;
-            FmodSound.getFormat(out t, out f, out channels, out bits).Check();
+            _fmodSound.getFormat(out t, out f, out channels, out bits).Check();
 
             type = (SoundType)t;
             format = (SoundFormat)f;
@@ -261,7 +261,7 @@ namespace SupersonicSound.LowLevel
                 fixed (byte* ptr = &buffer[0])
                 {
                     uint read;
-                    FmodSound.readData(new IntPtr(ptr), length, out read).Check();
+                    _fmodSound.readData(new IntPtr(ptr), length, out read).Check();
                     return read;
                 }
             }
@@ -269,7 +269,7 @@ namespace SupersonicSound.LowLevel
 
         public void SeekData(uint pcm)
         {
-            FmodSound.seekData(pcm).Check();
+            _fmodSound.seekData(pcm).Check();
         }
 
         public SoundGroup SoundGroup
@@ -277,12 +277,12 @@ namespace SupersonicSound.LowLevel
             get
             {
                 FMOD.SoundGroup group;
-                FmodSound.getSoundGroup(out group).Check();
+                _fmodSound.getSoundGroup(out group).Check();
                 return new SoundGroup(group);
             }
             set
             {
-                FmodSound.setSoundGroup(value.ToFmod()).Check();
+                _fmodSound.setSoundGroup(value.FmodGroup).Check();
             }
         }
         #endregion
@@ -293,7 +293,7 @@ namespace SupersonicSound.LowLevel
             get
             {
                 int num;
-                FmodSound.getNumSyncPoints(out num).Check();
+                _fmodSound.getNumSyncPoints(out num).Check();
                 return num;
             }
         }
@@ -348,15 +348,15 @@ namespace SupersonicSound.LowLevel
         public SyncPoint GetSyncPoint(int index)
         {
             IntPtr ptr;
-            FmodSound.getSyncPoint(index, out ptr).Check();
-            return new SyncPoint(ptr, FmodSound);
+            _fmodSound.getSyncPoint(index, out ptr).Check();
+            return new SyncPoint(ptr, _fmodSound);
         }
 
         public SyncPoint AddSyncPoint(uint offset, TimeUnit unit, string name)
         {
             IntPtr ptr;
-            FmodSound.addSyncPoint(offset, (TIMEUNIT)unit, name, out ptr).Check();
-            return new SyncPoint(ptr, FmodSound);
+            _fmodSound.addSyncPoint(offset, (TIMEUNIT)unit, name, out ptr).Check();
+            return new SyncPoint(ptr, _fmodSound);
         }
         #endregion
 
@@ -366,12 +366,12 @@ namespace SupersonicSound.LowLevel
             get
             {
                 MODE mode;
-                FmodSound.getMode(out mode).Check();
+                _fmodSound.getMode(out mode).Check();
                 return (Mode)mode;
             }
             set
             {
-                FmodSound.setMode((MODE)value).Check();
+                _fmodSound.setMode((MODE)value).Check();
             }
         }
 
@@ -380,23 +380,23 @@ namespace SupersonicSound.LowLevel
             get
             {
                 int count;
-                FmodSound.getLoopCount(out count).Check();
+                _fmodSound.getLoopCount(out count).Check();
                 return count;
             }
             set
             {
-                FmodSound.setLoopCount(value).Check();
+                _fmodSound.setLoopCount(value).Check();
             }
         }
 
         public void SetLoopPoints(uint start, TimeUnit startUnit, uint end, TimeUnit endUnit)
         {
-            FmodSound.setLoopPoints(start, (TIMEUNIT)startUnit, end, (TIMEUNIT)endUnit);
+            _fmodSound.setLoopPoints(start, (TIMEUNIT)startUnit, end, (TIMEUNIT)endUnit);
         }
 
         public void GetLoopPoints(out uint start, TimeUnit startUnit, out uint end, TimeUnit endUnit)
         {
-            FmodSound.getLoopPoints(out start, (TIMEUNIT)startUnit, out end, (TIMEUNIT)endUnit);
+            _fmodSound.getLoopPoints(out start, (TIMEUNIT)startUnit, out end, (TIMEUNIT)endUnit);
         }
         #endregion
 
@@ -443,12 +443,12 @@ namespace SupersonicSound.LowLevel
             get
             {
                 float speed;
-                FmodSound.getMusicSpeed(out speed).Check();
+                _fmodSound.getMusicSpeed(out speed).Check();
                 return speed;
             }
             set
             {
-                FmodSound.setMusicSpeed(value).Check();
+                _fmodSound.setMusicSpeed(value).Check();
             }
         }
         #endregion
@@ -459,22 +459,14 @@ namespace SupersonicSound.LowLevel
             get
             {
                 IntPtr ptr;
-                FmodSound.getUserData(out ptr).Check();
+                _fmodSound.getUserData(out ptr).Check();
                 return ptr;
             }
             set
             {
-                FmodSound.setUserData(value).Check();
+                _fmodSound.setUserData(value).Check();
             }
         }
         #endregion
-    }
-
-    public static class SoundExtensions
-    {
-        public static FMOD.Sound ToFmod(this Sound sound)
-        {
-            return sound.FmodSound;
-        }
     }
 }

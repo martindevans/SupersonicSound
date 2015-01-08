@@ -155,12 +155,4 @@ namespace SupersonicSound.LowLevel
         }
         #endregion
     }
-
-    public static class ChannelExtensions
-    {
-        public static FMOD.Channel ToFmod(this Channel channel)
-        {
-            return channel.FmodChannel;
-        }
-    }
 }

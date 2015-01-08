@@ -76,6 +76,7 @@
     <Compile Include="Exceptions\FmodFileException.cs" />
     <Compile Include="Exceptions\FmodEndOfFileException.cs" />
     <Compile Include="Exceptions\FmodFileNotFoundException.cs" />
+    <Compile Include="LowLevel\ChannelOrder.cs" />
     <Compile Include="LowLevel\RealFileSystem.cs" />
     <Compile Include="FmodException.cs" />
     <Compile Include="LowLevel\AdvancedInitializationSettings.cs" />
@@ -84,7 +85,7 @@
     <Compile Include="LowLevel\ChannelGroup.cs" />
     <Compile Include="LowLevel\ChannelMask.cs" />
     <Compile Include="LowLevel\DriverInfo.cs" />
-    <Compile Include="LowLevel\DSPConnection.cs" />
+    <Compile Include="LowLevel\DspConnection.cs" />
     <Compile Include="LowLevel\DspConnectionType.cs" />
     <Compile Include="LowLevel\DspMeteringInfo.cs" />
     <Compile Include="LowLevel\DspParameterDescription.cs" />
@@ -112,7 +113,7 @@
     <Compile Include="LowLevel\Tag.cs" />
     <Compile Include="LowLevel\TimeUnit.cs" />
     <Compile Include="LowLevel\Vector3.cs" />
-    <Compile Include="Studio\CreateSoundExInfo.cs" />
+    <Compile Include="LowLevel\CreateSoundExInfo.cs" />
     <Compile Include="Studio\CueInstance.cs" />
     <Compile Include="Studio\EventInstance.cs" />
     <Compile Include="Studio\BankLoadingFlags.cs" />

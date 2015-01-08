@@ -415,13 +415,12 @@ namespace SupersonicSound.LowLevel
         #endregion
 
         #region Sound/DSP/Channel/FX creation and retrieval
-        //public Sound CreateSound(string name, Mode mode, ref CreateSoundExInfo info)
-        //{
-        //    CREATESOUNDEXINFO i = info.ToFmod();
-        //    FMOD.Sound sound;
-        //    _system.createSound(name, (MODE)mode, ref i, out sound).Check();
-        //    return Sound.FromFmod(sound);
-        //}
+        public Sound CreateSound(string name, Mode mode, CreateSoundExInfo info)
+        {
+            FMOD.Sound sound;
+            _system.createSound(name, (MODE)mode, ref info.FMODInfo, out sound).Check();
+            return Sound.FromFmod(sound);
+        }
 
         public Sound CreateSound(string name, Mode mode)
         {
@@ -430,21 +429,19 @@ namespace SupersonicSound.LowLevel
             return Sound.FromFmod(sound);
         }
 
-        //public Sound CreateSound(byte[] data, Mode mode, ref CreateSoundExInfo info)
-        //{
-        //    CREATESOUNDEXINFO i = info.ToFmod();
-        //    FMOD.Sound sound;
-        //    _system.createSound(data, (MODE)mode, ref i, out sound).Check();
-        //    return Sound.FromFmod(sound);
-        //}
+        public Sound CreateSound(byte[] data, Mode mode, ref CreateSoundExInfo info)
+        {
+            FMOD.Sound sound;
+            _system.createSound(data, (MODE)mode, ref info.FMODInfo, out sound).Check();
+            return Sound.FromFmod(sound);
+        }
 
-        //public Sound CreateStream(string name, Mode mode, ref CreateSoundExInfo info)
-        //{
-        //    CREATESOUNDEXINFO i = info.ToFmod();
-        //    FMOD.Sound sound;
-        //    _system.createStream(name, (MODE) mode, ref i, out sound).Check();
-        //    return Sound.FromFmod(sound);
-        //}
+        public Sound CreateStream(string name, Mode mode, ref CreateSoundExInfo info)
+        {
+            FMOD.Sound sound;
+            _system.createStream(name, (MODE)mode, ref info.FMODInfo, out sound).Check();
+            return Sound.FromFmod(sound);
+        }
 
         public Sound CreateStream(string name, Mode mode)
         {
@@ -453,13 +450,12 @@ namespace SupersonicSound.LowLevel
             return Sound.FromFmod(sound);
         }
 
-        //public Sound CreateStream(byte[] data, Mode mode, ref CreateSoundExInfo info)
-        //{
-        //    CREATESOUNDEXINFO i = info.ToFmod();
-        //    FMOD.Sound sound;
-        //    _system.createStream(data, (MODE)mode, ref i, out sound).Check();
-        //    return Sound.FromFmod(sound);
-        //}
+        public Sound CreateStream(byte[] data, Mode mode, ref CreateSoundExInfo info)
+        {
+            FMOD.Sound sound;
+            _system.createStream(data, (MODE)mode, ref info.FMODInfo, out sound).Check();
+            return Sound.FromFmod(sound);
+        }
 
         //public DSP CreateDSP(ref DspDescription description)
         //{
@@ -501,14 +497,14 @@ namespace SupersonicSound.LowLevel
         public Channel PlaySound(Sound sound, ChannelGroup channelGroup, bool paused)
         {
             FMOD.Channel channel;
-            _system.playSound(sound.ToFmod(), channelGroup.ToFmod(), paused, out channel).Check();
+            _system.playSound(sound.FmodSound, channelGroup.FmodGroup, paused, out channel).Check();
             return Channel.FromFmod(channel);
         }
 
         public Channel PlayDSP(DSP dsp, ChannelGroup channelGroup, bool paused)
         {
             FMOD.Channel channel;
-            _system.playDSP(dsp.ToFmod(), channelGroup.ToFmod(), paused, out channel).Check();
+            _system.playDSP(dsp.FmodDsp, channelGroup.FmodGroup, paused, out channel).Check();
 
             return Channel.FromFmod(channel);
         }
@@ -545,12 +541,12 @@ namespace SupersonicSound.LowLevel
         #region Routing to ports
         public void AttachChannelGroupToPort(uint portType, ulong portIndex, ChannelGroup channelgroup)
         {
-            _system.attachChannelGroupToPort(portType, portIndex, channelgroup.ToFmod()).Check();
+            _system.attachChannelGroupToPort(portType, portIndex, channelgroup.FmodGroup).Check();
         }
 
         public void DetachChannelGroupFromPort(ChannelGroup channelgroup)
         {
-            _system.detachChannelGroupFromPort(channelgroup.ToFmod()).Check();
+            _system.detachChannelGroupFromPort(channelgroup.FmodGroup).Check();
         }
         #endregion
 
@@ -614,7 +610,7 @@ namespace SupersonicSound.LowLevel
 
         public void RecordStart(int id, Sound sound, bool loop)
         {
-            _system.recordStart(id, sound.ToFmod(), loop);
+            _system.recordStart(id, sound.FmodSound, loop);
         }
 
         public void recordStop(int id)

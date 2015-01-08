@@ -48,12 +48,4 @@ namespace SupersonicSound.Studio
             FmodCueInstance.trigger();
         }
     }
-
-    public static class CueInstanceExtensions
-    {
-        public static FMOD.Studio.CueInstance ToFmod(this CueInstance cue)
-        {
-            return cue.FmodCueInstance;
-        }
-    }
 }

@@ -1,5 +1,4 @@
-﻿
-using FMOD;
+﻿using FMOD;
 
 namespace SupersonicSound.LowLevel
 {
@@ -24,7 +23,8 @@ namespace SupersonicSound.LowLevel
 
         public VECTOR ToFmod()
         {
-            return new VECTOR {
+            return new VECTOR
+            {
                 x = X,
                 y = Y,
                 z = Z

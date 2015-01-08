@@ -7,7 +7,7 @@ namespace SupersonicSound.Studio
         /// <summary>
         /// Returns the % CPU time taken by DSP processing on the low level mixer thread.
         /// </summary>
-        public float DSPUsage { get; private set; }
+        public float DspUsage { get; private set; }
 
         /// <summary>
         /// Returns the % CPU time taken by stream processing on the low level stream thread.
@@ -32,7 +32,7 @@ namespace SupersonicSound.Studio
         public CpuUsage(CPU_USAGE usage)
             : this()
         {
-            DSPUsage = usage.dspUsage;
+            DspUsage = usage.dspUsage;
             StreamUsage = usage.streamUsage;
             GeometryUsage = usage.geometryUsage;
             UpdateUsage = usage.updateUsage;
@@ -42,7 +42,7 @@ namespace SupersonicSound.Studio
         public CpuUsage(float dsp, float stream, float geometry, float update, float studio)
             : this()
         {
-            DSPUsage = dsp;
+            DspUsage = dsp;
             StreamUsage = stream;
             GeometryUsage = geometry;
             UpdateUsage = update;

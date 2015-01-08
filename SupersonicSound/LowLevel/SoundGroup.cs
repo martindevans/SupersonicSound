@@ -33,7 +33,7 @@ namespace SupersonicSound.LowLevel
         public bool Equals(SoundGroup other)
         {
 
-            return other.FmodGroup == FmodGroup;
+            return other._fmodGroup == _fmodGroup;
         }
 
         public override bool Equals(object obj)
@@ -46,7 +46,7 @@ namespace SupersonicSound.LowLevel
 
         public override int GetHashCode()
         {
-            return (FmodGroup != null ? FmodGroup.GetHashCode() : 0);
+            return (_fmodGroup != null ? _fmodGroup.GetHashCode() : 0);
         }
 
         #endregion
@@ -185,13 +185,5 @@ namespace SupersonicSound.LowLevel
             }
         }
         #endregion
-    }
-
-    public static class SoundGroupExtensions
-    {
-        public static FMOD.SoundGroup ToFmod(this SoundGroup group)
-        {
-            return group.FmodGroup;
-        }
     }
 }

@@ -4,41 +4,36 @@ using SupersonicSound.Wrapper;
 
 namespace SupersonicSound.LowLevel
 {
-    public struct DSPConnection
-        : IEquatable<DSPConnection>
+    public struct DspConnection
+        : IEquatable<DspConnection>
     {
-        public FMOD.DSPConnection FmodDSPConnection { get; private set; }
+        public FMOD.DSPConnection FmodDspConnection { get; private set; }
 
-        private DSPConnection(FMOD.DSPConnection connection)
+        internal DspConnection(FMOD.DSPConnection connection)
             : this()
-        {
-            FmodDSPConnection = connection;
-        }
-
-        public static DSPConnection FromFmod(FMOD.DSPConnection connection)
         {
             if (connection == null)
                 throw new ArgumentNullException("connection");
-            return new DSPConnection(connection);
+            FmodDspConnection = connection;
         }
 
         #region equality
-        public bool Equals(DSPConnection other)
+        public bool Equals(DspConnection other)
         {
-            return other.FmodDSPConnection == FmodDSPConnection;
+            return other.FmodDspConnection == FmodDspConnection;
         }
 
         public override bool Equals(object obj)
         {
-            if (!(obj is DSPConnection))
+            if (!(obj is DspConnection))
                 return false;
 
-            return Equals((DSPConnection)obj);
+            return Equals((DspConnection)obj);
         }
 
         public override int GetHashCode()
         {
-            return (FmodDSPConnection != null ? FmodDSPConnection.GetHashCode() : 0);
+            return (FmodDspConnection != null ? FmodDspConnection.GetHashCode() : 0);
         }
         #endregion
 
@@ -47,7 +42,7 @@ namespace SupersonicSound.LowLevel
             get
             {
                 FMOD.DSP input;
-                FmodDSPConnection.getInput(out input).Check();
+                FmodDspConnection.getInput(out input).Check();
                 return DSP.FromFmod(input);
             }
         }
@@ -57,7 +52,7 @@ namespace SupersonicSound.LowLevel
             get
             {
                 FMOD.DSP output;
-                FmodDSPConnection.getOutput(out output).Check();
+                FmodDspConnection.getOutput(out output).Check();
                 return DSP.FromFmod(output);
             }
         }
@@ -67,23 +62,23 @@ namespace SupersonicSound.LowLevel
             get
             {
                 float volume;
-                FmodDSPConnection.getMix(out volume).Check();
+                FmodDspConnection.getMix(out volume).Check();
                 return volume;
             }
             set
             {
-                FmodDSPConnection.setMix(value).Check();
+                FmodDspConnection.setMix(value).Check();
             }
         }
 
         public void SetMixMatrix(float[] matrix, int outChannels, int inChannels, int inChannelHop)
         {
-            FmodDSPConnection.setMixMatrix(matrix, outChannels, inChannels, inChannelHop).Check();
+            FmodDspConnection.setMixMatrix(matrix, outChannels, inChannels, inChannelHop).Check();
         }
 
         public void GetMatrixMatrix(float[] matrix, out int outChannels, out int inChannels, int inChannelHop)
         {
-            FmodDSPConnection.getMixMatrix(matrix, out outChannels, out inChannels, inChannelHop).Check();
+            FmodDspConnection.getMixMatrix(matrix, out outChannels, out inChannels, inChannelHop).Check();
         }
 
         public DspConnectionType ConnectionType
@@ -91,7 +86,7 @@ namespace SupersonicSound.LowLevel
             get
             {
                 DSPCONNECTION_TYPE type;
-                FmodDSPConnection.getType(out type).Check();
+                FmodDspConnection.getType(out type).Check();
                 return (DspConnectionType)type;
             }
         }
@@ -102,12 +97,12 @@ namespace SupersonicSound.LowLevel
             get
             {
                 IntPtr ptr;
-                FmodDSPConnection.getUserData(out ptr).Check();
+                FmodDspConnection.getUserData(out ptr).Check();
                 return ptr;
             }
             set
             {
-                FmodDSPConnection.setUserData(value).Check();
+                FmodDspConnection.setUserData(value).Check();
             }
         }
         #endregion

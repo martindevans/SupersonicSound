@@ -7,12 +7,12 @@ namespace SupersonicSound.Studio
     public struct VCA
         : IEquatable<VCA>
     {
-        public FMOD.Studio.VCA FmodVCA { get; private set; }
+        public FMOD.Studio.VCA FmodVca { get; private set; }
 
         private VCA(FMOD.Studio.VCA vca)
             : this()
         {
-            FmodVCA = vca;
+            FmodVca = vca;
         }
 
         public static VCA FromFmod(FMOD.Studio.VCA vca)
@@ -25,7 +25,7 @@ namespace SupersonicSound.Studio
         #region equality
         public bool Equals(VCA other)
         {
-            return other.FmodVCA == FmodVCA;
+            return other.FmodVca == FmodVca;
         }
 
         public override bool Equals(object obj)
@@ -38,7 +38,7 @@ namespace SupersonicSound.Studio
 
         public override int GetHashCode()
         {
-            return (FmodVCA != null ? FmodVCA.GetHashCode() : 0);
+            return (FmodVca != null ? FmodVca.GetHashCode() : 0);
         }
         #endregion
 
@@ -47,7 +47,7 @@ namespace SupersonicSound.Studio
             get
             {
                 GUID id;
-                FmodVCA.getID(out id).Check();
+                FmodVca.getID(out id).Check();
                 return id.FromFmod();
             }
         }
@@ -57,7 +57,7 @@ namespace SupersonicSound.Studio
             get
             {
                 string path;
-                FmodVCA.getPath(out path).Check();
+                FmodVca.getPath(out path).Check();
                 return path;
             }
         }
@@ -67,21 +67,13 @@ namespace SupersonicSound.Studio
             get
             {
                 float volume;
-                FmodVCA.getFaderLevel(out volume).Check();
+                FmodVca.getFaderLevel(out volume).Check();
                 return volume;
             }
             set
             {
-                FmodVCA.setFaderLevel(value).Check();
+                FmodVca.setFaderLevel(value).Check();
             }
-        }
-    }
-
-    public static class VCAExtensions
-    {
-        public static FMOD.Studio.VCA ToFmod(this VCA vca)
-        {
-            return vca.FmodVCA;
         }
     }
 }

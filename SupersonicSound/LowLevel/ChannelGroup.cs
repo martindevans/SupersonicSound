@@ -45,7 +45,7 @@ namespace SupersonicSound.LowLevel
         #region Nested channel groups.
         public void AddChannelGroup(ChannelGroup group)
         {
-            FmodGroup.addGroup(group.ToFmod()).Check();
+            FmodGroup.addGroup(group.FmodGroup).Check();
         }
 
         public int GroupCount
@@ -105,13 +105,5 @@ namespace SupersonicSound.LowLevel
             return Channel.FromFmod(channel);
         }
         #endregion
-    }
-
-    public static class ChannelGroupExtensions
-    {
-        public static FMOD.ChannelGroup ToFmod(this ChannelGroup channelGroup)
-        {
-            return channelGroup.FmodGroup;
-        }
     }
 }

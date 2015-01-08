@@ -49,7 +49,7 @@ namespace SupersonicSound.Studio
         #region equality
         public bool Equals(EventInstance other)
         {
-            return other.FmodEventInstance == FmodEventInstance;
+            return other._fmodEventInstance == _fmodEventInstance;
         }
 
         public override bool Equals(object obj)
@@ -62,7 +62,7 @@ namespace SupersonicSound.Studio
 
         public override int GetHashCode()
         {
-            return (FmodEventInstance != null ? FmodEventInstance.GetHashCode() : 0);
+            return (_fmodEventInstance != null ? _fmodEventInstance.GetHashCode() : 0);
         }
         #endregion
 
@@ -71,7 +71,7 @@ namespace SupersonicSound.Studio
             get
             {
                 FMOD.Studio.EventDescription desc;
-                FmodEventInstance.getDescription(out desc).Check();
+                _fmodEventInstance.getDescription(out desc).Check();
                 return EventDescription.FromFmod(desc);
             }
         }
@@ -81,12 +81,12 @@ namespace SupersonicSound.Studio
             get
             {
                 float volume;
-                FmodEventInstance.getVolume(out volume).Check();
+                _fmodEventInstance.getVolume(out volume).Check();
                 return volume;
             }
             set
             {
-                FmodEventInstance.setVolume(value).Check();
+                _fmodEventInstance.setVolume(value).Check();
             }
         }
 
@@ -95,12 +95,12 @@ namespace SupersonicSound.Studio
             get
             {
                 float pitch;
-                FmodEventInstance.getPitch(out pitch).Check();
+                _fmodEventInstance.getPitch(out pitch).Check();
                 return pitch;
             }
             set
             {
-                FmodEventInstance.setPitch(value).Check();
+                _fmodEventInstance.setPitch(value).Check();
             }
         }
 
@@ -109,12 +109,12 @@ namespace SupersonicSound.Studio
             get
             {
                 _3D_ATTRIBUTES attr;
-                FmodEventInstance.get3DAttributes(out attr).Check();
+                _fmodEventInstance.get3DAttributes(out attr).Check();
                 return new Attributes3D(ref attr);
             }
             set
             {
-                FmodEventInstance.set3DAttributes(value.ToFmod());
+                _fmodEventInstance.set3DAttributes(value.ToFmod());
             }
         }
 
@@ -151,23 +151,23 @@ namespace SupersonicSound.Studio
             get
             {
                 bool paused;
-                FmodEventInstance.getPaused(out paused).Check();
+                _fmodEventInstance.getPaused(out paused).Check();
                 return paused;
             }
             set
             {
-                FmodEventInstance.setPaused(value).Check();
+                _fmodEventInstance.setPaused(value).Check();
             }
         }
 
         public void Start()
         {
-            FmodEventInstance.start().Check();
+            _fmodEventInstance.start().Check();
         }
 
         public void Stop(bool allowFadeout)
         {
-            FmodEventInstance.stop(allowFadeout ? STOP_MODE.ALLOWFADEOUT : STOP_MODE.IMMEDIATE).Check();
+            _fmodEventInstance.stop(allowFadeout ? STOP_MODE.ALLOWFADEOUT : STOP_MODE.IMMEDIATE).Check();
         }
 
         public int TimelinePosition
@@ -175,12 +175,12 @@ namespace SupersonicSound.Studio
             get
             {
                 int pos;
-                FmodEventInstance.getTimelinePosition(out pos).Check();
+                _fmodEventInstance.getTimelinePosition(out pos).Check();
                 return pos;
             }
             set
             {
-                FmodEventInstance.setTimelinePosition(value).Check();
+                _fmodEventInstance.setTimelinePosition(value).Check();
             }
         }
 
@@ -189,7 +189,7 @@ namespace SupersonicSound.Studio
             get
             {
                 PLAYBACK_STATE state;
-                FmodEventInstance.getPlaybackState(out state).Check();
+                _fmodEventInstance.getPlaybackState(out state).Check();
                 return (PlaybackState)state;
             }
         }
@@ -199,14 +199,14 @@ namespace SupersonicSound.Studio
             get
             {
                 FMOD.ChannelGroup group;
-                FmodEventInstance.getChannelGroup(out group).Check();
+                _fmodEventInstance.getChannelGroup(out group).Check();
                 return ChannelGroup.FromFmod(group);
             }
         }
 
         public void Release()
         {
-            FmodEventInstance.release();
+            _fmodEventInstance.release().Check();
         }
 
         public bool IsVirtual
@@ -214,7 +214,7 @@ namespace SupersonicSound.Studio
             get
             {
                 bool virt;
-                FmodEventInstance.isVirtual(out virt).Check();
+                _fmodEventInstance.isVirtual(out virt).Check();
                 return virt;
             }
         }
@@ -312,7 +312,7 @@ namespace SupersonicSound.Studio
             get
             {
                 int count;
-                FmodEventInstance.getCueCount(out count).Check();
+                _fmodEventInstance.getCueCount(out count).Check();
                 return count;
             }
         }
@@ -327,21 +327,13 @@ namespace SupersonicSound.Studio
             get
             {
                 IntPtr ptr;
-                FmodEventInstance.getUserData(out ptr).Check();
+                _fmodEventInstance.getUserData(out ptr).Check();
                 return ptr;
             }
             set
             {
-                FmodEventInstance.setUserData(value).Check();
+                _fmodEventInstance.setUserData(value).Check();
             }
-        }
-    }
-
-    public static class EventInstanceExtensions
-    {
-        public static FMOD.Studio.EventInstance ToFmod(this EventInstance evtInst)
-        {
-            return evtInst.FmodEventInstance;
         }
     }
 }

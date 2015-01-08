@@ -1,5 +1,4 @@
-﻿
-using FMOD.Studio;
+﻿using _3D_ATTRIBUTES = FMOD.Studio._3D_ATTRIBUTES;
 
 namespace SupersonicSound.LowLevel
 {

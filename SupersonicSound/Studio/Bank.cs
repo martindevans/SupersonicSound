@@ -184,12 +184,4 @@ namespace SupersonicSound.Studio
         }
         #endregion
     }
-
-    public static class BankExtensions
-    {
-        public static FMOD.Studio.Bank ToFmod(this Bank bank)
-        {
-            return bank.FmodBank;
-        }
-    }
 }

@@ -128,12 +128,4 @@ namespace SupersonicSound.Studio
             }
         }
     }
-
-    public static class BusExtensions
-    {
-        public static FMOD.Studio.Bus ToFmod(this Bus bus)
-        {
-            return bus.FmodBus;
-        }
-    }
 }
