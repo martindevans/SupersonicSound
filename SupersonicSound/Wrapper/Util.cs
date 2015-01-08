@@ -28,121 +28,121 @@ namespace SupersonicSound.Wrapper
                 case RESULT.ERR_DSP_FORMAT:
                     throw new FmodDspFormatException();
                 case RESULT.ERR_DSP_INUSE:
-                    break;
+                    throw new FmodDspInUseException();
                 case RESULT.ERR_DSP_NOTFOUND:
-                    break;
+                    throw new FmodDspNotFoundException();
                 case RESULT.ERR_DSP_RESERVED:
-                    break;
+                    throw new FmodDspReservedException();
                 case RESULT.ERR_DSP_SILENCE:
-                    break;
+                    throw new FmodDspSilenceException();
                 case RESULT.ERR_DSP_TYPE:
-                    break;
+                    throw new FmodDspTypeException();
                 case RESULT.ERR_FILE_BAD:
-                    break;
+                    throw new FmodBadFileException();
                 case RESULT.ERR_FILE_COULDNOTSEEK:
-                    break;
+                    throw new FmodCouldNotSeekException();
                 case RESULT.ERR_FILE_DISKEJECTED:
-                    break;
+                    throw new FmodDiskEjectedException();
                 case RESULT.ERR_FILE_EOF:
                     throw new FmodEndOfFileException();
                 case RESULT.ERR_FILE_ENDOFDATA:
-                    break;
+                    throw new FmodEndOfDataException();
                 case RESULT.ERR_FILE_NOTFOUND:
                     throw new FmodFileNotFoundException();
                 case RESULT.ERR_FORMAT:
-                    break;
+                    throw new FmodFormatException();
                 case RESULT.ERR_HEADER_MISMATCH:
-                    break;
+                    throw new FmodHeaderMismatchException();
                 case RESULT.ERR_HTTP:
-                    break;
+                    throw new FmodHttpException();
                 case RESULT.ERR_HTTP_ACCESS:
-                    break;
+                    throw new FmodHttpAccessException();
                 case RESULT.ERR_HTTP_PROXY_AUTH:
-                    break;
+                    throw new FmodHttpProxyAuthException();
                 case RESULT.ERR_HTTP_SERVER_ERROR:
-                    break;
+                    throw new FmodHttpServerErrorException();
                 case RESULT.ERR_HTTP_TIMEOUT:
-                    break;
+                    throw new FmodHttpTimeoutException();
                 case RESULT.ERR_INITIALIZATION:
-                    break;
+                    throw new FmodInitializationException();
                 case RESULT.ERR_INITIALIZED:
-                    break;
+                    throw new FmodInitializedException();
                 case RESULT.ERR_INTERNAL:
-                    break;
+                    throw new FmodInternalException();
                 case RESULT.ERR_INVALID_FLOAT:
-                    break;
+                    throw new FmodInvalidFloatException();
                 case RESULT.ERR_INVALID_HANDLE:
-                    break;
+                    throw new FmodInvalidHandleException();
                 case RESULT.ERR_INVALID_PARAM:
-                    break;
+                    throw new FmodInvalidParamException();
                 case RESULT.ERR_INVALID_POSITION:
-                    break;
+                    throw new FmodInvalidPositionException();
                 case RESULT.ERR_INVALID_SPEAKER:
-                    break;
+                    throw new FmodInvalidSpeakerException();
                 case RESULT.ERR_INVALID_SYNCPOINT:
-                    break;
+                    throw new FmodInvalidSyncPointException();
                 case RESULT.ERR_INVALID_THREAD:
-                    break;
+                    throw new FmodInvalidThreadException();
                 case RESULT.ERR_INVALID_VECTOR:
-                    break;
+                    throw new FmodInvalidVectorException();
                 case RESULT.ERR_MAXAUDIBLE:
-                    break;
+                    throw new FmodMaxAudibleException();
                 case RESULT.ERR_MEMORY:
                     throw new FmodMemoryException();
                 case RESULT.ERR_MEMORY_CANTPOINT:
-                    break;
+                    throw new FmodMemoryCannotPointException();
                 case RESULT.ERR_NEEDS3D:
-                    break;
+                    throw new FmodNeeds3DException();
                 case RESULT.ERR_NEEDSHARDWARE:
-                    break;
+                    throw new FmodNeedsHardwareException();
                 case RESULT.ERR_NET_CONNECT:
-                    break;
+                    throw new FmodNetConnectException();
                 case RESULT.ERR_NET_SOCKET_ERROR:
-                    break;
+                    throw new FmodNetSocketException();
                 case RESULT.ERR_NET_URL:
-                    break;
+                    throw new FmodNetUrlException();
                 case RESULT.ERR_NET_WOULD_BLOCK:
-                    break;
+                    throw new FmodNetWouldBlockException();
                 case RESULT.ERR_NOTREADY:
-                    break;
+                    throw new FmodNotReadyException();
                 case RESULT.ERR_OUTPUT_ALLOCATED:
-                    break;
+                    throw new FmodOutputAllocatedException();
                 case RESULT.ERR_OUTPUT_CREATEBUFFER:
-                    break;
+                    throw new FmodOutputCreateBufferException();
                 case RESULT.ERR_OUTPUT_DRIVERCALL:
-                    break;
+                    throw new FmodOutputDriverCallException();
                 case RESULT.ERR_OUTPUT_FORMAT:
-                    break;
+                    throw new FmodOutputFormatException();
                 case RESULT.ERR_OUTPUT_INIT:
-                    break;
+                    throw new FmodOutputInitException();
                 case RESULT.ERR_OUTPUT_NODRIVERS:
-                    break;
+                    throw new FmodOutputNoDriversException();
                 case RESULT.ERR_PLUGIN:
-                    break;
+                    throw new FmodPluginUnspecifiedErrorException();
                 case RESULT.ERR_PLUGIN_MISSING:
-                    break;
+                    throw new FmodPluginMissingException();
                 case RESULT.ERR_PLUGIN_RESOURCE:
-                    break;
+                    throw new FmodPluginResourceException();
                 case RESULT.ERR_PLUGIN_VERSION:
-                    break;
+                    throw new FmodPluginVersionException();
                 case RESULT.ERR_RECORD:
-                    break;
+                    throw new FmodRecordException();
                 case RESULT.ERR_REVERB_CHANNELGROUP:
-                    break;
+                    throw new FmodReverbChannelgroupException();
                 case RESULT.ERR_REVERB_INSTANCE:
-                    break;
+                    throw new FmodReverbInstanceException();
                 case RESULT.ERR_SUBSOUNDS:
-                    break;
+                    throw new FmodSubsoundsException();
                 case RESULT.ERR_SUBSOUND_ALLOCATED:
-                    break;
+                    throw new FmodSubsoundAllocatedException();
                 case RESULT.ERR_SUBSOUND_CANTMOVE:
-                    break;
+                    throw new FmodSubsoundCannotMoveException();
                 case RESULT.ERR_TAGNOTFOUND:
-                    break;
+                    throw new FmodTagNotFoundException();
                 case RESULT.ERR_TOOMANYCHANNELS:
-                    break;
+                    throw new FmodTooManyChannelsException();
                 case RESULT.ERR_TRUNCATED:
-                    break;
+                    throw new FmodTruncatedException();
                 case RESULT.ERR_UNIMPLEMENTED:
                     throw new FmodUnimplementedException();
                 case RESULT.ERR_UNINITIALIZED:
@@ -152,31 +152,28 @@ namespace SupersonicSound.Wrapper
                 case RESULT.ERR_VERSION:
                     throw new FmodVersionException();
                 case RESULT.ERR_EVENT_ALREADY_LOADED:
-                    break;
+                    throw new FmodEventAlreadyLoadedException();
                 case RESULT.ERR_EVENT_LIVEUPDATE_BUSY:
-                    break;
+                    throw new FmodEventLiveUpdateBusyException();
                 case RESULT.ERR_EVENT_LIVEUPDATE_MISMATCH:
-                    break;
+                    throw new FmodEventLiveUpdateMismatchException();
                 case RESULT.ERR_EVENT_LIVEUPDATE_TIMEOUT:
-                    break;
+                    throw new FmodEventLiveUpdateTimeoutException();
                 case RESULT.ERR_EVENT_NOTFOUND:
                     throw new FmodEventNotFoundException();
                 case RESULT.ERR_STUDIO_UNINITIALIZED:
-                    break;
+                    throw new FmodStudioUninitializedException();
                 case RESULT.ERR_STUDIO_NOT_LOADED:
-                    break;
+                    throw new FmodStudioNotLoadedException();
                 case RESULT.ERR_INVALID_STRING:
-                    break;
+                    throw new FmodInvalidStringException();
                 case RESULT.ERR_ALREADY_LOCKED:
-                    break;
+                    throw new FmodAlreadyLockedException();
                 case RESULT.ERR_NOT_LOCKED:
-                    break;
+                    throw new FmodNotLockedException();
                 default:
                     throw new ArgumentOutOfRangeException("result");
             }
-
-            //todo: throw a specific type of exception for every type of FMOD error
-            throw new NotImplementedException("Generic FMOD Error (" + result + "): " + Error.String(result));
         }
 
         public static GUID ToFmod(this Guid guid)
