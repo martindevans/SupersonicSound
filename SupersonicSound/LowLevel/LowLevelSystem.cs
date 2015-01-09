@@ -15,6 +15,7 @@ namespace SupersonicSound.LowLevel
 
         public LowLevelSystem(FMOD.System system)
         {
+            _listenerCollection = new ListenerCollection(this);
             _disposed = false;
 
             _system = system;
@@ -323,14 +324,16 @@ namespace SupersonicSound.LowLevel
             _system.update().Check();
         }
 
-        //public void setSpeakerPosition(SPEAKER speaker, float x, float y, bool active)
-        //{
-        //    return FMOD5_System_SetSpeakerPosition(rawPtr, speaker, x, y, active);
-        //}
-        //public RESULT getSpeakerPosition(SPEAKER speaker, out float x, out float y, out bool active)
-        //{
-        //    return FMOD5_System_GetSpeakerPosition(rawPtr, speaker, out x, out y, out active);
-        //}
+        public void SetSpeakerPosition(Speaker speaker, float x, float y, bool active)
+        {
+            _system.setSpeakerPosition((SPEAKER)speaker, x, y, active).Check();
+        }
+
+        public void GetSpeakerPosition(Speaker speaker, out float x, out float y, out bool active)
+        {
+            _system.getSpeakerPosition((SPEAKER)speaker, out x, out y, out active).Check();
+        }
+
         //public RESULT setStreamBufferSize(uint filebuffersize, TIMEUNIT filebuffersizetype)
         //{
         //    return FMOD5_System_SetStreamBufferSize(rawPtr, filebuffersize, filebuffersizetype);
@@ -339,42 +342,106 @@ namespace SupersonicSound.LowLevel
         //{
         //    return FMOD5_System_GetStreamBufferSize(rawPtr, out filebuffersize, out filebuffersizetype);
         //}
-        //public RESULT set3DSettings(float dopplerscale, float distancefactor, float rolloffscale)
-        //{
-        //    return FMOD5_System_Set3DSettings(rawPtr, dopplerscale, distancefactor, rolloffscale);
-        //}
-        //public RESULT get3DSettings(out float dopplerscale, out float distancefactor, out float rolloffscale)
-        //{
-        //    return FMOD5_System_Get3DSettings(rawPtr, out dopplerscale, out distancefactor, out rolloffscale);
-        //}
-        //public RESULT set3DNumListeners(int numlisteners)
-        //{
-        //    return FMOD5_System_Set3DNumListeners(rawPtr, numlisteners);
-        //}
-        //public RESULT get3DNumListeners(out int numlisteners)
-        //{
-        //    return FMOD5_System_Get3DNumListeners(rawPtr, out numlisteners);
-        //}
-        //public RESULT set3DListenerAttributes(int listener, ref VECTOR pos, ref VECTOR vel, ref VECTOR forward, ref VECTOR up)
-        //{
-        //    return FMOD5_System_Set3DListenerAttributes(rawPtr, listener, ref pos, ref vel, ref forward, ref up);
-        //}
-        //public RESULT get3DListenerAttributes(int listener, out VECTOR pos, out VECTOR vel, out VECTOR forward, out VECTOR up)
-        //{
-        //    return FMOD5_System_Get3DListenerAttributes(rawPtr, listener, out pos, out vel, out forward, out up);
-        //}
+
+        public void Set3DSettings(float dopplerScale, float distanceFactor, float rolloffScale)
+        {
+            _system.set3DSettings(dopplerScale, distanceFactor, rolloffScale).Check();
+        }
+
+        public void Get3DSettings(out float dopplerScale, out float distanceFactor, out float rolloffScale)
+        {
+            _system.get3DSettings(out dopplerScale, out distanceFactor, out rolloffScale).Check();
+        }
+
+        public int Num3DListeners
+        {
+            get
+            {
+                int num;
+                _system.get3DNumListeners(out num).Check();
+                return num;
+            }
+            set
+            {
+                _system.set3DNumListeners(value).Check();
+            }
+        }
+
+        private readonly ListenerCollection _listenerCollection;
+        public struct ListenerCollection
+        {
+            private readonly LowLevelSystem _lowLevelSystem;
+
+            public ListenerCollection(LowLevelSystem lowLevelSystem)
+            {
+                _lowLevelSystem = lowLevelSystem;
+            }
+
+            public Listener3D this[int index]
+            {
+                get
+                {
+                    return new Listener3D(_lowLevelSystem, index);
+                }
+            }
+        }
+
+        public struct Listener3D
+        {
+            private readonly LowLevelSystem _lowLevelSystem;
+            private readonly int _index;
+
+            public Listener3D(LowLevelSystem lowLevelSystem, int index)
+            {
+                _lowLevelSystem = lowLevelSystem;
+                _index = index;
+            }
+
+            public void SetAttributes(Vector3 position, Vector3 velocity, Vector3 forward, Vector3 up)
+            {
+                var pos = position.ToFmod();
+                var vel = velocity.ToFmod();
+                var forv = forward.ToFmod();
+                var upv = up.ToFmod();
+                _lowLevelSystem._system.set3DListenerAttributes(_index, ref pos, ref vel, ref forv, ref upv).Check();
+            }
+
+            public void GetAttributes(out Vector3 position, out Vector3 velocity, out Vector3 forward, out Vector3 up)
+            {
+                VECTOR pos;
+                VECTOR vel;
+                VECTOR forv;
+                VECTOR upv;
+                _lowLevelSystem._system.get3DListenerAttributes(_index, out pos, out vel, out forv, out upv).Check();
+                position = new Vector3(pos);
+                velocity = new Vector3(vel);
+                forward = new Vector3(forv);
+                up = new Vector3(upv);
+            }
+        }
+
+        public ListenerCollection Listeners
+        {
+            get
+            {
+                return _listenerCollection;
+            }
+        }
+
         //public RESULT set3DRolloffCallback(CB_3D_ROLLOFFCALLBACK callback)
         //{
         //    return FMOD5_System_Set3DRolloffCallback(rawPtr, callback);
         //}
-        //public RESULT mixerSuspend()
-        //{
-        //    return FMOD5_System_MixerSuspend(rawPtr);
-        //}
-        //public RESULT mixerResume()
-        //{
-        //    return FMOD5_System_MixerResume(rawPtr);
-        //}
+
+        public void MixerSuspend()
+        {
+            _system.mixerSuspend().Check();
+        }
+
+        public void MixerResume()
+        {
+            _system.mixerResume().Check();
+        }
         #endregion
 
         #region system information functions
