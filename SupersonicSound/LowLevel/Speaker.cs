@@ -2,7 +2,7 @@
 
 namespace SupersonicSound.LowLevel
 {
-    [EquivalentEnum(typeof(SPEAKER))]
+    [EquivalentEnum(typeof(SPEAKER), "MAX")]
     public enum Speaker
     {
         FrontLeft = SPEAKER.FRONT_LEFT,

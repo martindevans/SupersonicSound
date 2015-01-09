@@ -4,10 +4,10 @@ namespace SupersonicSound.LowLevel
 {
     public struct Attributes3D
     {
-        public Vector3 Position { get; private set; }
-        public Vector3 Velocity { get; private set; }
-        public Vector3 Forward { get; private set; }
-        public Vector3 Up { get; private set; }
+        public Vector3 Position { get; set; }
+        public Vector3 Velocity { get; set; }
+        public Vector3 Forward { get; set; }
+        public Vector3 Up { get; set; }
 
         public Attributes3D(Vector3 pos, Vector3 vel, Vector3 forward, Vector3 up)
             : this()
