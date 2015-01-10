@@ -1,4 +1,6 @@
-﻿using FMOD;
+﻿using System;
+using System.Runtime.InteropServices;
+using FMOD;
 using SupersonicSound.Wrapper;
 using System.Text;
 
@@ -66,5 +68,14 @@ namespace SupersonicSound.LowLevel
             name = nameBuilder.ToString();
             type = (PluginType)ptype;
         }
+
+        //public DspDescription GetDspDescription()
+        //{
+        //    IntPtr dscPointer;
+        //    _system.getDSPInfoByPlugin(Handle, out dscPointer).Check();
+
+        //    DSP_DESCRIPTION d = (DSP_DESCRIPTION)Marshal.PtrToStructure(dscPointer, typeof(DSP_DESCRIPTION));
+        //    return new DspDescription(d);
+        //}
     }
 }

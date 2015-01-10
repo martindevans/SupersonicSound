@@ -296,11 +296,6 @@ namespace SupersonicSound.LowLevel
             return DSP.FromFmod(dsp);
         }
 
-        //public RESULT getDSPInfoByPlugin(uint handle, out IntPtr description)
-        //{
-        //    return FMOD5_System_GetDSPInfoByPlugin(rawPtr, handle, out description);
-        //}
-
         //public RESULT registerCodec(ref CODEC_DESCRIPTION description, out uint handle, uint priority)
         //{
         //    return FMOD5_System_RegisterCodec(rawPtr, ref description, out handle, priority);
@@ -334,14 +329,17 @@ namespace SupersonicSound.LowLevel
             _system.getSpeakerPosition((SPEAKER)speaker, out x, out y, out active).Check();
         }
 
-        //public RESULT setStreamBufferSize(uint filebuffersize, TIMEUNIT filebuffersizetype)
-        //{
-        //    return FMOD5_System_SetStreamBufferSize(rawPtr, filebuffersize, filebuffersizetype);
-        //}
-        //public RESULT getStreamBufferSize(out uint filebuffersize, out TIMEUNIT filebuffersizetype)
-        //{
-        //    return FMOD5_System_GetStreamBufferSize(rawPtr, out filebuffersize, out filebuffersizetype);
-        //}
+        public void SetStreamBufferSize(uint size, TimeUnit unit)
+        {
+            _system.setStreamBufferSize(size, (TIMEUNIT)unit).Check();
+        }
+
+        public void GetStreamBufferSize(out uint size, out TimeUnit unit)
+        {
+            TIMEUNIT fu;
+            _system.getStreamBufferSize(out size, out fu).Check();
+            unit = (TimeUnit)fu;
+        }
 
         public void Set3DSettings(float dopplerScale, float distanceFactor, float rolloffScale)
         {
@@ -428,6 +426,7 @@ namespace SupersonicSound.LowLevel
             }
         }
 
+        //todo: set 3d rollpff callback
         //public RESULT set3DRolloffCallback(CB_3D_ROLLOFFCALLBACK callback)
         //{
         //    return FMOD5_System_Set3DRolloffCallback(rawPtr, callback);
@@ -533,6 +532,7 @@ namespace SupersonicSound.LowLevel
             return Sound.FromFmod(sound);
         }
 
+        //todo: create DSP from description
         //public DSP CreateDSP(ref DspDescription description)
         //{
         //    DSP_DESCRIPTION d = description.ToFmod();
@@ -570,17 +570,17 @@ namespace SupersonicSound.LowLevel
             return new Reverb3D(reverb);
         }
 
-        public Channel PlaySound(Sound sound, ChannelGroup channelGroup, bool paused)
+        public Channel PlaySound(Sound sound, ChannelGroup? channelGroup, bool paused)
         {
             FMOD.Channel channel;
-            _system.playSound(sound.FmodSound, channelGroup.FmodGroup, paused, out channel).Check();
+            _system.playSound(sound.FmodSound, channelGroup.HasValue ? channelGroup.Value.FmodGroup : null, paused, out channel).Check();
             return Channel.FromFmod(channel);
         }
 
-        public Channel PlayDSP(DSP dsp, ChannelGroup channelGroup, bool paused)
+        public Channel PlayDSP(DSP dsp, ChannelGroup? channelGroup, bool paused)
         {
             FMOD.Channel channel;
-            _system.playDSP(dsp.FmodDsp, channelGroup.FmodGroup, paused, out channel).Check();
+            _system.playDSP(dsp.FmodDsp, channelGroup.HasValue ? channelGroup.Value.FmodGroup : null, paused, out channel).Check();
 
             return Channel.FromFmod(channel);
         }

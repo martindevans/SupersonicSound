@@ -100,6 +100,7 @@
     <Compile Include="Exceptions\BaseFmodFileException.cs" />
     <Compile Include="Exceptions\FmodEventLiveUpdateExceptions.cs" />
     <Compile Include="LowLevel\ChannelOrder.cs" />
+    <Compile Include="LowLevel\DspDescription.cs" />
     <Compile Include="LowLevel\RealFileSystem.cs" />
     <Compile Include="FmodException.cs" />
     <Compile Include="LowLevel\AdvancedInitializationSettings.cs" />

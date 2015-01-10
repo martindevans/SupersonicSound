@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -13,6 +14,11 @@ namespace SupersonicSound.Wrapper
         [DllImport("Kernel32.dll")]
         private static extern IntPtr LoadLibrary(string path);
 
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+        private static extern bool FreeLibrary(IntPtr hModule);
+
+        private readonly static List<IntPtr> _loaded = new List<IntPtr>();
+
         /// <summary>
         /// Load a dll from the Wrapper/Dependencies/{{ platform specific name }} directory. Automatically switches based on if this is a 32 or 64 bit process.
         /// </summary>
@@ -24,7 +30,9 @@ namespace SupersonicSound.Wrapper
                 directory = "x86_64";
 
             var path = Path.Combine(Environment.CurrentDirectory, "Wrapper", "Dependencies", directory, name);
-            LoadLibrary(path);
+
+            lock (_loadLock)
+                _loaded.Add(LoadLibrary(path));
         }
 
         public static bool IsLoaded { get; private set; }
@@ -67,6 +75,24 @@ namespace SupersonicSound.Wrapper
                     throw new InvalidOperationException("FMOD already loaded");
 
                 IsLoaded = true;
+            }
+        }
+
+        /// <summary>
+        /// Unload native dependencies
+        /// </summary>
+        public static void Unload()
+        {
+            lock (_loadLock)
+            {
+                if (!IsLoaded)
+                    throw new InvalidOperationException("FMOD is not loaded");
+
+                foreach (var intPtr in _loaded)
+                    FreeLibrary(intPtr);
+                _loaded.Clear();
+
+                IsLoaded = false;
             }
         }
 
