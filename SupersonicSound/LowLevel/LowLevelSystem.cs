@@ -426,12 +426,6 @@ namespace SupersonicSound.LowLevel
             }
         }
 
-        //todo: set 3d rollpff callback
-        //public RESULT set3DRolloffCallback(CB_3D_ROLLOFFCALLBACK callback)
-        //{
-        //    return FMOD5_System_Set3DRolloffCallback(rawPtr, callback);
-        //}
-
         public void MixerSuspend()
         {
             _system.mixerSuspend().Check();
