@@ -13,6 +13,14 @@ Obviously I do no control licensing of the any FMOD technologies. You should [go
 
 This library itself is MIT licensed, see the LICENSE.md file for more details.
 
+## Nuget Package
+
+The easiest way to get started using SupersonicSound is to use the [nuget package](https://www.nuget.org/packages/SupersonicSound/). Run:
+
+ > Install-Package SupersonicSound
+ 
+at the nuget package manager console. This will install the package as well as install the native dependencies (in Dependencies/x86 and Dependencies/x86_64 directories).
+
 ## Examples
 
 SupersonicSound is *almost* a direct translation from the C++ API but instead does things in C# style. For example to get a parameter from an event instance in C++ is:
@@ -86,4 +94,4 @@ Contributions are welcome! Please open up an issue before you write any code tho
 
 ## Known Issues
 
- - All stuff to do with file systems (setFileSystem and attachFileSystem) seems to be broken, with null pointers cropping up frequently. This is probably a bug in the underlying wrapper and I need to contact FMOD about it.
+ - Async file systems are not supported. There seems to be a problem with the underlying FMOD wrapper being incorrectly structured.
