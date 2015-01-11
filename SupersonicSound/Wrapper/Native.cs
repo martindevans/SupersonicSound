@@ -1,11 +1,9 @@
-﻿using System;
+﻿using FMOD;
+using FMOD.Studio;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
-using FMOD;
-using FMOD.Studio;
 
 namespace SupersonicSound.Wrapper
 {

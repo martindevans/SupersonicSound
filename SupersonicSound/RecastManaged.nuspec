@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <authors>Martin Evans</authors>
+    <owners>Martin Evans</owners>
+    <licenseUrl>https://github.com/martindevans/SupersonicSound/blob/master/LICENSE.md</licenseUrl>
+    <projectUrl>https://github.com/martindevans/SupersonicSound</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <copyright>Copyright 2015</copyright>
+  </metadata>
+  <files>
+    <file src="bin\release\Wrapper\Dependencies\x86\fmod.dll" target="content" />
+    <file src="bin\release\Wrapper\Dependencies\x86\fmodstudio.dll" target="content" />
+    
+    <file src="bin\release\Wrapper\Dependencies\x86_64\fmod.dll" target="content" />
+    <file src="bin\release\Wrapper\Dependencies\x86_64\fmodstudio.dll" target="content" />
+    
+    <file src="install.ps1" target="tools" />
+  </files>
+</package>
