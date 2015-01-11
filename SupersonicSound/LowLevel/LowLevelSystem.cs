@@ -138,10 +138,19 @@ namespace SupersonicSound.LowLevel
             _system.setFileSystem(
                 _fileSystem.UserOpen,
                 _fileSystem.UserClose,
-                _fileSystem.UserRead,// null,                       // | Null because UserAsyncRead is specified
-                _fileSystem.UserSeek,// null,                       // | and will be used instead
-                null,//_fileSystem.UserAsyncRead,
-                null,//_fileSystem.UserAsyncCancel,
+
+
+                _fileSystem.UserRead,
+                _fileSystem.UserSeek,
+                null,
+                null,
+
+
+                //null,
+                //null,
+                //_fileSystem.UserAsyncRead,
+                //_fileSystem.UserAsyncCancel,
+
                 fileSystem.BlockAlign
             ).Check();
         }

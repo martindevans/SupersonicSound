@@ -1,4 +1,5 @@
-﻿using FMOD;
+﻿using System.Runtime.InteropServices;
+using FMOD;
 using SupersonicSound.Exceptions;
 using System;
 using System.Collections.Concurrent;
@@ -101,7 +102,8 @@ namespace SupersonicSound.LowLevel
 
         //        Task<uint> task = null;
 
-        //        var r = DoWithExceptionHandling(() => {
+        //        var r = DoWithExceptionHandling(() =>
+        //        {
         //            THandle h;
         //            if (!_handleMap.TryGetValue(handle.ToInt32(), out h))
         //                throw new InvalidOperationException("Attempted to async read a file which is not open");
@@ -118,7 +120,8 @@ namespace SupersonicSound.LowLevel
 
         //        if (task != null)
         //        {
-        //            task.ContinueWith(tsk => {
+        //            task.ContinueWith(tsk =>
+        //            {
 
         //                //Task is done, remove cancellor
         //                List<Tuple<CancellationTokenSource, Task>> ctsList;
@@ -151,27 +154,32 @@ namespace SupersonicSound.LowLevel
         //    }
         //}
 
-        //public RESULT UserAsyncCancel(IntPtr handle, IntPtr userdata)
+        //public RESULT UserAsyncCancel(IntPtr infoPtr, IntPtr userdata)
         //{
-        //    List<Tuple<CancellationTokenSource, Task>> ctsList;
-        //    if (_asyncReadTasks.TryGetValue(handle.ToInt32(), out ctsList))
+        //    unsafe
         //    {
-        //        lock (ctsList)
-        //        {
-        //            //Cancel all tasks
-        //            foreach (var tuple in ctsList)
-        //                tuple.Item1.Cancel();
+        //        ASYNCREADINFO* info = (ASYNCREADINFO*)infoPtr.ToPointer();
 
-        //            //Wait for all tasks
-        //            foreach (var tuple in ctsList)
+        //        List<Tuple<CancellationTokenSource, Task>> ctsList;
+        //        if (_asyncReadTasks.TryGetValue(info->handle.ToInt32(), out ctsList))
+        //        {
+        //            lock (ctsList)
         //            {
-        //                while (tuple.Item2.Status == TaskStatus.Running)
-        //                    Thread.Sleep(TimeSpan.FromTicks(1));
+        //                //Cancel all tasks
+        //                foreach (var tuple in ctsList)
+        //                    tuple.Item1.Cancel();
+
+        //                //Wait for all tasks
+        //                foreach (var tuple in ctsList)
+        //                {
+        //                    while (tuple.Item2.Status == TaskStatus.Running)
+        //                        Thread.Sleep(TimeSpan.FromTicks(1));
+        //                }
         //            }
         //        }
-        //    }
 
-        //    return RESULT.OK;
+        //        return RESULT.OK;
+        //    }
         //}
 
         public RESULT UserRead(IntPtr handle, IntPtr buffer, uint sizebytes, ref uint bytesread, IntPtr userdata)
