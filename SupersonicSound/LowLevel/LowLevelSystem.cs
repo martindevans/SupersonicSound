@@ -138,10 +138,10 @@ namespace SupersonicSound.LowLevel
             _system.setFileSystem(
                 _fileSystem.UserOpen,
                 _fileSystem.UserClose,
-                null,                       // | Null because UserAsyncRead is specified
-                null,                       // | and will be used instead
-                _fileSystem.UserAsyncRead,
-                _fileSystem.UserAsyncCancel,
+                _fileSystem.UserRead,// null,                       // | Null because UserAsyncRead is specified
+                _fileSystem.UserSeek,// null,                       // | and will be used instead
+                null,//_fileSystem.UserAsyncRead,
+                null,//_fileSystem.UserAsyncCancel,
                 fileSystem.BlockAlign
             ).Check();
         }
@@ -149,13 +149,13 @@ namespace SupersonicSound.LowLevel
         private Action<string, uint, IntPtr> _opened;
         private Action<IntPtr> _closed;
         private Action<IntPtr, uint, uint> _read;
-        private Action<IntPtr, int> _seeked;
+        private Action<IntPtr, uint> _seeked;
 
         void IPreInitilizeLowLevelSystem.AttachFileSystem(
             Action<string, uint, IntPtr> opened,
             Action<IntPtr> closed,
             Action<IntPtr, uint, uint> read,
-            Action<IntPtr, int> seeked
+            Action<IntPtr, uint> seeked
         )
         {
             _opened = opened;
@@ -192,7 +192,7 @@ namespace SupersonicSound.LowLevel
             return RESULT.OK;
         }
 
-        private RESULT SeekedCallback(IntPtr handle, int pos, IntPtr userdata)
+        private RESULT SeekedCallback(IntPtr handle, uint pos, IntPtr userdata)
         {
             if (_seeked != null)
                 _seeked(handle, pos);

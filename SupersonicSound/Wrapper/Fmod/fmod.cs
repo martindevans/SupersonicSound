@@ -262,12 +262,16 @@ namespace FMOD
         public uint     sizebytes;      /* [r] how many bytes requested for read. */
         public int      priority;       /* [r] 0 = low importance.  100 = extremely important (ie 'must read now or stuttering may occur') */
 
-        public IntPtr   buffer;         /* [w] Buffer to read file data into. */
-        public uint     bytesread;      /* [w] Fill this in before setting result code to tell FMOD how many bytes were read. */
-        public RESULT   result;         /* [r/w] Result code, FMOD_OK tells the system it is ready to consume the data.  Set this last!  Default value = FMOD_ERR_NOTREADY. */
+        public IntPtr userdata;       /* [r] User data pointer. */
 
-        public IntPtr   userdata;       /* [r] User data pointer. */
+        public IntPtr buffer;         /* [w] Buffer to read file data into. */
+        public uint bytesread;      /* [w] Fill this in before setting result code to tell FMOD how many bytes were read. */
+
+        [MarshalAs(UnmanagedType.FunctionPtr)]
+        public IntPtr done;
     }
+
+    public delegate void FMOD_DONE_CALLBACK(IntPtr readInfo, RESULT result);
 
     /*
     [ENUM]
@@ -1085,8 +1089,8 @@ namespace FMOD
     public delegate RESULT FILE_OPENCALLBACK        ([MarshalAs(UnmanagedType.AnsiBStr)]string name, ref uint filesize, ref IntPtr handle, IntPtr userdata);
     public delegate RESULT FILE_CLOSECALLBACK       (IntPtr handle, IntPtr userdata);
     public delegate RESULT FILE_READCALLBACK        (IntPtr handle, IntPtr buffer, uint sizebytes, ref uint bytesread, IntPtr userdata);
-    public delegate RESULT FILE_SEEKCALLBACK        (IntPtr handle, int pos, IntPtr userdata);
-    public delegate RESULT FILE_ASYNCREADCALLBACK   (IntPtr handle, IntPtr info, IntPtr userdata);
+    public delegate RESULT FILE_SEEKCALLBACK        (IntPtr handle, uint pos, IntPtr userdata);
+    public delegate RESULT FILE_ASYNCREADCALLBACK   (IntPtr info, IntPtr userdata);
     public delegate RESULT FILE_ASYNCCANCELCALLBACK (IntPtr handle, IntPtr userdata);
 
     public delegate IntPtr MEMORY_ALLOC_CALLBACK    (uint size, MEMORY_TYPE type, string sourcestr);

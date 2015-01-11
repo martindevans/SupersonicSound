@@ -20,7 +20,7 @@ namespace SupersonicSound.LowLevel
             FileInfo f = new FileInfo(name);
             fileSize = (uint)f.Length;
 
-            return new FSHandle(File.Open(name, FileMode.Open));
+            return new FSHandle(File.Open(name, FileMode.Open, FileAccess.Read, FileShare.Read));
         }
 
         public void Close(FSHandle handle)
@@ -28,23 +28,35 @@ namespace SupersonicSound.LowLevel
             handle.Stream.Close();
         }
 
-        private static uint CancellableRead(FSHandle handle, Stream buffer, uint offset, uint readBytes, CancellationToken ct)
+        private static uint CancellableRead(FSHandle handle, Stream buffer, uint? offset, uint bytesToRead, CancellationToken ct)
         {
-            buffer.Seek(offset, SeekOrigin.Begin);
-
-            uint i = 0;
-            for (; i < readBytes; i++)
+            lock (handle.Stream)
             {
-                if (ct.IsCancellationRequested)
-                    break;
+                if (offset.HasValue)
+                    handle.Stream.Seek(offset.Value, SeekOrigin.Begin);
 
-                var b = handle.Stream.ReadByte();
-                if (b == -1)
-                    break;
-                buffer.WriteByte((byte)b);
+                uint bytesRead = 0;
+                for (; bytesToRead > 0; bytesToRead -= 1, bytesRead += 1)
+                {
+                    //Cancelled?
+                    if (ct.IsCancellationRequested)
+                        break;
+
+                    //End Of File?
+                    if (handle.Stream.Position == handle.Stream.Length)
+                        break;
+
+                    var readByte = handle.Stream.ReadByte();
+                    if (readByte < 0)
+                        break;
+
+                    //Copy a byte
+                    buffer.WriteByte((byte)readByte);
+                }
+
+                buffer.Flush();
+                return bytesRead;
             }
-
-            return i;
         }
 
         public Task<uint> AsyncRead(FSHandle handle, Stream buffer, uint offset, uint readBytes, CancellationToken cancellation)
@@ -55,6 +67,17 @@ namespace SupersonicSound.LowLevel
         public int HandleID(FSHandle handle)
         {
             return handle.ID;
+        }
+
+
+        public uint Read(FSHandle handle, Stream stream, uint bytesToRead)
+        {
+            return CancellableRead(handle, stream, null, bytesToRead, new CancellationToken());
+        }
+
+        public void Seek(FSHandle handle, uint pos)
+        {
+            handle.Stream.Seek(pos, SeekOrigin.Begin);
         }
     }
 

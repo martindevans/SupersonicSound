@@ -1,11 +1,11 @@
-﻿using System.Collections.Concurrent;
+﻿using FMOD;
+using SupersonicSound.Exceptions;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using FMOD;
-using System;
-using System.IO;
-using SupersonicSound.Exceptions;
 
 namespace SupersonicSound.LowLevel
 {
@@ -17,7 +17,11 @@ namespace SupersonicSound.LowLevel
 
         void Close(THandle handle);
 
-        Task<uint> AsyncRead(THandle handle, Stream buffer, uint offset, uint readBytes, CancellationToken cancellation);
+        //Task<uint> AsyncRead(THandle handle, Stream buffer, uint offset, uint readBytes, CancellationToken cancellation);
+
+        uint Read(THandle handle, Stream stream, uint bytesToRead);
+
+        void Seek(THandle handle, uint pos);
 
         int HandleID(THandle handle);
     }
@@ -80,87 +84,125 @@ namespace SupersonicSound.LowLevel
             });
         }
 
-        public RESULT UserAsyncRead(IntPtr handle, IntPtr infoPtr, IntPtr userdata)
+        //public RESULT UserAsyncRead(IntPtr infoPtr, IntPtr userdata)
+        //{
+        //    unsafe
+        //    {
+        //        ASYNCREADINFO* info = (ASYNCREADINFO*)infoPtr.ToPointer();
+
+        //        info->buffer = Marshal.AllocHGlobal((int)info->sizebytes);
+
+        //        var bytesRequested = info->sizebytes;
+
+        //        var handle = info->handle;
+
+        //        CancellationTokenSource cts = new CancellationTokenSource();
+        //        UnmanagedMemoryStream stream = new UnmanagedMemoryStream((byte*)info->buffer, bytesRequested, bytesRequested, FileAccess.Write);
+
+        //        Task<uint> task = null;
+
+        //        var r = DoWithExceptionHandling(() => {
+        //            THandle h;
+        //            if (!_handleMap.TryGetValue(handle.ToInt32(), out h))
+        //                throw new InvalidOperationException("Attempted to async read a file which is not open");
+
+        //            task = _fileSystem.AsyncRead(h, stream, info->offset, info->sizebytes, cts.Token);
+
+        //            //Store cancellor for later retrieval
+        //            var ctsList = _asyncReadTasks.GetOrAdd(handle.ToInt32(), _ => new List<Tuple<CancellationTokenSource, Task>>());
+        //            lock (ctsList)
+        //            {
+        //                ctsList.Add(new Tuple<CancellationTokenSource, Task>(cts, task));
+        //            }
+        //        });
+
+        //        if (task != null)
+        //        {
+        //            task.ContinueWith(tsk => {
+
+        //                //Task is done, remove cancellor
+        //                List<Tuple<CancellationTokenSource, Task>> ctsList;
+        //                if (_asyncReadTasks.TryGetValue(handle.ToInt32(), out ctsList))
+        //                {
+        //                    lock (ctsList)
+        //                        ctsList.RemoveAll(a => a.Item1 == cts);
+        //                }
+
+        //                var done = (FMOD_DONE_CALLBACK)Marshal.GetDelegateForFunctionPointer(info->done, typeof(FMOD_DONE_CALLBACK));
+        //                if (tsk.IsFaulted)
+        //                {
+        //                    //Rethrow inner exception and convert it to a error code
+        //                    done(infoPtr, DoWithExceptionHandling(() => { throw tsk.Exception.InnerException; }));
+        //                }
+        //                else if (task.IsCanceled)
+        //                {
+        //                    info->bytesread = 0;
+        //                    done(infoPtr, RESULT.OK);
+        //                }
+        //                else
+        //                {
+        //                    info->bytesread = tsk.Result;
+        //                    done(infoPtr, tsk.Result == bytesRequested ? RESULT.OK : RESULT.ERR_FILE_EOF);
+        //                }
+        //            }, cts.Token);
+        //        }
+
+        //        return r;
+        //    }
+        //}
+
+        //public RESULT UserAsyncCancel(IntPtr handle, IntPtr userdata)
+        //{
+        //    List<Tuple<CancellationTokenSource, Task>> ctsList;
+        //    if (_asyncReadTasks.TryGetValue(handle.ToInt32(), out ctsList))
+        //    {
+        //        lock (ctsList)
+        //        {
+        //            //Cancel all tasks
+        //            foreach (var tuple in ctsList)
+        //                tuple.Item1.Cancel();
+
+        //            //Wait for all tasks
+        //            foreach (var tuple in ctsList)
+        //            {
+        //                while (tuple.Item2.Status == TaskStatus.Running)
+        //                    Thread.Sleep(TimeSpan.FromTicks(1));
+        //            }
+        //        }
+        //    }
+
+        //    return RESULT.OK;
+        //}
+
+        public RESULT UserRead(IntPtr handle, IntPtr buffer, uint sizebytes, ref uint bytesread, IntPtr userdata)
         {
-            unsafe
-            {
-                ASYNCREADINFO* info = (ASYNCREADINFO*)infoPtr.ToPointer();
+            THandle h;
+            if (!_handleMap.TryGetValue(handle.ToInt32(), out h))
+                throw new InvalidOperationException("Attempted to read a file which is not open");
 
-                CancellationTokenSource cts = new CancellationTokenSource();
-                UnmanagedMemoryStream stream = new UnmanagedMemoryStream((byte*)info->buffer, info->sizebytes);
-
-                Task<uint> task = null;
-
-                var r = DoWithExceptionHandling(() => {
-                    THandle h;
-                    if (!_handleMap.TryGetValue(handle.ToInt32(), out h))
-                        throw new InvalidOperationException("Attempted to async read a file which is not open");
-
-                    task = _fileSystem.AsyncRead(h, stream, info->offset, info->sizebytes, cts.Token);
-
-                    //Store cancellor for later retrieval
-                    var ctsList = _asyncReadTasks.GetOrAdd(handle.ToInt32(), _ => new List<Tuple<CancellationTokenSource, Task>>());
-                    lock (ctsList)
-                    {
-                        ctsList.Add(new Tuple<CancellationTokenSource, Task>(cts, task));
-                    }
-                });
-
-                if (task != null)
+            var read = 0u;
+            var r = DoWithExceptionHandling(() => {
+                unsafe
                 {
-                    task.ContinueWith(tsk => {
-
-                        //Task is done, remove cancellor
-                        List<Tuple<CancellationTokenSource, Task>> ctsList;
-                        if (_asyncReadTasks.TryGetValue(handle.ToInt32(), out ctsList))
-                        {
-                            lock (ctsList)
-                                ctsList.RemoveAll(a => a.Item1 == cts);
-                        }
-
-                        if (tsk.IsFaulted)
-                        {
-                            //Rethrow inner exception and convert it to a error code
-                            info->result = DoWithExceptionHandling(() => { throw tsk.Exception.InnerException; });
-                        }
-                        else if (task.IsCanceled)
-                        {
-                            info->bytesread = 0;
-                            info->result = RESULT.OK;
-                        }
-                        else
-                        {
-                            info->bytesread = tsk.Result;
-                            info->result = RESULT.OK;
-                        }
-                    }, cts.Token);
+                    read = _fileSystem.Read(
+                        h,
+                        new UnmanagedMemoryStream((byte*)buffer.ToPointer(), sizebytes, sizebytes, FileAccess.Write),
+                        sizebytes
+                    );
                 }
+            });
 
-                return r;
-            }
+            bytesread = read;
+            return r;
         }
 
-        public RESULT UserAsyncCancel(IntPtr handle, IntPtr userdata)
+        public RESULT UserSeek(IntPtr handle, uint pos, IntPtr userdata)
         {
-            List<Tuple<CancellationTokenSource, Task>> ctsList;
-            if (_asyncReadTasks.TryGetValue(handle.ToInt32(), out ctsList))
-            {
-                lock (ctsList)
-                {
-                    //Cancel all tasks
-                    foreach (var tuple in ctsList)
-                        tuple.Item1.Cancel();
+            THandle h;
+            if (!_handleMap.TryGetValue(handle.ToInt32(), out h))
+                throw new InvalidOperationException("Attempted to seek a file which is not open");
 
-                    //Wait for all tasks
-                    foreach (var tuple in ctsList)
-                    {
-                        while (tuple.Item2.Status == TaskStatus.Running)
-                            Thread.Sleep(TimeSpan.FromTicks(1));
-                    }
-                }
-            }
-
-            return RESULT.OK;
+            return DoWithExceptionHandling(() => _fileSystem.Seek(h, pos));
         }
 
         private static RESULT DoWithExceptionHandling(Action a)
@@ -192,8 +234,12 @@ namespace SupersonicSound.LowLevel
 
         RESULT UserClose(IntPtr handle, IntPtr userdata);
 
-        RESULT UserAsyncRead(IntPtr handle, IntPtr info, IntPtr userdata);
+        //RESULT UserAsyncRead(/*IntPtr handle, */IntPtr info, IntPtr userdata);
 
-        RESULT UserAsyncCancel(IntPtr handle, IntPtr userdata);
+        //RESULT UserAsyncCancel(IntPtr handle, IntPtr userdata);
+
+        RESULT UserRead(IntPtr handle, IntPtr buffer, uint sizebytes, ref uint bytesread, IntPtr userdata);
+
+        RESULT UserSeek(IntPtr handle, uint pos, IntPtr userdata);
     }
 }

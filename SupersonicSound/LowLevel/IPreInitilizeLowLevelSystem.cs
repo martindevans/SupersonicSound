@@ -20,7 +20,7 @@ namespace SupersonicSound.LowLevel
 
         void SetFileSystem<THandle>(IFileSystem<THandle> fileSystem);
 
-        void AttachFileSystem(Action<string, uint, IntPtr> opened = null, Action<IntPtr> closed = null, Action<IntPtr, uint, uint> read = null, Action<IntPtr, int> seeked = null);
+        void AttachFileSystem(Action<string, uint, IntPtr> opened = null, Action<IntPtr> closed = null, Action<IntPtr, uint, uint> read = null, Action<IntPtr, uint> seeked = null);
 
         void SetCallback(Action<LowLevelSystem, SystemCallbackType, IntPtr, IntPtr> callback, SystemCallbackType callbackMask);
     }

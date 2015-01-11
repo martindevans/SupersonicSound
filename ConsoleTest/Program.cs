@@ -85,6 +85,7 @@ namespace ConsoleTest
 
         private void PreInit(IPreInitilizeLowLevelSystem ll)
         {
+            ll.SetFileSystem(new RealFileSystem());
         }
     }
 }
