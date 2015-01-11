@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 
 namespace SupersonicSound.LowLevel
 {
+    //todo: investigate why async file reading does not work
+
     public interface IFileSystem<THandle>
     {
         int BlockAlign { get; }

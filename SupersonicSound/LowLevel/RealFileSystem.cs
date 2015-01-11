@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 
 namespace SupersonicSound.LowLevel
 {
+    /// <summary>
+    /// Implementation of IFileSystem which simply reads from the real file system. Mostly exists as a handy reference for how to implement this interface.
+    /// </summary>
     public class RealFileSystem
         : IFileSystem<FSHandle>
     {
