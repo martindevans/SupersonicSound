@@ -1,13 +1,15 @@
 param($installPath, $toolsPath, $package, $project)
 
-Function MakeCopyToOutput($project, $path)
+Function MakeCopyToOutput($item)
 {
-    $item = $project.ProjectItems.Item($path)
     $item.Properties.Item("BuildAction").Value = [int]0
     $item.Properties.Item("CopyToOutputDirectory").Value = [int]2
 }
 
-MakeCopyToOutput($project, "Wrapper/Dependencies/x86/fmod.dll")
-MakeCopyToOutput($project, "Wrapper/Dependencies/x86/fmodstudio.dll")
-MakeCopyToOutput($project, "Wrapper/Dependencies/x86_64/fmod.dll")
-MakeCopyToOutput($project, "Wrapper/Dependencies/x86_64/fmodstudio.dll")
+$x86dir = $project.ProjectItems.Item("Dependencies").ProjectItems.Item("x86")
+MakeCopyToOutput($x86dir.ProjectItems.Item("fmod.dll"))
+MakeCopyToOutput($x86dir.ProjectItems.Item("fmodstudio.dll"))
+
+$x86_64dir = $project.ProjectItems.Item("Dependencies").ProjectItems.Item("x86_64")
+MakeCopyToOutput($x86_64dir.ProjectItems.Item("fmod.dll"))
+MakeCopyToOutput($x86_64dir.ProjectItems.Item("fmodstudio.dll"))

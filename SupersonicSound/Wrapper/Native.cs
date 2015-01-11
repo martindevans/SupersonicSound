@@ -18,7 +18,7 @@ namespace SupersonicSound.Wrapper
         private readonly static List<IntPtr> _loaded = new List<IntPtr>();
 
         /// <summary>
-        /// Load a dll from the Wrapper/Dependencies/{{ platform specific name }} directory. Automatically switches based on if this is a 32 or 64 bit process.
+        /// Load a dll from the Dependencies/{{ platform specific name }} directory. Automatically switches based on if this is a 32 or 64 bit process.
         /// </summary>
         /// <param name="name"></param>
         private static void LoadSystemDependentDll(string name)
@@ -27,10 +27,16 @@ namespace SupersonicSound.Wrapper
             if (Environment.Is64BitProcess)
                 directory = "x86_64";
 
-            var path = Path.Combine(Environment.CurrentDirectory, "Wrapper", "Dependencies", directory, name);
+            var path = Path.Combine(Environment.CurrentDirectory, "Dependencies", directory, name);
 
             lock (_loadLock)
-                _loaded.Add(LoadLibrary(path));
+            {
+                var ptr = LoadLibrary(path);
+                if (ptr == IntPtr.Zero)
+                    throw new DllNotFoundException(string.Format("Failed to load DLL {0}", path));
+
+                _loaded.Add(ptr);
+            }
         }
 
         public static bool IsLoaded { get; private set; }

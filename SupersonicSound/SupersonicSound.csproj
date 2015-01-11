@@ -155,16 +155,16 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <None Include="Wrapper\Dependencies\x86\fmod.dll">
+    <None Include="Dependencies\x86\fmod.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Wrapper\Dependencies\x86\fmodstudio.dll">
+    <None Include="Dependencies\x86\fmodstudio.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Wrapper\Dependencies\x86_64\fmod.dll">
+    <None Include="Dependencies\x86_64\fmod.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Wrapper\Dependencies\x86_64\fmodstudio.dll">
+    <None Include="Dependencies\x86_64\fmodstudio.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
