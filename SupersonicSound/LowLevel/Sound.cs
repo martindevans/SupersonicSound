@@ -6,21 +6,10 @@ using SupersonicSound.Wrapper;
 
 namespace SupersonicSound.LowLevel
 {
-    [StructLayout(LayoutKind.Explicit)]
     public struct Sound
         : IEquatable<Sound>
     {
-        [FieldOffset(0)]
         private readonly FMOD.Sound _fmodSound;
-
-        [FieldOffset(0)]
-        private readonly ChannelCollection _musicChannelCollection;
-
-        [FieldOffset(0)]
-        private readonly SubSoundCollection _subSoundCollection;
-
-        [FieldOffset(0)]
-        private readonly TagCollection _tagCollection;
 
         public FMOD.Sound FmodSound
         {
@@ -138,11 +127,15 @@ namespace SupersonicSound.LowLevel
         //    }
         //}
 
-        [StructLayout(LayoutKind.Explicit)]
         public struct SubSoundCollection
         {
-            [FieldOffset(0)]
             private readonly FMOD.Sound _fmodSound;
+
+            public SubSoundCollection(FMOD.Sound fmodSound)
+                : this()
+            {
+                _fmodSound = fmodSound;
+            }
 
             public Sound this[int index]
             {
@@ -183,7 +176,7 @@ namespace SupersonicSound.LowLevel
         {
             get
             {
-                return _subSoundCollection;
+                return new SubSoundCollection(FmodSound);
             }
         }
 
@@ -214,11 +207,15 @@ namespace SupersonicSound.LowLevel
             format = (SoundFormat)f;
         }
 
-        [StructLayout(LayoutKind.Explicit)]
         public struct TagCollection
         {
-            [FieldOffset(0)]
             private readonly FMOD.Sound _fmodSound;
+
+            public TagCollection(FMOD.Sound fmodSound)
+                : this()
+            {
+                _fmodSound = fmodSound;
+            }
 
             public void Count(out int numTags, out int numTagsUpdated)
             {
@@ -240,7 +237,7 @@ namespace SupersonicSound.LowLevel
         {
             get
             {
-                return _tagCollection;
+                return new TagCollection(FmodSound);
             }
         }
 
@@ -401,11 +398,15 @@ namespace SupersonicSound.LowLevel
         #endregion
 
         #region For MOD/S3M/XM/IT/MID sequenced formats only.
-        [StructLayout(LayoutKind.Explicit)]
         public struct ChannelCollection
         {
-            [FieldOffset(0)]
             private readonly FMOD.Sound _fmodSound;
+
+            public ChannelCollection(FMOD.Sound fmodSound)
+                : this()
+            {
+                _fmodSound = fmodSound;
+            }
 
             public int Count
             {
@@ -434,7 +435,7 @@ namespace SupersonicSound.LowLevel
         {
             get
             {
-                return _musicChannelCollection;
+                return new ChannelCollection(FmodSound);
             }
         }
 

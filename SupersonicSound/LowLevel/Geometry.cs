@@ -1,20 +1,14 @@
-﻿using System.Linq;
-using System.Runtime.InteropServices;
-using FMOD;
+﻿using FMOD;
 using SupersonicSound.Wrapper;
 using System;
+using System.Linq;
 
 namespace SupersonicSound.LowLevel
 {
-    [StructLayout(LayoutKind.Explicit)]
     public struct Geometry
         : IEquatable<Geometry>
     {
-        [FieldOffset(0)]
         private readonly FMOD.Geometry _fmodGeometry;
-
-        [FieldOffset(0)]
-        private readonly PolygonCollection _polygonCollection;
 
         public FMOD.Geometry FmodGeometry
         {
@@ -92,10 +86,8 @@ namespace SupersonicSound.LowLevel
             }
         }
 
-        [StructLayout(LayoutKind.Explicit)]
         public struct PolygonCollection
         {
-            [FieldOffset(0)]
             private readonly FMOD.Geometry _fmodGeometry;
 
             public Poly this[int index]
@@ -104,6 +96,11 @@ namespace SupersonicSound.LowLevel
                 {
                     return new Poly(index, _fmodGeometry);
                 }
+            }
+
+            public PolygonCollection(FMOD.Geometry geometry)
+            {
+                _fmodGeometry = geometry;
             }
         }
 
@@ -226,7 +223,7 @@ namespace SupersonicSound.LowLevel
         {
             get
             {
-                return _polygonCollection;
+                return new PolygonCollection(FmodGeometry);
             }
         }
         #endregion

@@ -1,15 +1,12 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using System.Text;
-using FMOD;
+﻿using FMOD;
 using SupersonicSound.Wrapper;
+using System;
+using System.Text;
 
 namespace SupersonicSound.LowLevel
 {
-    [StructLayout(LayoutKind.Explicit)]
     public struct SoundGroup
     {
-        [FieldOffset(0)]
         private readonly FMOD.SoundGroup _fmodGroup;
 
         public FMOD.SoundGroup FmodGroup

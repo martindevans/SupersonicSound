@@ -1,31 +1,14 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using FMOD.Studio;
+﻿using FMOD.Studio;
 using SupersonicSound.LowLevel;
 using SupersonicSound.Wrapper;
+using System;
 
 namespace SupersonicSound.Studio
 {
-    [StructLayout(LayoutKind.Explicit)]
     public struct EventInstance
         : IEquatable<EventInstance>
     {
-        // This trickery deserved some explanation!
-        // FieldOffset sets the position of the field in the struct by bytes, notice all four of the first fields are in the *same place*
-        // The first field in the three collections are also FMOD.Studio.EventDescription, so those fields have the same value as the field just below
-        // This saves us having pointers inside the collections, which saves 12 (x86) or 24 (x64) bytes. Pretty important inside a struct!
-
-        [FieldOffset(0)]
         private readonly FMOD.Studio.EventInstance _fmodEventInstance;
-
-        [FieldOffset(0)]
-        private readonly ParameterCollection _parameterCollection;
-
-        [FieldOffset(0)]
-        private readonly PropertyCollection _propertyCollection;
-
-        [FieldOffset(0)]
-        private readonly CueInstanceCollection _cues;
 
         public FMOD.Studio.EventInstance FmodEventInstance
         {
@@ -118,11 +101,15 @@ namespace SupersonicSound.Studio
             }
         }
 
-        [StructLayout(LayoutKind.Explicit)]
         public struct PropertyCollection
         {
-            [FieldOffset(0)]
             private readonly FMOD.Studio.EventInstance _eventInstance;
+
+            public PropertyCollection(FMOD.Studio.EventInstance eventInstance)
+                : this()
+            {
+                _eventInstance = eventInstance;
+            }
 
             public float this[EventProperty index]
             {
@@ -138,11 +125,12 @@ namespace SupersonicSound.Studio
                 }
             }
         }
+
         public PropertyCollection Properties
         {
             get
             {
-                return _propertyCollection;
+                return new PropertyCollection(FmodEventInstance);
             }
         }
 
@@ -219,11 +207,15 @@ namespace SupersonicSound.Studio
             }
         }
 
-        [StructLayout(LayoutKind.Explicit)]
         public struct ParameterCollection
         {
-            [FieldOffset(0)]
             private readonly FMOD.Studio.EventInstance _eventInstance;
+
+            public ParameterCollection(FMOD.Studio.EventInstance eventInstance)
+                : this()
+            {
+                _eventInstance = eventInstance;
+            }
 
             public int Count
             {
@@ -265,19 +257,24 @@ namespace SupersonicSound.Studio
                 _eventInstance.setParameterValueByIndex(index, value).Check();
             }
         }
+
         public ParameterCollection Parameters
         {
             get
             {
-                return _parameterCollection;
+                return new ParameterCollection(FmodEventInstance);
             }
         }
 
-        [StructLayout(LayoutKind.Explicit)]
         public struct CueInstanceCollection
         {
-            [FieldOffset(0)]
             private readonly FMOD.Studio.EventInstance _instance;
+
+            public CueInstanceCollection(FMOD.Studio.EventInstance instance)
+                : this()
+            {
+                _instance = instance;
+            }
 
             public CueInstance this[string name]
             {
@@ -299,11 +296,12 @@ namespace SupersonicSound.Studio
                 }
             }
         }
+
         public CueInstanceCollection Cues
         {
             get
             {
-                return _cues;
+                return new CueInstanceCollection(FmodEventInstance);
             }
         }
 

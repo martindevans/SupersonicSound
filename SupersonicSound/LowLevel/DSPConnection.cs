@@ -7,9 +7,9 @@ namespace SupersonicSound.LowLevel
     public struct DspConnection
         : IEquatable<DspConnection>
     {
-        public FMOD.DSPConnection FmodDspConnection { get; private set; }
+        public DSPConnection FmodDspConnection { get; private set; }
 
-        internal DspConnection(FMOD.DSPConnection connection)
+        internal DspConnection(DSPConnection connection)
             : this()
         {
             if (connection == null)

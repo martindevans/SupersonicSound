@@ -1,30 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using FMOD;
+﻿using FMOD;
 using FMOD.Studio;
 using SupersonicSound.Wrapper;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SupersonicSound.Studio
 {
-    [StructLayout(LayoutKind.Explicit)]
     public struct EventDescription
         : IEquatable<EventDescription>
     {
-        // This trickery deserved some explanation!
-        // FieldOffset sets the position of the field in the struct by bytes, notice all three of the first fields are in the *same place*
-        // The first field in the two collections are also FMOD.Studio.EventDescription, so those fields have the same value as the field just below
-        // This saves us having pointers inside the collections, which saves 8 (x86) or 16 (x64) bytes. Pretty important inside a struct!
-
-        [FieldOffset(0)]
         private readonly FMOD.Studio.EventDescription _fmodEventDescription;
-
-        [FieldOffset(0)]
-        private readonly ParameterCollection _parameterCollection;
-
-        [FieldOffset(0)]
-        private readonly PropertyCollection _propertyCollection;
 
         public FMOD.Studio.EventDescription FmodEventDescription
         {
@@ -85,10 +71,15 @@ namespace SupersonicSound.Studio
             }
         }
 
-        [StructLayout(LayoutKind.Sequential)]
         public struct ParameterCollection
         {
             private readonly FMOD.Studio.EventDescription _fmodEventDescription;
+
+            public ParameterCollection(FMOD.Studio.EventDescription fmodEventDescription)
+                : this()
+            {
+                _fmodEventDescription = fmodEventDescription;
+            }
 
             public int Count
             {
@@ -125,14 +116,19 @@ namespace SupersonicSound.Studio
         {
             get
             {
-                return _parameterCollection;
+                return new ParameterCollection(FmodEventDescription);
             }
         }
 
-        [StructLayout(LayoutKind.Sequential)]
         public struct PropertyCollection
         {
             private readonly FMOD.Studio.EventDescription _fmodEventDescription;
+
+            public PropertyCollection(FMOD.Studio.EventDescription fmodEventDescription)
+                : this()
+            {
+                _fmodEventDescription = fmodEventDescription;
+            }
 
             public int Count
             {
@@ -169,7 +165,7 @@ namespace SupersonicSound.Studio
         {
             get
             {
-                return _propertyCollection;
+                return new PropertyCollection(FmodEventDescription);
             }
         }
 

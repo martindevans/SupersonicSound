@@ -1,8 +1,11 @@
-﻿using SupersonicSound.Exceptions;
+﻿using System.Collections.Concurrent;
+using System.Diagnostics;
+using SupersonicSound.Exceptions;
 using SupersonicSound.LowLevel;
 using SupersonicSound.Studio;
 using System;
 using System.Threading;
+using System = SupersonicSound.Studio.System;
 
 namespace ConsoleTest
 {
@@ -83,9 +86,8 @@ namespace ConsoleTest
             }
         }
 
-        private void PreInit(IPreInitilizeLowLevelSystem ll)
+        private static void PreInit(IPreInitilizeLowLevelSystem ll)
         {
-            ll.SetFileSystem(new RealFileSystem());
         }
     }
 }
