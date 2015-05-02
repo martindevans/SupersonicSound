@@ -1,9 +1,10 @@
 *.cache
 *.user
+*.suo
+_Resharper.SupersonicSound
 
 ConsoleTest/bin
 ConsoleTest/obj
 
 SupersonicSound/bin
 SupersonicSound/obj
-/*.suo

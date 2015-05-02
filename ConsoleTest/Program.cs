@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Linq.Expressions;
 using SupersonicSound.Exceptions;
 using SupersonicSound.LowLevel;
 using SupersonicSound.Studio;
@@ -82,6 +83,15 @@ namespace ConsoleTest
                     float time = (float)(DateTime.Now.TimeOfDay.TotalSeconds * 0.025f) % 1;
                     Console.Title = time.ToString();
                     timeParam.Value = time;
+                }
+
+                loopingAmbienceInstance.Stop(true);
+
+                while (true)
+                {
+                    Thread.Sleep(1);
+                    system.Update();
+                    Console.Title = loopingAmbienceInstance.PlaybackState.ToString();
                 }
             }
         }
