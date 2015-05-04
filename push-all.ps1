@@ -13,5 +13,5 @@ function Push-Nuget($path, $csproj) {
     }
 }
 
-#Root of all projects
 Push-Nuget "SupersonicSound" "SupersonicSound.csproj"
+Push-Nuget "SupersonicSound.Dependencies" "SupersonicSound.Dependencies.csproj"

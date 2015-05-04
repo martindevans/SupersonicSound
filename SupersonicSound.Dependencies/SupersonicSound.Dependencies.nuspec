@@ -11,4 +11,13 @@
     <description>$description$</description>
     <copyright>Copyright 2015</copyright>
   </metadata>
+  <files>
+    <file src="bin\release\Dependencies\x86\fmod.dll" target="content\Dependencies\x86" />
+    <file src="bin\release\Dependencies\x86\fmodstudio.dll" target="content\Dependencies\x86" />
+    
+    <file src="bin\release\Dependencies\x86_64\fmod.dll" target="content\Dependencies\x86_64" />
+    <file src="bin\release\Dependencies\x86_64\fmodstudio.dll" target="content\Dependencies\x86_64" />
+    
+    <file src="install.ps1" target="tools" />
+  </files>
 </package>

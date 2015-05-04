@@ -116,6 +116,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SupersonicSound.Dependencies\SupersonicSound.Dependencies.csproj">
+      <Project>{c315d3dc-2f02-478f-9fb0-a4e6c8b4ccda}</Project>
+      <Name>SupersonicSound.Dependencies</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SupersonicSound\SupersonicSound.csproj">
       <Project>{a6a47d78-1427-4201-ade3-f262a8f71f0a}</Project>
       <Name>SupersonicSound</Name>
