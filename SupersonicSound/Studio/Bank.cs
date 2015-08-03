@@ -51,7 +51,7 @@ namespace SupersonicSound.Studio
             get
             {
                 GUID id;
-                FmodBank.getID(out id);
+                FmodBank.getID(out id).Check();
                 return id.FromFmod();
             }
         }
@@ -68,17 +68,17 @@ namespace SupersonicSound.Studio
 
         public void Unload()
         {
-            FmodBank.unload();
+            FmodBank.unload().Check();
         }
 
         public void LoadSampleData()
         {
-            FmodBank.loadSampleData();
+            FmodBank.loadSampleData().Check();
         }
 
         public void UnloadSampleData()
         {
-            FmodBank.unloadSampleData();
+            FmodBank.unloadSampleData().Check();
         }
 
         public LoadingState LoadingState

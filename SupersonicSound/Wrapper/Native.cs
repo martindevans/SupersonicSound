@@ -1,4 +1,9 @@
-﻿using FMOD;
+﻿#if DEBUG
+using System.Linq;
+using System.Reflection;
+#endif
+
+using FMOD;
 using FMOD.Studio;
 using System;
 using System.Collections.Generic;
@@ -108,7 +113,7 @@ namespace SupersonicSound.Wrapper
 #if DEBUG
             var enums = from type in Assembly.GetExecutingAssembly().GetTypes()
                         where type.IsEnum
-                        let a = new { t = type, a = type.GetCustomAttribute<EquivalentEnumAttribute>() }
+                        let a = new { t = type, a = type.GetCustomAttributes(typeof(EquivalentEnumAttribute), true).Cast<EquivalentEnumAttribute>().SingleOrDefault() }
                         where a.a != null
                         select a;
 
