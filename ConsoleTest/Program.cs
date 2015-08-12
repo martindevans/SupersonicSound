@@ -98,6 +98,7 @@ namespace ConsoleTest
 
         private static void PreInit(IPreInitilizeLowLevelSystem ll)
         {
+            ll.Output = OutputMode.DirectSound;
         }
     }
 }
