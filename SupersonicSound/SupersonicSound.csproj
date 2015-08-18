@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SupersonicSound</RootNamespace>
     <AssemblyName>SupersonicSound</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -22,6 +23,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\Release\</OutputPath>
@@ -32,10 +34,12 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -83,6 +87,7 @@
     <Compile Include="Exceptions\FmodUninitializedException.cs" />
     <Compile Include="Exceptions\BaseFmodFileException.cs" />
     <Compile Include="Exceptions\FmodEventLiveUpdateExceptions.cs" />
+    <Compile Include="Extensions\Vector3Extensions.cs" />
     <Compile Include="LowLevel\ChannelOrder.cs" />
     <Compile Include="LowLevel\DspDescription.cs" />
     <Compile Include="LowLevel\RealFileSystem.cs" />
@@ -122,7 +127,6 @@
     <Compile Include="LowLevel\SystemCallbackType.cs" />
     <Compile Include="LowLevel\Tag.cs" />
     <Compile Include="LowLevel\TimeUnit.cs" />
-    <Compile Include="LowLevel\Vector3.cs" />
     <Compile Include="LowLevel\CreateSoundExInfo.cs" />
     <Compile Include="Studio\CueInstance.cs" />
     <Compile Include="Studio\EventInstance.cs" />

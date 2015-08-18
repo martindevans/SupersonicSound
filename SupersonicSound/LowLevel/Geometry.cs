@@ -1,4 +1,6 @@
-﻿using FMOD;
+﻿using System.Numerics;
+using FMOD;
+using SupersonicSound.Extensions;
 using SupersonicSound.Wrapper;
 using System;
 using System.Linq;
@@ -131,7 +133,7 @@ namespace SupersonicSound.LowLevel
                 {
                     VECTOR vector;
                     _fmodGeometry.getPolygonVertex(Index, vertexIndex, out vector).Check();
-                    return new Vector3(vector);
+                    return vector.FromFmod();
                 }
                 set
                 {
@@ -211,9 +213,9 @@ namespace SupersonicSound.LowLevel
             public void SetAttributes(float directOcclusion, float reverbOcclusion, bool doubleSided)
             {
                 if (directOcclusion < 0 || directOcclusion > 1)
-                    throw new ArgumentOutOfRangeException("direct occlusion must be 0 < Direct < 1");
+                    throw new ArgumentOutOfRangeException("directOcclusion", "direct occlusion must be 0 < Direct < 1");
                 if (reverbOcclusion < 0 || reverbOcclusion > 1)
-                    throw new ArgumentOutOfRangeException("reverb occlusion must be 0 < Reverb < 1");
+                    throw new ArgumentOutOfRangeException("reverbOcclusion", "reverb occlusion must be 0 < Reverb < 1");
 
                 _fmodGeometry.setPolygonAttributes(Index, directOcclusion, reverbOcclusion, doubleSided).Check();
             }
@@ -256,8 +258,8 @@ namespace SupersonicSound.LowLevel
             VECTOR u;
             _fmodGeometry.getRotation(out f, out u).Check();
 
-            forward = new Vector3(f);
-            up = new Vector3(u);
+            forward = f.FromFmod();
+            up = u.FromFmod();
         }
 
         /// <summary>
@@ -292,7 +294,7 @@ namespace SupersonicSound.LowLevel
             {
                 VECTOR position;
                 _fmodGeometry.getPosition(out position).Check();
-                return new Vector3(position);
+                return position.FromFmod();
             }
             set
             {
@@ -307,7 +309,7 @@ namespace SupersonicSound.LowLevel
             {
                 VECTOR scale;
                 _fmodGeometry.getScale(out scale).Check();
-                return new Vector3(scale);
+                return scale.FromFmod();
             }
             set
             {

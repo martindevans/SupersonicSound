@@ -1,4 +1,6 @@
-﻿using FMOD;
+﻿using System.Numerics;
+using FMOD;
+using SupersonicSound.Extensions;
 using SupersonicSound.Studio;
 using SupersonicSound.Wrapper;
 using System;
@@ -420,10 +422,10 @@ namespace SupersonicSound.LowLevel
                 VECTOR forv;
                 VECTOR upv;
                 _lowLevelSystem._system.get3DListenerAttributes(_index, out pos, out vel, out forv, out upv).Check();
-                position = new Vector3(pos);
-                velocity = new Vector3(vel);
-                forward = new Vector3(forv);
-                up = new Vector3(upv);
+                position = pos.FromFmod();
+                velocity = vel.FromFmod();
+                forward = forv.FromFmod();
+                up = upv.FromFmod();
             }
         }
 

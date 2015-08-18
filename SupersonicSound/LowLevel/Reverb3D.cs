@@ -1,4 +1,6 @@
-﻿using FMOD;
+﻿using System.Numerics;
+using FMOD;
+using SupersonicSound.Extensions;
 using SupersonicSound.Wrapper;
 using System;
 
@@ -83,7 +85,7 @@ namespace SupersonicSound.LowLevel
             float min = 0, max = 0;
             FmodReverb.get3DAttributes(ref pos, ref min, ref max).Check();
 
-            position = new Vector3(pos);
+            position = pos.FromFmod();
             minDistance = min;
             maxDistance = max;
         }

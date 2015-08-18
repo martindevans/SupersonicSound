@@ -1,4 +1,6 @@
-﻿using _3D_ATTRIBUTES = FMOD.Studio._3D_ATTRIBUTES;
+﻿using System.Numerics;
+using SupersonicSound.Extensions;
+using _3D_ATTRIBUTES = FMOD.Studio._3D_ATTRIBUTES;
 
 namespace SupersonicSound.LowLevel
 {
@@ -19,7 +21,7 @@ namespace SupersonicSound.LowLevel
         }
 
         public Attributes3D(ref _3D_ATTRIBUTES attr)
-            : this(new Vector3(attr.position), new Vector3(attr.velocity), new Vector3(attr.forward), new Vector3(attr.up))
+            : this(attr.position.FromFmod(), attr.velocity.FromFmod(), attr.forward.FromFmod(), attr.up.FromFmod())
         {
         }
 
