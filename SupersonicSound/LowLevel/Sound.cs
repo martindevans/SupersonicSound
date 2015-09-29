@@ -35,22 +35,9 @@ namespace SupersonicSound.LowLevel
 
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            FmodSound.release();
         }
 
-        private void Dispose(bool disposing)
-        {
-            if (!_disposed)
-            {
-                if (disposing)
-                {
-                    FmodSound.release();
-                }
-
-                _disposed = true;
-            }
-        }
         #region equality
         public bool Equals(Sound other)
         {
