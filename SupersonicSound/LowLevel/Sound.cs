@@ -10,7 +10,6 @@ namespace SupersonicSound.LowLevel
         : IEquatable<Sound>, IDisposable
     {
         private readonly FMOD.Sound _fmodSound;
-        private bool _disposed;
 
         public FMOD.Sound FmodSound
         {
