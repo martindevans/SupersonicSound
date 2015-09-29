@@ -146,5 +146,10 @@ namespace SupersonicSound.LowLevel
         /// Android MediaCodec
         /// </summary>
         MediaCodec = SOUND_TYPE.MEDIACODEC,
+
+        /// <summary>
+        /// FMOD Adaptive Differential Pulse Code Modulation
+        /// </summary>
+        FADPCM = SOUND_TYPE.FADPCM
     }
 }

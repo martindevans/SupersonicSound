@@ -176,39 +176,6 @@ namespace SupersonicSound.Wrapper
             }
         }
 
-        public static GUID ToFmod(this Guid guid)
-        {
-            var bytes = guid.ToByteArray();
-
-            byte[] last8 = new byte[8];
-            Array.Copy(bytes, 8, last8, 0, 8);
-
-            return new GUID
-            {
-                Data1 = BitConverter.ToUInt32(bytes, 0),
-                Data2 = BitConverter.ToUInt16(bytes, sizeof(uint)),
-                Data3 = BitConverter.ToUInt16(bytes, sizeof(uint) + sizeof(ushort)),
-                Data4 = last8,
-            };
-        }
-
-        public static Guid FromFmod(this GUID guid)
-        {
-            return new Guid(
-                guid.Data1,
-                guid.Data2,
-                guid.Data3,
-                guid.Data4[0],
-                guid.Data4[1],
-                guid.Data4[2],
-                guid.Data4[3],
-                guid.Data4[4],
-                guid.Data4[5],
-                guid.Data4[6],
-                guid.Data4[7]
-            );
-        }
-
         public static bool IsUnix
         {
             get

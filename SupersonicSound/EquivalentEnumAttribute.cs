@@ -68,7 +68,7 @@ namespace SupersonicSound
                 // THIS MEANS:
                 // Your enum (which is *meant* to be equivalent to some FMOD enum) is missing a value which FMOD has
                 // Check this array (unmatchedNames) to see which names are missing
-                Console.WriteLine(unmatchedNames);
+                unmatchedNames.ToList().ForEach(x => Console.WriteLine(x));
 
                 throw new Exception(string.Format("Incompatible - Found {0} names in base enum {1} which are not in enum {2}", unmatchedValues.Length, Equivalent.Name, checkAgainst.Name));
             }

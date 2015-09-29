@@ -96,7 +96,7 @@ namespace SupersonicSound.Studio
         public EventDescription GetEvent(Guid id)
         {
             FMOD.Studio.EventDescription evt;
-            _system.getEventByID(id.ToFmod(), out evt).Check();
+            _system.getEventByID(id, out evt).Check();
 
             return EventDescription.FromFmod(evt);
         }
@@ -112,7 +112,7 @@ namespace SupersonicSound.Studio
         public Bus GetBus(Guid guid)
         {
             FMOD.Studio.Bus bus;
-            _system.getBusByID(guid.ToFmod(), out bus).Check();
+            _system.getBusByID(guid, out bus).Check();
 
             return Bus.FromFmod(bus);
         }
@@ -128,7 +128,7 @@ namespace SupersonicSound.Studio
         public VCA GetVCA(Guid guid)
         {
             FMOD.Studio.VCA vca;
-            _system.getVCAByID(guid.ToFmod(), out vca).Check();
+            _system.getVCAByID(guid, out vca).Check();
 
             return VCA.FromFmod(vca);
         }
@@ -144,7 +144,7 @@ namespace SupersonicSound.Studio
         public Bank GetBank(Guid guid)
         {
             FMOD.Studio.Bank bank;
-            _system.getBankByID(guid.ToFmod(), out bank).Check();
+            _system.getBankByID(guid, out bank).Check();
 
             return Bank.FromFmod(bank);
         }
@@ -158,30 +158,28 @@ namespace SupersonicSound.Studio
 
         public Guid LookupId(string path)
         {
-            GUID guid;
+            Guid guid;
             _system.lookupID(path, out guid).Check();
-            return guid.FromFmod();
+            return guid;
         }
 
         public string LookupPath(Guid id)
         {
             string path;
-            _system.lookupPath(id.ToFmod(), out path).Check();
+            _system.lookupPath(id, out path).Check();
             return path;
         }
 
-        public Attributes3D ListenerAttributes
+        public Attributes3D GetListenerAttributes(int listener)
         {
-            get
-            {
-                FMOD.Studio._3D_ATTRIBUTES attr;
-                _system.getListenerAttributes(out attr).Check();
-                return new Attributes3D(ref attr);
-            }
-            set
-            {
-                _system.setListenerAttributes(value.ToFmod()).Check();
-            }
+            FMOD.Studio._3D_ATTRIBUTES attr;
+            _system.getListenerAttributes(listener, out attr).Check();
+            return new Attributes3D(ref attr);
+        }
+
+        public void SetListenerAttributes(int listener, Attributes3D value)
+        {
+            _system.setListenerAttributes(listener, value.ToFmod()).Check();
         }
 
         public Bank LoadBankFromFile(string name, BankLoadingFlags flags)
@@ -225,19 +223,22 @@ namespace SupersonicSound.Studio
             _system.flushCommands();
         }
 
-        public void StartRecordCommands(string path, RecordCommandsFlags flags)
+        public void StartCommandCapture(string path, CommandCaptureFlags flags = CommandCaptureFlags.Normal)
         {
-            _system.startRecordCommands(path, (RECORD_COMMANDS_FLAGS)flags).Check();
+            _system.startCommandCapture(path, (COMMANDCAPTURE_FLAGS)flags).Check();
         }
 
-        public void StopRecordedCommands()
+        public void StopCommandCapture()
         {
-            _system.stopRecordCommands();
+            _system.stopCommandCapture().Check(); ;
         }
 
-        public void PlaybackCommands(string path)
+        public CommandReplay LoadCommandReplay(string path, CommandReplayFlags flags = CommandReplayFlags.Normal)
         {
-            _system.playbackCommands(path).Check();
+            FMOD.Studio.CommandReplay commandReplay;
+            _system.loadCommandReplay(path, (COMMANDREPLAY_FLAGS)flags, out commandReplay).Check();
+
+            return CommandReplay.FromFmod(commandReplay);
         }
 
         public int BankCount

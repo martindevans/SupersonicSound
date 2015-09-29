@@ -86,5 +86,10 @@ namespace SupersonicSound.LowLevel
         /// Compressed Vorbis data.
         /// </summary>
         Vorbis = SOUND_FORMAT.VORBIS,
+
+        /// <summary>
+        /// Compressed FADPCM data.
+        /// </summary>
+        Fadpcm = SOUND_FORMAT.FADPCM
     }
 }

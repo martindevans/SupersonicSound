@@ -86,7 +86,7 @@ namespace SupersonicSound.LowLevel
         DriverInfo IPreInitilizeLowLevelSystem.GetDriverInfo(int id)
         {
             StringBuilder name = new StringBuilder(128);
-            GUID guid;
+            Guid guid;
             int systemRate;
             SPEAKERMODE speakerMode;
             int channels;
@@ -95,11 +95,12 @@ namespace SupersonicSound.LowLevel
             return new DriverInfo(
                 id,
                 name.ToString(),
-                guid.FromFmod(),
+                guid,
                 systemRate,
                 (SpeakerMode)speakerMode,
-                channels
-            );
+                channels,
+                DriverState.Default     // Not available from LowLevelSystem
+           );
         }
 
         int IPreInitilizeLowLevelSystem.Driver
@@ -212,7 +213,7 @@ namespace SupersonicSound.LowLevel
             ).Check();
         }
 
-        private RESULT OpenedCallback(string name, ref uint filesize, ref IntPtr handle, IntPtr userdata)
+        private RESULT OpenedCallback(StringWrapper name, ref uint filesize, ref IntPtr handle, IntPtr userdata)
         {
             if (_opened != null)
                 _opened(name, filesize, handle);
@@ -688,27 +689,40 @@ namespace SupersonicSound.LowLevel
         #region Recording api
         public int GetRecordNumDrivers()
         {
-            int num;
-            _system.getRecordNumDrivers(out num).Check();
-            return num;
+            int numDrivers;
+            int numConnected;
+            _system.getRecordNumDrivers(out numDrivers, out numConnected).Check();
+
+            return numDrivers;
+        }
+
+        public int GetRecordNumConnected()
+        {
+            int numDrivers;
+            int numConnected;
+            _system.getRecordNumDrivers(out numDrivers, out numConnected).Check();
+
+            return numConnected;
         }
 
         public DriverInfo getRecordDriverInfo(int id)
         {
             StringBuilder name = new StringBuilder(128);
-            GUID guid;
+            Guid guid;
             int systemRate;
             SPEAKERMODE speakerMode;
             int channels;
-            _system.getRecordDriverInfo(id, name, name.Capacity, out guid, out systemRate, out speakerMode, out channels).Check();
+            DRIVER_STATE state;
+            _system.getRecordDriverInfo(id, name, name.Capacity, out guid, out systemRate, out speakerMode, out channels, out state).Check();
 
             return new DriverInfo(
                 id,
                 name.ToString(),
-                guid.FromFmod(),
+                guid,
                 systemRate,
                 (SpeakerMode)speakerMode,
-                channels
+                channels,
+                (DriverState)state
             );
         }
 

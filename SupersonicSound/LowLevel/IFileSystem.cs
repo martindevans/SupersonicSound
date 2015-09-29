@@ -52,7 +52,7 @@ namespace SupersonicSound.LowLevel
             _fileSystem = fileSystem;
         }
 
-        public RESULT UserOpen(string name,
+        public RESULT UserOpen(StringWrapper name,
 // ReSharper disable RedundantAssignment
             ref uint filesize,
             ref IntPtr handle,
@@ -240,7 +240,7 @@ namespace SupersonicSound.LowLevel
 
     internal interface IFileSystemWrapper
     {
-        RESULT UserOpen(string name, ref uint filesize, ref IntPtr handle, IntPtr userdata);
+        RESULT UserOpen(StringWrapper name, ref uint filesize, ref IntPtr handle, IntPtr userdata);
 
         RESULT UserClose(IntPtr handle, IntPtr userdata);
 

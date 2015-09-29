@@ -14,6 +14,11 @@ namespace SupersonicSound.Studio
         /// <summary>
         /// Bank loading occurs asynchronously rather than occurring immediately.
         /// </summary>
-        NonBlocking = LOAD_BANK_FLAGS.NONBLOCKING
+        NonBlocking = LOAD_BANK_FLAGS.NONBLOCKING,
+
+        /// <summary>
+        /// Force samples to decompress into memory when they are loaded, rather than staying compressed.
+        /// </summary>
+        DecompressSamples = LOAD_BANK_FLAGS.DECOMPRESS_SAMPLES
     }
 }

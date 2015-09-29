@@ -48,16 +48,16 @@ namespace SupersonicSound.LowLevel
         #endregion
 
         #region Connection / disconnection / input and output enumeration.
-        public DspConnection  AddInput(DSP target)
+        public DspConnection AddInput(DSP target, DspConnectionType dspConnectionType = DspConnectionType.Standard)
         {
             FMOD.DSPConnection connection;
-            FmodDsp.addInput(target.FmodDsp, out connection).Check();
+            FmodDsp.addInput(target.FmodDsp, out connection, (DSPCONNECTION_TYPE)dspConnectionType).Check();
             return new DspConnection(connection);
         }
 
-        public void DisconnectFrom(DSP target)
+        public void DisconnectFrom(DSP target, DspConnection connection)
         {
-            FmodDsp.disconnectFrom(target.FmodDsp);
+            FmodDsp.disconnectFrom(target.FmodDsp, connection.FmodDspConnection);
         }
 
         public void DisconnectAll(bool inputs, bool outputs)
@@ -135,14 +135,14 @@ namespace SupersonicSound.LowLevel
             }
         }
 
-        public void SetWetDryMix(float wet, float dry)
+        public void SetWetDryMix(float prewet, float postwet, float dry)
         {
-            FmodDsp.setWetDryMix(wet, dry).Check();
+            FmodDsp.setWetDryMix(prewet, postwet, dry).Check();
         }
 
-        public void GetWetDryMix(out float wet, out float dry)
+        public void GetWetDryMix(out float prewet, out float postwet, out float dry)
         {
-            FmodDsp.getWetDryMix(out wet, out dry).Check();
+            FmodDsp.getWetDryMix(out prewet, out postwet, out dry).Check();
         }
 
         public void SetChannelFormat(ChannelMask channelMask, int numChannels, SpeakerMode sourceSpeakerMode)
@@ -336,12 +336,32 @@ namespace SupersonicSound.LowLevel
             }
         }
 
-        public DspMeteringInfo MeteringInfo
+        public DspMeteringInfo MeteringInputInfo
         {
             get
             {
-                DSP_METERING_INFO info;
-                FmodDsp.getMeteringInfo(out info).Check();
+                DSP_METERING_INFO info = new DSP_METERING_INFO
+                {
+                    peaklevel = new float[32],
+                    rmslevel = new float[32]
+                };
+                FmodDsp.getMeteringInfo(info, null).Check();
+
+                return new DspMeteringInfo(ref info);
+            }
+        }
+
+        public DspMeteringInfo MeteringOutputInfo
+        {
+            get
+            {
+                DSP_METERING_INFO info = new DSP_METERING_INFO
+                {
+                    peaklevel = new float[32],
+                    rmslevel = new float[32]
+                };
+                FmodDsp.getMeteringInfo(null, info).Check();
+
                 return new DspMeteringInfo(ref info);
             }
         }

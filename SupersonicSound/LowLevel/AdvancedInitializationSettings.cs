@@ -21,11 +21,6 @@ namespace SupersonicSound.LowLevel
         public int MaxXmaCodecs { get; private set; }
 
         /// <summary>
-        /// [r/w] Optional. Specify 0 to ignore. For use with FMOD_CREATECOMPRESSEDSAMPLE only.  CELT   codecs consume 25,408 bytes per instance and this number will determine how many CELT   channels can be played simultaneously. Default = 32.
-        /// </summary>
-        public int MaxCeltCodecs { get; private set; }
-
-        /// <summary>
         /// [r/w] Optional. Specify 0 to ignore. For use with FMOD_CREATECOMPRESSEDSAMPLE only.  Vorbis codecs consume 23,256 bytes per instance and this number will determine how many Vorbis channels can be played simultaneously. Default = 32.
         /// </summary>
         public int MaxVorbisCodecs { get; private set; }
@@ -112,7 +107,7 @@ namespace SupersonicSound.LowLevel
         /// <summary>
         /// [r/w] Optional. Specify 0 to ignore. Resampling method used with fmod's software mixer.  See FMOD_DSP_RESAMPLER for details on methods.
         /// </summary>
-        public uint ResamplerMethod { get; private set; }
+        public DSP_RESAMPLER ResamplerMethod { get; private set; }
 
         /// <summary>
         /// [r/w] Optional. Specify 0 to ignore. Specify the command queue size for thread safe processing.  Default 2048 (2kb)
@@ -125,16 +120,15 @@ namespace SupersonicSound.LowLevel
         public uint RandomSeed { get; private set; }
 
         public AdvancedInitializationSettings(
-            int maxMpegCodecs = 0, int maxAdpcmCodecs = 0, int maxXmaCodecs = 0, int maxCeltCodecs = 0, int maxVorbisCodecs = 0, int maxAT9Codecs = 0, int asioNumChannels = 0,
+            int maxMpegCodecs = 0, int maxAdpcmCodecs = 0, int maxXmaCodecs = 0, int maxVorbisCodecs = 0, int maxAT9Codecs = 0, int asioNumChannels = 0,
             float hrtfMinAngle = 0, float hrtfMaxAngle = 0, float hrtfFreq = 0, float vol0VirtualVol = 0, uint defaultDecodeBufferSize = 0, ushort profilePort = 0,
             uint geometryMaxFadeTime = 0, float distanceFilterCenterFreq = 0, int reverb3Dinstance = 0, int dspBufferPoolSize = 0, uint stackSizeStream = 0,
-            uint stackSizeNonBlocking = 0, uint stackSizeMixer = 0, uint resamplerMethod = 0, uint commandQueueSize = 0, uint randomSeed = 0)
+            uint stackSizeNonBlocking = 0, uint stackSizeMixer = 0, DSP_RESAMPLER resamplerMethod = DSP_RESAMPLER.DEFAULT, uint commandQueueSize = 0, uint randomSeed = 0)
             : this()
         {
             MaxMpegCodecs = maxMpegCodecs;
             MaxAdpcmCodecs = maxAdpcmCodecs;
             MaxXmaCodecs = maxXmaCodecs;
-            MaxCeltCodecs = maxCeltCodecs;
             MaxVorbisCodecs = maxVorbisCodecs;
             MaxAT9Codecs = maxAT9Codecs;
             AsioNumChannels = asioNumChannels;
@@ -164,7 +158,6 @@ namespace SupersonicSound.LowLevel
                 maxMPEGCodecs = MaxMpegCodecs,
                 maxADPCMCodecs = MaxAdpcmCodecs,
                 maxXMACodecs = MaxXmaCodecs,
-                maxCELTCodecs = MaxCeltCodecs,
                 maxVorbisCodecs = MaxVorbisCodecs,
                 maxAT9Codecs = MaxAT9Codecs,
                 ASIONumChannels = AsioNumChannels,

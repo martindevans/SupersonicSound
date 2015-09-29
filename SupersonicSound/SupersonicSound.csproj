@@ -123,11 +123,14 @@
     <Compile Include="LowLevel\SoundGroup.cs" />
     <Compile Include="LowLevel\SoundGroupBehaviour.cs" />
     <Compile Include="LowLevel\Speaker.cs" />
+    <Compile Include="LowLevel\DriverState.cs" />
     <Compile Include="LowLevel\SpeakerMode.cs" />
     <Compile Include="LowLevel\SystemCallbackType.cs" />
     <Compile Include="LowLevel\Tag.cs" />
     <Compile Include="LowLevel\TimeUnit.cs" />
     <Compile Include="LowLevel\CreateSoundExInfo.cs" />
+    <Compile Include="Studio\CommandReplay.cs" />
+    <Compile Include="Studio\CommandReplayFlags.cs" />
     <Compile Include="Studio\CueInstance.cs" />
     <Compile Include="Studio\EventInstance.cs" />
     <Compile Include="Studio\BankLoadingFlags.cs" />
@@ -143,7 +146,7 @@
     <Compile Include="Studio\ParameterType.cs" />
     <Compile Include="Studio\PlaybackState.cs" />
     <Compile Include="LowLevel\SoundType.cs" />
-    <Compile Include="Studio\RecordCommandsFlags.cs" />
+    <Compile Include="Studio\CommandCaptureFlags.cs" />
     <Compile Include="Studio\SoundInfo.cs" />
     <Compile Include="Studio\SystemCallbackType.cs" />
     <Compile Include="Studio\UserProperty.cs" />

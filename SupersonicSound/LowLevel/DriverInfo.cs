@@ -16,7 +16,9 @@ namespace SupersonicSound.LowLevel
 
         public int SpeakerModeChannels { get; private set; }
 
-        public DriverInfo(int id, string name, Guid guid, int systemRate, SpeakerMode speakerMode, int speakerModeChannels)
+        public DriverState DriverState { get; private set; }
+
+        public DriverInfo(int id, string name, Guid guid, int systemRate, SpeakerMode speakerMode, int speakerModeChannels, DriverState driverState)
             :this()
         {
             Id = id;
@@ -25,6 +27,7 @@ namespace SupersonicSound.LowLevel
             SystemRate = systemRate;
             SpeakerMode = speakerMode;
             SpeakerModeChannels = speakerModeChannels;
+            DriverState = driverState;
         }
     }
 }

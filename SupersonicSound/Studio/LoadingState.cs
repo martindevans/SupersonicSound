@@ -8,6 +8,7 @@ namespace SupersonicSound.Studio
         Unloading = LOADING_STATE.UNLOADING,
         Unloaded = LOADING_STATE.UNLOADED,
         Loading = LOADING_STATE.LOADING,
-        Loaded = LOADING_STATE.LOADED
+        Loaded = LOADING_STATE.LOADED,
+        Error = LOADING_STATE.ERROR
     }
 }

@@ -50,9 +50,9 @@ namespace SupersonicSound.Studio
         {
             get
             {
-                GUID id;
+                Guid id;
                 FmodBank.getID(out id).Check();
-                return id.FromFmod();
+                return id;
             }
         }
 
@@ -115,11 +115,9 @@ namespace SupersonicSound.Studio
 
         public string GetStringInfo(int index, out Guid guid)
         {
-            GUID id;
             string path;
-            FmodBank.getStringInfo(index, out id, out path).Check();
+            FmodBank.getStringInfo(index, out guid, out path).Check();
 
-            guid = id.FromFmod();
             return path;
         }
 

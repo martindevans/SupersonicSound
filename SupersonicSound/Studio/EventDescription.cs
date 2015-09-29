@@ -55,9 +55,9 @@ namespace SupersonicSound.Studio
         {
             get
             {
-                GUID id;
+                Guid id;
                 _fmodEventDescription.getID(out id).Check();
-                return id.FromFmod();
+                return id;
             }
         }
 

@@ -405,13 +405,13 @@ namespace FMOD
     public struct DSP_PARAMETER_DESC_UNION
     {
         [FieldOffset(0)]
-        DSP_PARAMETER_DESC_FLOAT   floatdesc;  /* [w] Struct containing information about the parameter in floating point format.  Use when type is FMOD_DSP_PARAMETER_TYPE_FLOAT. */
+        public DSP_PARAMETER_DESC_FLOAT floatdesc;  /* [w] Struct containing information about the parameter in floating point format.  Use when type is FMOD_DSP_PARAMETER_TYPE_FLOAT. */
         [FieldOffset(0)]
-        DSP_PARAMETER_DESC_INT     intdesc;    /* [w] Struct containing information about the parameter in integer format.  Use when type is FMOD_DSP_PARAMETER_TYPE_INT. */
+        public DSP_PARAMETER_DESC_INT intdesc;    /* [w] Struct containing information about the parameter in integer format.  Use when type is FMOD_DSP_PARAMETER_TYPE_INT. */
         [FieldOffset(0)]
-        DSP_PARAMETER_DESC_BOOL    booldesc;   /* [w] Struct containing information about the parameter in boolean format.  Use when type is FMOD_DSP_PARAMETER_TYPE_BOOL. */
+        public DSP_PARAMETER_DESC_BOOL    booldesc;   /* [w] Struct containing information about the parameter in boolean format.  Use when type is FMOD_DSP_PARAMETER_TYPE_BOOL. */
         [FieldOffset(0)]
-        DSP_PARAMETER_DESC_DATA    datadesc;   /* [w] Struct containing information about the parameter in data format.  Use when type is FMOD_DSP_PARAMETER_TYPE_DATA. */
+        public DSP_PARAMETER_DESC_DATA datadesc;   /* [w] Struct containing information about the parameter in data format.  Use when type is FMOD_DSP_PARAMETER_TYPE_DATA. */
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -424,7 +424,7 @@ namespace FMOD
         public char[]               label;           /* [w] Short string to be put next to value to denote the unit type (ie "hz"). */
         public string               description;     /* [w] Description of the parameter to be displayed as a help item / tooltip for this parameter. */
 
-        DSP_PARAMETER_DESC_UNION desc;
+        public DSP_PARAMETER_DESC_UNION desc;
     }
 
     /*
