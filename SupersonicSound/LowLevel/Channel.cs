@@ -124,7 +124,7 @@ namespace SupersonicSound.LowLevel
 
         public void Stop()
         {
-            FmodChannel.stop();
+            FmodChannel.stop().Check();
         }
 
         public bool Pause
