@@ -68,9 +68,11 @@ namespace SupersonicSound.Studio
             {
                 if (disposing)
                 {
-                }
+                    LowLevelSystem.Dispose();
+                    LowLevelSystem = null;
 
-                _system.release().Check();
+                    _system.release().Check();
+                }
 
                 _disposed = true;
             }
@@ -279,7 +281,8 @@ namespace SupersonicSound.Studio
 
         public void SetCallback(Action<System, SystemCallbackType, IntPtr> callback, SystemCallbackType callbackMask)
         {
-            _system.setCallback((_, type, param, __) => {
+            _system.setCallback((_, type, param, __) =>
+            {
                 callback(this, (SystemCallbackType)type, param);
                 return RESULT.OK;
             }, (SYSTEM_CALLBACK_TYPE)callbackMask).Check();

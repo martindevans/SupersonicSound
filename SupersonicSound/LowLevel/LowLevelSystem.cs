@@ -221,9 +221,17 @@ namespace SupersonicSound.LowLevel
         #endregion
 
         #region init/close
+        [Obsolete("Not sure why this method is in here, the system should already be initialized when passed in through the constructor")]
         public void Initialize(int maxchannels, LowLevelInitFlags flags)
         {
             _system.init(maxchannels, (INITFLAGS) flags, IntPtr.Zero).Check();
+        }
+
+        [Obsolete("This should only be called when we've initialized a low level system without studio (I think)")]
+        public void CloseAndRelease()
+        {
+            _system.close().Check();
+            _system.release().Check();
         }
 
         public void Dispose()
@@ -239,8 +247,6 @@ namespace SupersonicSound.LowLevel
                 if (disposing)
                 {
                 }
-
-                _system.close().Check();
 
                 _disposed = true;
             }

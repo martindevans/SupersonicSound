@@ -53,7 +53,7 @@ namespace SupersonicSound.Wrapper
         public static void Load()
         {
             //Early exit
-            if (IsLoaded)
+            if (IsLoaded || Util.IsLinux)
                 return;
 
             //Lock
@@ -70,7 +70,7 @@ namespace SupersonicSound.Wrapper
 
                 IsLoaded = true;
             }
-            
+
         }
 
         /// <summary>
@@ -92,6 +92,9 @@ namespace SupersonicSound.Wrapper
         /// </summary>
         public static void Unload()
         {
+            if (Util.IsLinux)
+                return;
+
             lock (_loadLock)
             {
                 if (!IsLoaded)

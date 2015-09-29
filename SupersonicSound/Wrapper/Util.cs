@@ -183,7 +183,8 @@ namespace SupersonicSound.Wrapper
             byte[] last8 = new byte[8];
             Array.Copy(bytes, 8, last8, 0, 8);
 
-            return new GUID {
+            return new GUID
+            {
                 Data1 = BitConverter.ToUInt32(bytes, 0),
                 Data2 = BitConverter.ToUInt16(bytes, sizeof(uint)),
                 Data3 = BitConverter.ToUInt16(bytes, sizeof(uint) + sizeof(ushort)),
@@ -206,6 +207,15 @@ namespace SupersonicSound.Wrapper
                 guid.Data4[6],
                 guid.Data4[7]
             );
+        }
+
+        public static bool IsLinux
+        {
+            get
+            {
+                int p = (int)Environment.OSVersion.Platform;
+                return (p == 4) || (p == 6) || (p == 128);
+            }
         }
     }
 }

@@ -7,9 +7,10 @@ using SupersonicSound.Wrapper;
 namespace SupersonicSound.LowLevel
 {
     public struct Sound
-        : IEquatable<Sound>
+        : IEquatable<Sound>, IDisposable
     {
         private readonly FMOD.Sound _fmodSound;
+        private bool _disposed;
 
         public FMOD.Sound FmodSound
         {
@@ -32,6 +33,24 @@ namespace SupersonicSound.LowLevel
             return new Sound(sound);
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    FmodSound.release();
+                }
+
+                _disposed = true;
+            }
+        }
         #region equality
         public bool Equals(Sound other)
         {
@@ -318,12 +337,12 @@ namespace SupersonicSound.LowLevel
                 if (!(obj is SyncPoint))
                     return false;
 
-                return Equals((SyncPoint) obj);
+                return Equals((SyncPoint)obj);
             }
 
             public override int GetHashCode()
             {
-// ReSharper disable once ImpureMethodCallOnReadonlyValueField
+                // ReSharper disable once ImpureMethodCallOnReadonlyValueField
                 return _pointer.GetHashCode();
             }
             #endregion

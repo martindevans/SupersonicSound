@@ -83,36 +83,39 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TestBase.cs" />
+    <Compile Include="PlaySound.cs" />
+    <Compile Include="PlayBank.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Character.bank">
+    <None Include="Content\Character.bank">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Master Bank.bank">
+    <None Include="Content\Master Bank.bank">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Master Bank.strings.bank">
+    <None Include="Content\Master Bank.strings.bank">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Music.bank">
+    <None Include="Content\Music.bank">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Surround_Ambience.bank">
+    <None Include="Content\Surround_Ambience.bank">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="UI_Menu.bank">
+    <None Include="Content\UI_Menu.bank">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Vehicles.bank">
+    <None Include="Content\Vehicles.bank">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="VO_Menu_English.bank">
+    <None Include="Content\VO_Menu_English.bank">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Weapons.bank">
+    <None Include="Content\Weapons.bank">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -125,6 +128,11 @@
       <Project>{a6a47d78-1427-4201-ade3-f262a8f71f0a}</Project>
       <Name>SupersonicSound</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\test.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

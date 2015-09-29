@@ -121,6 +121,26 @@ namespace SupersonicSound.LowLevel
         {
             FmodChannel.getLoopPoints(out start, (TIMEUNIT)startUnit, out end, (TIMEUNIT)endUnit);
         }
+
+        public void Stop()
+        {
+            FmodChannel.stop();
+        }
+
+        public bool Pause
+        {
+            get
+            {
+                bool value;
+                FmodChannel.getPaused(out value).Check();
+
+                return value;
+            }
+            set
+            {
+                FmodChannel.setPaused(value).Check();
+            }
+        }
         #endregion
 
         #region Information only functions
