@@ -21,6 +21,8 @@ The easiest way to get started using SupersonicSound is to use the [nuget packag
  
 at the nuget package manager console. This will install the package as well as install the native dependencies (in Dependencies/x86 and Dependencies/x86_64 directories).
 
+Currently this package requires .Net 4.6 (due to a dependency on System.Numerics).
+
 ## Examples
 
 SupersonicSound is *almost* a direct translation from the C++ API but instead does things in C# style. For example to get a parameter from an event instance in C++ is:
