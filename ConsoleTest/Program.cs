@@ -57,7 +57,7 @@ namespace ConsoleTest
 
         private static void PreInit(IPreInitilizeLowLevelSystem ll)
         {
-            if (!SupersonicSound.Wrapper.Util.IsLinux)
+            if (!SupersonicSound.Wrapper.Util.IsUnix)
                 ll.Output = OutputMode.DirectSound;
         }
     }
