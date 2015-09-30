@@ -1,8 +1,7 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using System.Text;
-using FMOD;
+﻿using FMOD;
 using SupersonicSound.Wrapper;
+using System;
+using System.Text;
 
 namespace SupersonicSound.LowLevel
 {
@@ -34,7 +33,7 @@ namespace SupersonicSound.LowLevel
 
         public void Dispose()
         {
-            FmodSound.release();
+            FmodSound.release().Check();
         }
 
         #region equality

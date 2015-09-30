@@ -14,7 +14,12 @@ namespace SupersonicSound.LowLevel
         private readonly FMOD.System _system;
 
         private bool _disposed;
-        private bool _internalSystem;
+
+        /// <summary>
+        /// Studio systems contains a low level system within them, but we do *not* want disposal logic to apply to these (when the studio is disposed, FMOD disposes the LowLevel system for us)
+        /// This indicates if this system should be disposed or not
+        /// </summary>
+        private readonly bool _managedSystem = false;
 
         public LowLevelSystem(int maxChannels = 1024, InitFlags flags = InitFlags.LiveUpdate, AdvancedInitializationSettings advancedSettings = default(AdvancedInitializationSettings), Action<IPreInitilizeLowLevelSystem> preInit = null)
         {
@@ -26,9 +31,9 @@ namespace SupersonicSound.LowLevel
 
             _reverbController = new ReverbPropertiesController(_system);
 
-            //Create low level system
-            FMOD.Factory.System_Create(out _system).Check();
-            _internalSystem = true;
+            //Create low level system and mark it for disposal management
+            Factory.System_Create(out _system).Check();
+            _managedSystem = true;
 
             if (preInit != null)
                 preInit(this);
@@ -261,7 +266,7 @@ namespace SupersonicSound.LowLevel
                 {
                 }
 
-                if (_internalSystem)
+                if (_managedSystem)
                 {
                     _system.close().Check();
                     _system.release().Check();
