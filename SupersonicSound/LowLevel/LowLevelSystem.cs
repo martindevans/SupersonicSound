@@ -259,11 +259,12 @@ namespace SupersonicSound.LowLevel
             {
                 if (disposing)
                 {
-                    if (_internalSystem)
-                    {
-                        _system.close().Check();
-                        _system.release().Check();
-                    }
+                }
+
+                if (_internalSystem)
+                {
+                    _system.close().Check();
+                    _system.release().Check();
                 }
 
                 _disposed = true;

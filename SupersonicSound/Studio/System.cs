@@ -68,11 +68,12 @@ namespace SupersonicSound.Studio
             {
                 if (disposing)
                 {
+                    // Dispose our LowLevelSystem class
                     LowLevelSystem.Dispose();
                     LowLevelSystem = null;
-
-                    _system.release().Check();
                 }
+
+                _system.release().Check();
 
                 _disposed = true;
             }
