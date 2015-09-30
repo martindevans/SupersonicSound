@@ -251,7 +251,7 @@ namespace SupersonicSound.LowLevel
         }
         #endregion
 
-        #region init/close
+        #region disposal
         public void Dispose()
         {
             Dispose(true);

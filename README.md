@@ -13,15 +13,26 @@ Obviously I do no control licensing of the any FMOD technologies. You should [go
 
 This library itself is MIT licensed, see the LICENSE.md file for more details.
 
-## Nuget Package
+## Installation Instructions
 
 The easiest way to get started using SupersonicSound is to use the [nuget package](https://www.nuget.org/packages/SupersonicSound/). Run:
 
  > Install-Package SupersonicSound
  
-at the nuget package manager console. This will install the package as well as install the native dependencies (in Dependencies/x86 and Dependencies/x86_64 directories).
+at the nuget package manager console. Currently this package requires .Net 4.6 (due to a dependency on System.Numerics).
 
-Currently this package requires .Net 4.6 (due to a dependency on System.Numerics).
+Unfortunately FMOD licensing does not allow for the FMOD dlls to be distributed with the nuget package and you will need to download these yourself.
+
+1. Download and install FMOD Studio from [here](http://www.fmod.org/download/#Studio)
+2. Create a new folder in your project **Dependencies/x86**
+3. Now you need to copy the DLLs into your project. Assuming your install directory is something like:
+
+   > C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api
+
+   You need to copy **studio\lib\fmodstudio.dll** and **lowlevel\lib\fmod.dll** into the x86 folder.
+4. Right click and select properties. Set "Copy To Output Directory" to "Copy If Newer" for both files
+
+This process currently only works for x86 on windows. A PR to support x64 would be very welcome!
 
 ## Examples
 

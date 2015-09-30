@@ -30,7 +30,10 @@ namespace SupersonicSound.Wrapper
         {
             string directory = "x86";
             if (Environment.Is64BitProcess)
+            {
+                throw new NotImplementedException("Loading DLLs for x64 not yet implemented. Why not submit a PR to https://github.com/martindevans/SupersonicSound ?");
                 directory = "x86_64";
+            }
 
             var path = Path.Combine(Environment.CurrentDirectory, "Dependencies", directory, name);
 
@@ -38,7 +41,7 @@ namespace SupersonicSound.Wrapper
             {
                 var ptr = LoadLibrary(path);
                 if (ptr == IntPtr.Zero)
-                    throw new DllNotFoundException(string.Format("Failed to load DLL {0}", path));
+                    throw new DllNotFoundException(string.Format("Failed to load DLL '{0}'. See https://github.com/martindevans/SupersonicSound#installation-instructions", path));
 
                 _loaded.Add(ptr);
             }

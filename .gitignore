@@ -1,14 +1,14 @@
 *.cache
 *.user
 *.suo
+*.sdf
+*.ncrunchproject
+*.ncrunchsolution
 _Resharper.SupersonicSound
 
 ConsoleTest/bin
 ConsoleTest/obj
+ConsoleTest/Dependencies/**/*.dll
 
 SupersonicSound/bin
 SupersonicSound/obj
-
-SupersonicSound.Dependencies/bin
-SupersonicSound.Dependencies/obj
-*.sdf
