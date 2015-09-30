@@ -1,4 +1,5 @@
 ﻿using System;
+using ConsoleTest.Examples;
 using SupersonicSound.LowLevel;
 
 namespace ConsoleTest
@@ -11,7 +12,7 @@ namespace ConsoleTest
 
             Console.WriteLine("Initializing FMOD");
 
-            using (SupersonicSound.Studio.System system = new SupersonicSound.Studio.System(preInit: PreInit))
+            
             {
                 Console.WriteLine("FMOD initialized");
 
@@ -34,11 +35,11 @@ namespace ConsoleTest
                     switch (choice)
                     {
                         case "1":
-                            new PlaySound(system, contentPath).Execute();
+                            new PlaySound(contentPath).Execute();
                             break;
 
                         case "2":
-                            new PlayBank(system, contentPath).Execute();
+                            new PlayBank(contentPath).Execute();
                             break;
 
                         default:
@@ -53,12 +54,6 @@ namespace ConsoleTest
             }
 
             Console.WriteLine("Closed");
-        }
-
-        private static void PreInit(IPreInitilizeLowLevelSystem ll)
-        {
-            if (!SupersonicSound.Wrapper.Util.IsUnix)
-                ll.Output = OutputMode.DirectSound;
         }
     }
 }

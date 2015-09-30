@@ -84,8 +84,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="TestBase.cs" />
-    <Compile Include="PlaySound.cs" />
-    <Compile Include="PlayBank.cs" />
+    <Compile Include="Examples\PlaySound.cs" />
+    <Compile Include="Examples\PlayBank.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

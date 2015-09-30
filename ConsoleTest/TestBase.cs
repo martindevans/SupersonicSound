@@ -2,26 +2,39 @@
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using SupersonicSound.Exceptions;
+using SupersonicSound.LowLevel;
 
 namespace ConsoleTest
 {
     public abstract class TestBase
     {
-        protected SupersonicSound.Studio.System system;
-        protected string contentPath;
+        protected string ContentPath { get; private set; }
 
-        public TestBase(SupersonicSound.Studio.System system, string contentPath)
+        private LowLevelSystem _lowLevelSystem;
+        private SupersonicSound.Studio.System _system;
+
+        protected TestBase(string contentPath)
         {
-            this.system = system;
-            this.contentPath = contentPath;
+            ContentPath = contentPath;
         }
 
         protected string GetContentPath(string fileName)
         {
-            return Path.Combine(this.contentPath, fileName);
+            return Path.Combine(ContentPath, fileName);
         }
 
         public abstract void Execute();
+
+        protected void Pump(LowLevelSystem system)
+        {
+            _lowLevelSystem = system;
+        }
+
+        protected void Pump(SupersonicSound.Studio.System system)
+        {
+            _system = system;
+        }
 
         protected void WaitForKeypress(Action reportAction = null)
         {
@@ -33,7 +46,11 @@ namespace ConsoleTest
             while (!Console.KeyAvailable)
             {
                 Thread.Sleep(50);
-                system.Update();
+
+                if (_lowLevelSystem != null)
+                    _lowLevelSystem.Update();
+                if (_system != null)
+                    _system.Update();
 
                 if (watch.ElapsedMilliseconds >= 500)
                 {
@@ -46,7 +63,7 @@ namespace ConsoleTest
 
             // Flush
             while (Console.KeyAvailable)
-                Console.ReadKey();
+                Console.ReadKey(true);
 
             if (reportAction != null)
                 reportAction();
@@ -62,7 +79,11 @@ namespace ConsoleTest
             while (!predicate())
             {
                 Thread.Sleep(50);
-                system.Update();
+
+                if (_lowLevelSystem != null)
+                    _lowLevelSystem.Update();
+                if (_system != null)
+                    _system.Update();
 
                 if (watch.ElapsedMilliseconds >= 500)
                 {
