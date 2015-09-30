@@ -14,8 +14,33 @@ namespace SupersonicSound.LowLevel
         private readonly FMOD.System _system;
 
         private bool _disposed;
+        private bool _internalSystem;
 
-        public LowLevelSystem(FMOD.System system)
+        public LowLevelSystem(int maxChannels = 1024, InitFlags flags = InitFlags.LiveUpdate, AdvancedInitializationSettings advancedSettings = default(AdvancedInitializationSettings), Action<IPreInitilizeLowLevelSystem> preInit = null)
+        {
+            //Load native dependencies
+            Native.Load();
+
+            _listenerCollection = new ListenerCollection(this);
+            _disposed = false;
+
+            _reverbController = new ReverbPropertiesController(_system);
+
+            //Create low level system
+            FMOD.Factory.System_Create(out _system).Check();
+            _internalSystem = true;
+
+            if (preInit != null)
+                preInit(this);
+
+            //Set advanced settings
+            SetAdvancedSettings(advancedSettings);
+
+            //Initialize
+            _system.init(maxChannels, (INITFLAGS)flags, IntPtr.Zero).Check();
+        }
+
+        internal LowLevelSystem(FMOD.System system)
         {
             _listenerCollection = new ListenerCollection(this);
             _disposed = false;
@@ -212,7 +237,8 @@ namespace SupersonicSound.LowLevel
 
         void IPreInitilizeLowLevelSystem.SetCallback(Action<LowLevelSystem, SystemCallbackType, IntPtr, IntPtr> callback, SystemCallbackType callbackMask)
         {
-            _system.setCallback((_, type, cd1, cd2, __) => {
+            _system.setCallback((_, type, cd1, cd2, __) =>
+            {
 
                 callback(this, (SystemCallbackType)type, cd1, cd2);
                 return RESULT.OK;
@@ -221,19 +247,6 @@ namespace SupersonicSound.LowLevel
         #endregion
 
         #region init/close
-        [Obsolete("Not sure why this method is in here, the system should already be initialized when passed in through the constructor")]
-        public void Initialize(int maxchannels, LowLevelInitFlags flags)
-        {
-            _system.init(maxchannels, (INITFLAGS) flags, IntPtr.Zero).Check();
-        }
-
-        [Obsolete("This should only be called when we've initialized a low level system without studio (I think)")]
-        public void CloseAndRelease()
-        {
-            _system.close().Check();
-            _system.release().Check();
-        }
-
         public void Dispose()
         {
             Dispose(true);
@@ -246,6 +259,11 @@ namespace SupersonicSound.LowLevel
             {
                 if (disposing)
                 {
+                    if (_internalSystem)
+                    {
+                        _system.close().Check();
+                        _system.release().Check();
+                    }
                 }
 
                 _disposed = true;
