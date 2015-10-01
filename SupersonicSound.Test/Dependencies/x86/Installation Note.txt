@@ -1,0 +1,3 @@
+﻿We're not allowed to distribute the FMOD dlls in the repository. You need to put fmod.dll and fmodstudio.dll into this directory.
+
+See https://github.com/martindevans/SupersonicSound#installation-instructions for details

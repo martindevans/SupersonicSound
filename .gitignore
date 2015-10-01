@@ -12,3 +12,7 @@ ConsoleTest/Dependencies/**/*.dll
 
 SupersonicSound/bin
 SupersonicSound/obj
+
+SupersonicSound.Test/bin
+SupersonicSound.Test/obj
+SupersonicSound.Test/Dependencies/**/*.dll
