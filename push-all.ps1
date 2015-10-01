@@ -14,4 +14,3 @@ function Push-Nuget($path, $csproj) {
 }
 
 Push-Nuget "SupersonicSound" "SupersonicSound.csproj"
-Push-Nuget "SupersonicSound.Dependencies" "SupersonicSound.Dependencies.csproj"
