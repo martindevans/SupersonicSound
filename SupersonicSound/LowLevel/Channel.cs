@@ -6,7 +6,7 @@ using SupersonicSound.Wrapper;
 namespace SupersonicSound.LowLevel
 {
     public struct Channel
-        : IEquatable<Channel>
+        : IEquatable<Channel>, IChannelControl
     {
         public FMOD.Channel FmodChannel { get; private set; }
 
@@ -139,6 +139,120 @@ namespace SupersonicSound.LowLevel
             set
             {
                 FmodChannel.setPaused(value).Check();
+            }
+        }
+
+        public float Volume
+        {
+            get
+            {
+                float value;
+                FmodChannel.getVolume(out value).Check();
+                return value;
+            }
+            set
+            {
+                FmodChannel.setVolume(value).Check();
+            }
+        }
+
+        public bool VolumeRamp
+        {
+            get
+            {
+                bool value;
+                FmodChannel.getVolumeRamp(out value).Check();
+                return value;
+            }
+            set
+            {
+                FmodChannel.setVolumeRamp(value).Check();
+            }
+        }
+
+        public float Audibility
+        {
+            get
+            {
+                float value;
+                FmodChannel.getAudibility(out value).Check();
+                return value;
+            }
+        }
+
+        public float Pitch
+        {
+            get
+            {
+                float value;
+                FmodChannel.getPitch(out value).Check();
+                return value;
+            }
+            set
+            {
+                FmodChannel.setPitch(value).Check();
+            }
+        }
+
+        public bool Mute
+        {
+            get
+            {
+                bool value;
+                FmodChannel.getMute(out value).Check();
+
+                return value;
+            }
+            set
+            {
+                FmodChannel.setMute(value).Check();
+            }
+        }
+
+        public float Pan
+        {
+            set
+            {
+                FmodChannel.setPan(value).Check();
+            }
+        }
+
+        public bool IsPlaying
+        {
+            get
+            {
+                bool value;
+                FmodChannel.isPlaying(out value).Check();
+
+                return value;
+            }
+        }
+
+        public Mode Mode
+        {
+            get
+            {
+                MODE value;
+                FmodChannel.getMode(out value).Check();
+                return (Mode)value;
+            }
+            set
+            {
+                FmodChannel.setMode((MODE)value).Check();
+            }
+        }
+
+        public float LowPassGain
+        {
+            get
+            {
+                float value;
+                FmodChannel.getLowPassGain(out value).Check();
+                return value;
+            }
+            set
+            {
+                FmodChannel.setLowPassGain(value).Check();
             }
         }
         #endregion

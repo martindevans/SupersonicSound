@@ -1,11 +1,12 @@
-﻿using SupersonicSound.Wrapper;
+﻿using FMOD;
+using SupersonicSound.Wrapper;
 using System;
 using System.Text;
 
 namespace SupersonicSound.LowLevel
 {
     public struct ChannelGroup
-        : IEquatable<ChannelGroup>
+        : IEquatable<ChannelGroup>, IChannelControl
     {
         public FMOD.ChannelGroup FmodGroup { get; private set; }
 
@@ -103,6 +104,142 @@ namespace SupersonicSound.LowLevel
             FMOD.Channel channel;
             FmodGroup.getChannel(index, out channel).Check();
             return Channel.FromFmod(channel);
+        }
+        #endregion
+
+        #region IChannelControl
+        public void Stop()
+        {
+            FmodGroup.stop().Check();
+        }
+
+        public bool Pause
+        {
+            get
+            {
+                bool value;
+                FmodGroup.getPaused(out value).Check();
+
+                return value;
+            }
+            set
+            {
+                FmodGroup.setPaused(value).Check();
+            }
+        }
+
+        public float Volume
+        {
+            get
+            {
+                float value;
+                FmodGroup.getVolume(out value).Check();
+                return value;
+            }
+            set
+            {
+                FmodGroup.setVolume(value).Check();
+            }
+        }
+
+        public bool VolumeRamp
+        {
+            get
+            {
+                bool value;
+                FmodGroup.getVolumeRamp(out value).Check();
+                return value;
+            }
+            set
+            {
+                FmodGroup.setVolumeRamp(value).Check();
+            }
+        }
+
+        public float Audibility
+        {
+            get
+            {
+                float value;
+                FmodGroup.getAudibility(out value).Check();
+                return value;
+            }
+        }
+
+        public float Pitch
+        {
+            get
+            {
+                float value;
+                FmodGroup.getPitch(out value).Check();
+                return value;
+            }
+            set
+            {
+                FmodGroup.setPitch(value).Check();
+            }
+        }
+
+        public bool Mute
+        {
+            get
+            {
+                bool value;
+                FmodGroup.getMute(out value).Check();
+
+                return value;
+            }
+            set
+            {
+                FmodGroup.setMute(value).Check();
+            }
+        }
+
+        public float Pan
+        {
+            set
+            {
+                FmodGroup.setPan(value).Check();
+            }
+        }
+
+        public bool IsPlaying
+        {
+            get
+            {
+                bool value;
+                FmodGroup.isPlaying(out value).Check();
+
+                return value;
+            }
+        }
+
+        public Mode Mode
+        {
+            get
+            {
+                MODE value;
+                FmodGroup.getMode(out value).Check();
+                return (Mode)value;
+            }
+            set
+            {
+                FmodGroup.setMode((MODE)value).Check();
+            }
+        }
+
+        public float LowPassGain
+        {
+            get
+            {
+                float value;
+                FmodGroup.getLowPassGain(out value).Check();
+                return value;
+            }
+            set
+            {
+                FmodGroup.setLowPassGain(value).Check();
+            }
         }
         #endregion
     }
