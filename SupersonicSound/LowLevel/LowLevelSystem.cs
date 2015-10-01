@@ -9,7 +9,7 @@ using System.Text;
 namespace SupersonicSound.LowLevel
 {
     public sealed class LowLevelSystem
-        : IPreInitilizeLowLevelSystem, IDisposable
+        : IPreInitilizeLowLevelSystem, IDisposable, IHandle
     {
         private readonly FMOD.System _system;
 
@@ -59,6 +59,11 @@ namespace SupersonicSound.LowLevel
         {
             var init = advancedInitializationSettings.ToFmod();
             _system.setAdvancedSettings(ref init).Check();
+        }
+
+        public bool IsValid()
+        {
+            return _system.isValid();
         }
 
         #region pre initialize

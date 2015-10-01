@@ -5,7 +5,7 @@ using SupersonicSound.Wrapper;
 namespace SupersonicSound.LowLevel
 {
     public struct DspConnection
-        : IEquatable<DspConnection>
+        : IEquatable<DspConnection>, IHandle
     {
         public DSPConnection FmodDspConnection { get; private set; }
 
@@ -15,6 +15,11 @@ namespace SupersonicSound.LowLevel
             if (connection == null)
                 throw new ArgumentNullException("connection");
             FmodDspConnection = connection;
+        }
+
+        public bool IsValid()
+        {
+            return FmodDspConnection.isValid();
         }
 
         #region equality

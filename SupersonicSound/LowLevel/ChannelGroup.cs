@@ -23,6 +23,11 @@ namespace SupersonicSound.LowLevel
             return new ChannelGroup(group);
         }
 
+        public bool IsValid()
+        {
+            return FmodGroup.isValid();
+        }
+
         #region equality
         public bool Equals(ChannelGroup other)
         {

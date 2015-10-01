@@ -11,7 +11,7 @@ using SYSTEM_CALLBACK_TYPE = FMOD.Studio.SYSTEM_CALLBACK_TYPE;
 namespace SupersonicSound.Studio
 {
     public sealed class System
-        : IDisposable
+        : IDisposable, IHandle
     {
         private readonly FMOD.Studio.System _system;
 
@@ -48,6 +48,11 @@ namespace SupersonicSound.Studio
             Native.Load();
 
             _system = system;
+        }
+
+        public bool IsValid()
+        {
+            return _system.isValid();
         }
 
         public void Update()

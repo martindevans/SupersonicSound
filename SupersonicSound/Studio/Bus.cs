@@ -1,12 +1,13 @@
 ﻿using System;
-using FMOD;
 using FMOD.Studio;
+using SupersonicSound.LowLevel;
 using SupersonicSound.Wrapper;
+using ChannelGroup = FMOD.ChannelGroup;
 
 namespace SupersonicSound.Studio
 {
     public struct Bus
-        : IEquatable<Bus>
+        : IEquatable<Bus>, IHandle
     {
         public FMOD.Studio.Bus FmodBus { get; private set; }
 
@@ -19,6 +20,11 @@ namespace SupersonicSound.Studio
         public static Bus FromFmod(FMOD.Studio.Bus bus)
         {
             return new Bus(bus);
+        }
+
+        public bool IsValid()
+        {
+            return FmodBus.isValid();
         }
 
         #region equality

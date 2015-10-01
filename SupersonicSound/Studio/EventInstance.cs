@@ -6,7 +6,7 @@ using System;
 namespace SupersonicSound.Studio
 {
     public struct EventInstance
-        : IEquatable<EventInstance>
+        : IEquatable<EventInstance>, IHandle
     {
         private readonly FMOD.Studio.EventInstance _fmodEventInstance;
 
@@ -27,6 +27,11 @@ namespace SupersonicSound.Studio
         public static EventInstance FromFmod(FMOD.Studio.EventInstance evtInst)
         {
             return new EventInstance(evtInst);
+        }
+
+        public bool IsValid()
+        {
+            return FmodEventInstance.isValid();
         }
 
         #region equality

@@ -6,6 +6,7 @@ namespace SupersonicSound.LowLevel
     /// Equivalent signature to FMOD.ChannelControl
     /// </summary>
     public interface IChannelControl
+        : IHandle
     {
         #region General control functionality for Channels and ChannelGroups.
         void Stop();
@@ -31,7 +32,7 @@ namespace SupersonicSound.LowLevel
         Mode Mode { get; set; }
 
         //Unsure how callbacks should be implemented
-        //todo: public RESULT setCallback(CHANNEL_CALLBACK callback)
+        //todo: void setCallback(FMOD.CHANNEL_CALLBACK callback);
 
         bool IsPlaying { get; }
         #endregion

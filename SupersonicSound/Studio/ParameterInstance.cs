@@ -1,11 +1,12 @@
 ﻿using FMOD.Studio;
+using SupersonicSound.LowLevel;
 using SupersonicSound.Wrapper;
 using System;
 
 namespace SupersonicSound.Studio
 {
     public struct ParameterInstance
-        : IEquatable<ParameterInstance>
+        : IEquatable<ParameterInstance>, IHandle
     {
         public FMOD.Studio.ParameterInstance FmodParameterInstance { get; private set; }
 
@@ -20,6 +21,11 @@ namespace SupersonicSound.Studio
             if (parameterInstance == null)
                 throw new ArgumentNullException("parameterInstance");
             return new ParameterInstance(parameterInstance);
+        }
+
+        public bool IsValid()
+        {
+            return FmodParameterInstance.isValid();
         }
 
         #region equality

@@ -1,5 +1,6 @@
 ﻿using FMOD;
 using FMOD.Studio;
+using SupersonicSound.LowLevel;
 using SupersonicSound.Wrapper;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Linq;
 namespace SupersonicSound.Studio
 {
     public struct EventDescription
-        : IEquatable<EventDescription>
+        : IEquatable<EventDescription>, IHandle
     {
         private readonly FMOD.Studio.EventDescription _fmodEventDescription;
 
@@ -29,6 +30,11 @@ namespace SupersonicSound.Studio
         public static EventDescription FromFmod(FMOD.Studio.EventDescription evt)
         {
             return new EventDescription(evt);
+        }
+
+        public bool IsValid()
+        {
+            return FmodEventDescription.isValid();
         }
 
         #region equality

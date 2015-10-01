@@ -23,6 +23,11 @@ namespace SupersonicSound.LowLevel
             return new Channel(channel);
         }
 
+        public bool IsValid()
+        {
+            return FmodChannel.isValid();
+        }
+
         #region equality
         public bool Equals(Channel other)
         {

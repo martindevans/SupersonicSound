@@ -2,13 +2,14 @@
 using System.Linq;
 using FMOD;
 using FMOD.Studio;
+using SupersonicSound.LowLevel;
 using SupersonicSound.Wrapper;
 using System;
 
 namespace SupersonicSound.Studio
 {
     public struct Bank
-        : IEquatable<Bank>
+        : IEquatable<Bank>, IHandle
     {
         public FMOD.Studio.Bank FmodBank { get; private set; }
 
@@ -23,6 +24,11 @@ namespace SupersonicSound.Studio
             if (bank == null)
                 throw new ArgumentNullException("bank");
             return new Bank(bank);
+        }
+
+        public bool IsValid()
+        {
+            return FmodBank.isValid();
         }
 
         #region equality

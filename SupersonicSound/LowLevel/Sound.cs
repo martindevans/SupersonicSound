@@ -6,7 +6,7 @@ using System.Text;
 namespace SupersonicSound.LowLevel
 {
     public struct Sound
-        : IEquatable<Sound>, IDisposable
+        : IEquatable<Sound>, IDisposable, IHandle
     {
         private readonly FMOD.Sound _fmodSound;
 
@@ -29,6 +29,11 @@ namespace SupersonicSound.LowLevel
             if (sound == null)
                 throw new ArgumentNullException("sound");
             return new Sound(sound);
+        }
+
+        public bool IsValid()
+        {
+            return FmodSound.isValid();
         }
 
         public void Dispose()

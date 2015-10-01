@@ -7,7 +7,7 @@ using SupersonicSound.Wrapper;
 namespace SupersonicSound.LowLevel
 {
     public struct DSP
-        : IEquatable<DSP>
+        : IEquatable<DSP>, IHandle
     {
         public FMOD.DSP FmodDsp { get; private set; }
 
@@ -22,6 +22,11 @@ namespace SupersonicSound.LowLevel
             if (dsp == null)
                 throw new ArgumentNullException("dsp");
             return new DSP(dsp);
+        }
+
+        public bool IsValid()
+        {
+            return FmodDsp.isValid();
         }
 
         #region equality

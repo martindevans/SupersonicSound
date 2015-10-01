@@ -1,9 +1,10 @@
 ﻿using System;
+using SupersonicSound.LowLevel;
 
 namespace SupersonicSound.Studio
 {
     public struct CueInstance
-        : IEquatable<CueInstance>
+        : IEquatable<CueInstance>, IHandle
     {
         public FMOD.Studio.CueInstance FmodCueInstance { get; private set; }
 
@@ -19,6 +20,11 @@ namespace SupersonicSound.Studio
                 throw new ArgumentNullException("cue");
 
             return new CueInstance(cue);
+        }
+
+        public bool IsValid()
+        {
+            return FmodCueInstance.isValid();
         }
 
         #region equality

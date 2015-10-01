@@ -1,12 +1,11 @@
-﻿using System;
-using FMOD;
-using FMOD.Studio;
+﻿using SupersonicSound.LowLevel;
 using SupersonicSound.Wrapper;
+using System;
 
 namespace SupersonicSound.Studio
 {
     public struct CommandReplay
-        : IEquatable<CommandReplay>
+        : IEquatable<CommandReplay>, IHandle
     {
         public FMOD.Studio.CommandReplay FmodCommandReplay { get; private set; }
 
@@ -19,6 +18,11 @@ namespace SupersonicSound.Studio
         public static CommandReplay FromFmod(FMOD.Studio.CommandReplay commandReplay)
         {
             return new CommandReplay(commandReplay);
+        }
+
+        public bool IsValid()
+        {
+            return FmodCommandReplay.isValid();
         }
 
         #region equality

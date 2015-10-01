@@ -1,11 +1,11 @@
-﻿using System;
-using FMOD;
+﻿using SupersonicSound.LowLevel;
 using SupersonicSound.Wrapper;
+using System;
 
 namespace SupersonicSound.Studio
 {
     public struct VCA
-        : IEquatable<VCA>
+        : IEquatable<VCA>, IHandle
     {
         public FMOD.Studio.VCA FmodVca { get; private set; }
 
@@ -20,6 +20,11 @@ namespace SupersonicSound.Studio
             if (vca == null)
                 throw new ArgumentNullException("vca");
             return new VCA(vca);
+        }
+
+        public bool IsValid()
+        {
+            return FmodVca.isValid();
         }
 
         #region equality

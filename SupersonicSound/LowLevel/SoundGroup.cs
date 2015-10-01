@@ -6,6 +6,7 @@ using System.Text;
 namespace SupersonicSound.LowLevel
 {
     public struct SoundGroup
+        : IHandle
     {
         private readonly FMOD.SoundGroup _fmodGroup;
 
@@ -23,6 +24,11 @@ namespace SupersonicSound.LowLevel
                 throw new ArgumentNullException("fmodSoundGroup");
 
             _fmodGroup = fmodSoundGroup;
+        }
+
+        public bool IsValid()
+        {
+            return FmodGroup.isValid();
         }
 
         #region equality
