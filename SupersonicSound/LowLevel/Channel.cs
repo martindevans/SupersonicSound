@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using FMOD;
 using SupersonicSound.Wrapper;
 
@@ -9,12 +8,13 @@ namespace SupersonicSound.LowLevel
         : IEquatable<Channel>, IChannelControl
     {
         public FMOD.Channel FmodChannel { get; private set; }
-        private GCHandle? _callbackHandle;
+        private object _callbackHandle;
 
         private Channel(FMOD.Channel channel)
             : this()
         {
             FmodChannel = channel;
+            _callbackHandle = null;
         }
 
         public static Channel FromFmod(FMOD.Channel channel)
@@ -291,12 +291,6 @@ namespace SupersonicSound.LowLevel
         #endregion
 
         #region Callback functions
-        private void ReleaseCallbackHandle()
-        {
-            _callbackHandle?.Free();
-            _callbackHandle = null;
-        }
-
         public void SetCallback(Action<ChannelControlCallbackType, IntPtr, IntPtr> callback)
         {
             var channel = this;
@@ -308,7 +302,7 @@ namespace SupersonicSound.LowLevel
                 if (type == FMOD.CHANNELCONTROL_CALLBACK_TYPE.END)
                 {
                     // End of sound, we can release our callback handle now
-                    channel.ReleaseCallbackHandle();
+                    channel._callbackHandle = null;
                 }
 
                 return RESULT.OK;
@@ -316,19 +310,15 @@ namespace SupersonicSound.LowLevel
 
             FmodChannel.setCallback(callbackFunction).Check();
 
-            // We can only have one active callback, release the handle we have
-            // to the delegate if we already have one
-            ReleaseCallbackHandle();
-
-            // Use GCHandle to hold the delegate object in memory
-            _callbackHandle = GCHandle.Alloc(callbackFunction);
+            // Hold the delegate object in memory
+            _callbackHandle = callbackFunction;
         }
 
         public void RemoveCallback()
         {
             FmodChannel.setCallback(null).Check();
 
-            ReleaseCallbackHandle();
+            _callbackHandle = null;
         }
         #endregion
     }
