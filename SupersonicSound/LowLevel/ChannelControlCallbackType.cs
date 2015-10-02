@@ -1,5 +1,4 @@
 ﻿using FMOD;
-using System;
 
 namespace SupersonicSound.LowLevel
 {

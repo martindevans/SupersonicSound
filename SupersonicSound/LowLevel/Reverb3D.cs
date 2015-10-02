@@ -7,7 +7,7 @@ using System;
 namespace SupersonicSound.LowLevel
 {
     public struct Reverb3D
-        : IHandle
+        //: IHandle
     {
         public FMOD.Reverb3D FmodReverb { get; private set; }
 
@@ -17,10 +17,10 @@ namespace SupersonicSound.LowLevel
             FmodReverb = reverb;
         }
 
-        public bool IsValid()
-        {
-            return FmodReverb.isValid();
-        }
+        //public bool IsValid()
+        //{
+        //    return FmodReverb.isValid();
+        //}
 
         public Vector3 Position
         {

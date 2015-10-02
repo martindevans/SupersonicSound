@@ -23,10 +23,10 @@ namespace SupersonicSound.LowLevel
             return new ChannelGroup(group);
         }
 
-        public bool IsValid()
-        {
-            return FmodGroup.isValid();
-        }
+        //public bool IsValid()
+        //{
+        //    return FmodGroup.isValid();
+        //}
 
         #region equality
         public bool Equals(ChannelGroup other)
@@ -245,6 +245,16 @@ namespace SupersonicSound.LowLevel
             {
                 FmodGroup.setLowPassGain(value).Check();
             }
+        }
+
+        public void SetCallback(Action<ChannelControlCallbackType, IntPtr, IntPtr> callback)
+        {
+            FmodGroup.setCallback((channelraw, controltype, type, commanddata1, commanddata2) =>
+            {
+                callback((ChannelControlCallbackType)type, commanddata1, commanddata2);
+
+                return RESULT.OK;
+            }).Check();
         }
         #endregion
     }

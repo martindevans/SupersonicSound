@@ -33,28 +33,24 @@ namespace ConsoleTest.Examples
                         }
                     });
 
+                    GC.Collect();
+
                     // Wait until any key is pressed
                     WaitForKeypress(() =>
                     {
+                        GC.Collect();
                         try
                         {
                             Console.WriteLine("Position {0} ms", channel.GetPosition(TimeUnit.Milliseconds));
                         }
                         catch (FmodInvalidHandleException)
                         {
-                            // Ignore this error, gets thrown if we've finished playing
+                            //We need a better way of handling invalid channels!
                         }
                     });
 
                     // Stop the sound playing
-                    try
-                    {
-                        channel.Stop();
-                    }
-                    catch (FmodInvalidHandleException)
-                    {
-                        // Ignore this error, gets thrown if we've finished playing
-                    }
+                    channel.Stop();
                 }
             }
         }

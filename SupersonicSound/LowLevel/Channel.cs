@@ -23,10 +23,10 @@ namespace SupersonicSound.LowLevel
             return new Channel(channel);
         }
 
-        public bool IsValid()
-        {
-            return FmodChannel.isValid();
-        }
+        //public bool IsValid()
+        //{
+        //    return FmodChannel.isValid();
+        //}
 
         #region equality
         public bool Equals(Channel other)
@@ -296,12 +296,13 @@ namespace SupersonicSound.LowLevel
 
         public void SetCallback(Action<ChannelControlCallbackType, IntPtr, IntPtr> callback)
         {
-            FmodChannel.setCallback((channelraw, controltype, type, commanddata1, commanddata2) =>
-            {
+            CHANNEL_CALLBACK channelCallback = (channelraw, controltype, type, commanddata1, commanddata2) => {
                 callback((ChannelControlCallbackType)type, commanddata1, commanddata2);
 
                 return RESULT.OK;
-            }).Check();
+            };
+
+            FmodChannel.setCallback(channelCallback).Check();
         }
     }
 }

@@ -8,7 +8,7 @@ using System.Linq;
 namespace SupersonicSound.LowLevel
 {
     public struct Geometry
-        : IEquatable<Geometry>, IHandle
+        : IEquatable<Geometry>//, IHandle
     {
         private readonly FMOD.Geometry _fmodGeometry;
 
@@ -28,10 +28,10 @@ namespace SupersonicSound.LowLevel
             _fmodGeometry = geometry;
         }
 
-        public bool IsValid()
-        {
-            return FmodGeometry.isValid();
-        }
+        //public bool IsValid()
+        //{
+        //    return FmodGeometry.isValid();
+        //}
 
         #region equality
         public bool Equals(Geometry other)
