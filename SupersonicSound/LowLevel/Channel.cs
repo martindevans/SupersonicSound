@@ -1,5 +1,5 @@
-﻿
-using System;
+﻿using System;
+using System.Runtime.InteropServices;
 using FMOD;
 using SupersonicSound.Wrapper;
 
@@ -9,6 +9,7 @@ namespace SupersonicSound.LowLevel
         : IEquatable<Channel>, IChannelControl
     {
         public FMOD.Channel FmodChannel { get; private set; }
+        private GCHandle? _callbackHandle;
 
         private Channel(FMOD.Channel channel)
             : this()
@@ -22,11 +23,6 @@ namespace SupersonicSound.LowLevel
                 throw new ArgumentNullException("channel");
             return new Channel(channel);
         }
-
-        //public bool IsValid()
-        //{
-        //    return FmodChannel.isValid();
-        //}
 
         #region equality
         public bool Equals(Channel other)
@@ -294,15 +290,46 @@ namespace SupersonicSound.LowLevel
         }
         #endregion
 
+        #region Callback functions
+        private void ReleaseCallbackHandle()
+        {
+            _callbackHandle?.Free();
+            _callbackHandle = null;
+        }
+
         public void SetCallback(Action<ChannelControlCallbackType, IntPtr, IntPtr> callback)
         {
-            CHANNEL_CALLBACK channelCallback = (channelraw, controltype, type, commanddata1, commanddata2) => {
+            var channel = this;
+
+            var callbackFunction = new FMOD.CHANNEL_CALLBACK((channelraw, controltype, type, commanddata1, commanddata2) =>
+            {
                 callback((ChannelControlCallbackType)type, commanddata1, commanddata2);
 
-                return RESULT.OK;
-            };
+                if (type == FMOD.CHANNELCONTROL_CALLBACK_TYPE.END)
+                {
+                    // End of sound, we can release our callback handle now
+                    channel.ReleaseCallbackHandle();
+                }
 
-            FmodChannel.setCallback(channelCallback).Check();
+                return RESULT.OK;
+            });
+
+            FmodChannel.setCallback(callbackFunction).Check();
+
+            // We can only have one active callback, release the handle we have
+            // to the delegate if we already have one
+            ReleaseCallbackHandle();
+
+            // Use GCHandle to hold the delegate object in memory
+            _callbackHandle = GCHandle.Alloc(callbackFunction);
         }
+
+        public void RemoveCallback()
+        {
+            FmodChannel.setCallback(null).Check();
+
+            ReleaseCallbackHandle();
+        }
+        #endregion
     }
 }

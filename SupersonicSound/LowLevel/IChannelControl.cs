@@ -35,6 +35,8 @@ namespace SupersonicSound.LowLevel
 
         void SetCallback(Action<ChannelControlCallbackType, IntPtr, IntPtr> callback);
 
+        void RemoveCallback();
+
         bool IsPlaying { get; }
         #endregion
 

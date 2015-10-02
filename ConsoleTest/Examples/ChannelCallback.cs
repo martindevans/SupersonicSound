@@ -32,7 +32,6 @@ namespace ConsoleTest.Examples
                             Console.WriteLine("Callback: Finished playing sound");
                         }
                     });
-
                     GC.Collect();
 
                     // Wait until any key is pressed
@@ -45,7 +44,7 @@ namespace ConsoleTest.Examples
                         }
                         catch (FmodInvalidHandleException)
                         {
-                            //We need a better way of handling invalid channels!
+                            // We need a better way of handling invalid channels!
                         }
                     });
 

@@ -1,10 +1,11 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Collections.Generic;
+using System.Numerics;
+using System.Text;
 using FMOD;
 using SupersonicSound.Extensions;
 using SupersonicSound.Studio;
 using SupersonicSound.Wrapper;
-using System;
-using System.Text;
 
 namespace SupersonicSound.LowLevel
 {
