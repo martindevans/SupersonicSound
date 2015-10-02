@@ -88,6 +88,7 @@
     <Compile Include="Exceptions\BaseFmodFileException.cs" />
     <Compile Include="Exceptions\FmodEventLiveUpdateExceptions.cs" />
     <Compile Include="Extensions\Vector3Extensions.cs" />
+    <Compile Include="LowLevel\CallbackHandler.cs" />
     <Compile Include="LowLevel\ChannelOrder.cs" />
     <Compile Include="LowLevel\DspDescription.cs" />
     <Compile Include="LowLevel\IChannelControl.cs" />

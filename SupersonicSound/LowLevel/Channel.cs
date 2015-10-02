@@ -8,13 +8,13 @@ namespace SupersonicSound.LowLevel
         : IEquatable<Channel>, IChannelControl
     {
         public FMOD.Channel FmodChannel { get; private set; }
-        private object _callbackHandle;
+
+        private CallbackHandler _callbackHandler;
 
         private Channel(FMOD.Channel channel)
             : this()
         {
             FmodChannel = channel;
-            _callbackHandle = null;
         }
 
         public static Channel FromFmod(FMOD.Channel channel)
@@ -293,32 +293,14 @@ namespace SupersonicSound.LowLevel
         #region Callback functions
         public void SetCallback(Action<ChannelControlCallbackType, IntPtr, IntPtr> callback)
         {
-            var channel = this;
-
-            var callbackFunction = new FMOD.CHANNEL_CALLBACK((channelraw, controltype, type, commanddata1, commanddata2) =>
-            {
-                callback((ChannelControlCallbackType)type, commanddata1, commanddata2);
-
-                if (type == FMOD.CHANNELCONTROL_CALLBACK_TYPE.END)
-                {
-                    // End of sound, we can release our callback handle now
-                    channel._callbackHandle = null;
-                }
-
-                return RESULT.OK;
-            });
-
-            FmodChannel.setCallback(callbackFunction).Check();
-
-            // Hold the delegate object in memory
-            _callbackHandle = callbackFunction;
+            if (_callbackHandler == null)
+                _callbackHandler = new CallbackHandler(FmodChannel);
+            _callbackHandler.SetCallback(callback);
         }
 
         public void RemoveCallback()
         {
-            FmodChannel.setCallback(null).Check();
-
-            _callbackHandle = null;
+            _callbackHandler.RemoveCallback();
         }
         #endregion
     }

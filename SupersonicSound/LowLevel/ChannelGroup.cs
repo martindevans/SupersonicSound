@@ -1,8 +1,7 @@
-﻿using System;
-using System.Text;
-using System.Runtime.InteropServices;
-using FMOD;
+﻿using FMOD;
 using SupersonicSound.Wrapper;
+using System;
+using System.Text;
 
 namespace SupersonicSound.LowLevel
 {
@@ -10,7 +9,8 @@ namespace SupersonicSound.LowLevel
         : IEquatable<ChannelGroup>, IChannelControl
     {
         public FMOD.ChannelGroup FmodGroup { get; private set; }
-        private GCHandle? _callbackHandle;
+
+        private CallbackHandler _callbackHandler;
 
         private ChannelGroup(FMOD.ChannelGroup group)
             : this()
@@ -251,44 +251,16 @@ namespace SupersonicSound.LowLevel
         #endregion
 
         #region Callback functions
-        private void ReleaseCallbackHandle()
-        {
-            _callbackHandle?.Free();
-            _callbackHandle = null;
-        }
-
         public void SetCallback(Action<ChannelControlCallbackType, IntPtr, IntPtr> callback)
         {
-            var channel = this;
-
-            var callbackFunction = new FMOD.CHANNEL_CALLBACK((channelraw, controltype, type, commanddata1, commanddata2) =>
-            {
-                callback((ChannelControlCallbackType)type, commanddata1, commanddata2);
-
-                if (type == FMOD.CHANNELCONTROL_CALLBACK_TYPE.END)
-                {
-                    // End of sound, we can release our callback handle now
-                    channel.ReleaseCallbackHandle();
-                }
-
-                return RESULT.OK;
-            });
-
-            FmodGroup.setCallback(callbackFunction).Check();
-
-            // We can only have one active callback, release the handle we have
-            // to the delegate if we already have one
-            ReleaseCallbackHandle();
-
-            // Use GCHandle to hold the delegate object in memory
-            _callbackHandle = GCHandle.Alloc(callbackFunction);
+            if (_callbackHandler == null)
+                _callbackHandler = new CallbackHandler(FmodGroup);
+            _callbackHandler.SetCallback(callback);
         }
 
         public void RemoveCallback()
         {
-            FmodGroup.setCallback(null).Check();
-
-            ReleaseCallbackHandle();
+            _callbackHandler.RemoveCallback();
         }
         #endregion
     }
