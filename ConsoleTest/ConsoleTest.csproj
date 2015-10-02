@@ -83,6 +83,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Examples\ChannelCallback.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="Examples\PlaySound.cs" />
     <Compile Include="Examples\PlayBank.cs" />

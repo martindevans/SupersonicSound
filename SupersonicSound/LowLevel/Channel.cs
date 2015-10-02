@@ -293,5 +293,15 @@ namespace SupersonicSound.LowLevel
             }
         }
         #endregion
+
+        public void SetCallback(Action<ChannelControlCallbackType, IntPtr, IntPtr> callback)
+        {
+            FmodChannel.setCallback((channelraw, controltype, type, commanddata1, commanddata2) =>
+            {
+                callback((ChannelControlCallbackType)type, commanddata1, commanddata2);
+
+                return RESULT.OK;
+            }).Check();
+        }
     }
 }

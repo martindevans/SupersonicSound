@@ -127,6 +127,7 @@
     <Compile Include="LowLevel\Speaker.cs" />
     <Compile Include="LowLevel\DriverState.cs" />
     <Compile Include="LowLevel\SpeakerMode.cs" />
+    <Compile Include="LowLevel\ChannelControlCallbackType.cs" />
     <Compile Include="LowLevel\SystemCallbackType.cs" />
     <Compile Include="LowLevel\Tag.cs" />
     <Compile Include="LowLevel\TimeUnit.cs" />

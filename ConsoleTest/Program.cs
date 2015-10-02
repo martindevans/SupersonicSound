@@ -1,6 +1,5 @@
 ﻿using System;
 using ConsoleTest.Examples;
-using SupersonicSound.LowLevel;
 
 namespace ConsoleTest
 {
@@ -10,50 +9,46 @@ namespace ConsoleTest
         {
             string contentPath = "Content";
 
-            Console.WriteLine("Initializing FMOD");
-
-            
+            while (true)
             {
-                Console.WriteLine("FMOD initialized");
+                // Flush
+                while (Console.KeyAvailable)
+                    Console.ReadKey();
 
-                while (true)
+                Console.WriteLine("--== Test Menu ==--");
+                Console.WriteLine("1. Play Sound");
+                Console.WriteLine("2. Play Bank");
+                Console.WriteLine("3. Play Sound with channel event/callback");
+
+                Console.WriteLine("Q. Quit");
+
+                string choice = Console.ReadLine().Trim().ToLower();
+                if (choice == "q")
+                    break;
+
+                switch (choice)
                 {
-                    // Flush
-                    while (Console.KeyAvailable)
-                        Console.ReadKey();
-
-                    Console.WriteLine("--== Test Menu ==--");
-                    Console.WriteLine("1. Play Sound");
-                    Console.WriteLine("2. Play Bank");
-
-                    Console.WriteLine("Q. Quit");
-
-                    string choice = Console.ReadLine().Trim().ToLower();
-                    if (choice == "q")
+                    case "1":
+                        new PlaySound(contentPath).Execute();
                         break;
 
-                    switch (choice)
-                    {
-                        case "1":
-                            new PlaySound(contentPath).Execute();
-                            break;
+                    case "2":
+                        new PlayBank(contentPath).Execute();
+                        break;
 
-                        case "2":
-                            new PlayBank(contentPath).Execute();
-                            break;
+                    case "3":
+                        new ChannelCallback(contentPath).Execute();
+                        break;
 
-                        default:
-                            Console.WriteLine("Unknown choice");
-                            break;
-                    }
-
-                    Console.WriteLine();
+                    default:
+                        Console.WriteLine("Unknown choice");
+                        break;
                 }
 
-                Console.WriteLine("Shutting down");
+                Console.WriteLine();
             }
 
-            Console.WriteLine("Closed");
+            Console.WriteLine("Shutting down");
         }
     }
 }
