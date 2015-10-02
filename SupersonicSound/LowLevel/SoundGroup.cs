@@ -130,7 +130,7 @@ namespace SupersonicSound.LowLevel
 
         public void Stop()
         {
-            _fmodGroup.stop();
+            _fmodGroup.stop().Check(Util.SuppressInvalidHandle);
         }
         #endregion
 

@@ -2,6 +2,7 @@
 using SupersonicSound.LowLevel;
 using SupersonicSound.Wrapper;
 using System;
+using Util = SupersonicSound.Wrapper.Util;
 
 namespace SupersonicSound.Studio
 {
@@ -160,7 +161,7 @@ namespace SupersonicSound.Studio
 
         public void Stop(bool allowFadeout)
         {
-            _fmodEventInstance.stop(allowFadeout ? STOP_MODE.ALLOWFADEOUT : STOP_MODE.IMMEDIATE).Check();
+            _fmodEventInstance.stop(allowFadeout ? STOP_MODE.ALLOWFADEOUT : STOP_MODE.IMMEDIATE).Check(Util.SuppressInvalidHandle);
         }
 
         public int TimelinePosition

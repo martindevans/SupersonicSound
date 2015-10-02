@@ -235,7 +235,7 @@ namespace SupersonicSound.Studio
 
         public void StopCommandCapture()
         {
-            _system.stopCommandCapture().Check(); ;
+            _system.stopCommandCapture().Check();
         }
 
         public CommandReplay LoadCommandReplay(string path, CommandReplayFlags flags = CommandReplayFlags.Normal)

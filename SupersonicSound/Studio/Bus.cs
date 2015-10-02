@@ -3,6 +3,7 @@ using FMOD.Studio;
 using SupersonicSound.LowLevel;
 using SupersonicSound.Wrapper;
 using ChannelGroup = FMOD.ChannelGroup;
+using Util = SupersonicSound.Wrapper.Util;
 
 namespace SupersonicSound.Studio
 {
@@ -111,7 +112,7 @@ namespace SupersonicSound.Studio
 
         public void StopAllEvents(bool allowFadeout)
         {
-            FmodBus.stopAllEvents(allowFadeout ? STOP_MODE.ALLOWFADEOUT : STOP_MODE.IMMEDIATE).Check();
+            FmodBus.stopAllEvents(allowFadeout ? STOP_MODE.ALLOWFADEOUT : STOP_MODE.IMMEDIATE).Check(Util.SuppressInvalidHandle);
         }
 
         public void LockChannelGroup()

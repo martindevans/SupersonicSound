@@ -1,4 +1,6 @@
-﻿using FMOD;
+﻿using System.Collections.Generic;
+using System.Linq;
+using FMOD;
 using SupersonicSound.Exceptions;
 using System;
 
@@ -6,8 +8,15 @@ namespace SupersonicSound.Wrapper
 {
     public static class Util
     {
-        public static void Check(this RESULT result)
+        internal static IReadOnlyList<RESULT> SuppressInvalidHandle = new[] {
+            RESULT.ERR_INVALID_HANDLE
+        };
+
+        public static void Check(this RESULT result, IReadOnlyList<RESULT> suppress = null)
         {
+            if (suppress != null && suppress.Contains(result))
+                return;
+
             switch (result)
             {
                 case RESULT.OK:
