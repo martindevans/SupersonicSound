@@ -117,7 +117,7 @@ namespace SupersonicSound.LowLevel
         #region IChannelControl
         public void Stop()
         {
-            FmodGroup.stop().Check(Util.SuppressInvalidHandle);
+            FmodGroup.stop().Check(ErrorChecking.SuppressInvalidHandle);
         }
 
         public bool Pause

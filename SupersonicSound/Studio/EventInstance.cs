@@ -2,7 +2,7 @@
 using SupersonicSound.LowLevel;
 using SupersonicSound.Wrapper;
 using System;
-using Util = SupersonicSound.Wrapper.Util;
+using Util = SupersonicSound.Wrapper.ErrorChecking;
 
 namespace SupersonicSound.Studio
 {

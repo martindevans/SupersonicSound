@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using FMOD;
 using SupersonicSound.Wrapper;
 
@@ -10,6 +11,20 @@ namespace SupersonicSound.LowLevel
         public FMOD.Channel FmodChannel { get; private set; }
 
         private CallbackHandler _callbackHandler;
+
+        private bool _throwHandle;
+        public bool SuppressInvalidHandle
+        {
+            get { return !_throwHandle; }
+            set { _throwHandle = !value; }
+        }
+
+        private bool _throwStolen;
+        public bool SuppressChannelStolen
+        {
+            get { return !_throwStolen; }
+            set { _throwStolen = !value; }
+        }
 
         private Channel(FMOD.Channel channel)
             : this()
@@ -45,31 +60,29 @@ namespace SupersonicSound.LowLevel
         #endregion
 
         #region Channel specific control functionality
-        public float Frequency
+        public float? Frequency
         {
             get
             {
                 float freq;
-                FmodChannel.getFrequency(out freq).Check();
-                return freq;
+                return FmodChannel.getFrequency(out freq).CheckBox(freq, ErrorChecking.Suppress(_throwHandle, _throwStolen));
             }
             set
             {
-                FmodChannel.setFrequency(value).Check();
+                FmodChannel.setFrequency(value.Unbox()).Check(ErrorChecking.Suppress(_throwHandle, _throwStolen));
             }
         }
 
-        public int Priority
+        public int? Priority
         {
             get
             {
                 int priority;
-                FmodChannel.getPriority(out priority).Check();
-                return priority;
+                return FmodChannel.getPriority(out priority).CheckBox(priority, ErrorChecking.Suppress(_throwHandle, _throwStolen));
             }
             set
             {
-                FmodChannel.setPriority(value).Check();
+                FmodChannel.setPriority(value.Unbox()).Check();
             }
         }
 
@@ -125,7 +138,7 @@ namespace SupersonicSound.LowLevel
 
         public void Stop()
         {
-            FmodChannel.stop().Check(Util.SuppressInvalidHandle);
+            FmodChannel.stop().Check(ErrorChecking.SuppressInvalidHandle);
         }
 
         public bool Pause

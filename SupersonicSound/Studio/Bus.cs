@@ -3,7 +3,7 @@ using FMOD.Studio;
 using SupersonicSound.LowLevel;
 using SupersonicSound.Wrapper;
 using ChannelGroup = FMOD.ChannelGroup;
-using Util = SupersonicSound.Wrapper.Util;
+using Util = SupersonicSound.Wrapper.ErrorChecking;
 
 namespace SupersonicSound.Studio
 {

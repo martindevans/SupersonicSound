@@ -164,6 +164,7 @@
     <Compile Include="Wrapper\Fmod\fmod_studio.cs" />
     <Compile Include="Wrapper\Native.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Wrapper\ErrorChecking.cs" />
     <Compile Include="Wrapper\Util.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

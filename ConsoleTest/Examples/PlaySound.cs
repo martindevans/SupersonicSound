@@ -29,6 +29,8 @@ namespace ConsoleTest.Examples
 
                     // Stop the sound playing
                     channel.Stop();
+
+                    Console.WriteLine(channel.IsPlaying);
                 }
             }
         }
