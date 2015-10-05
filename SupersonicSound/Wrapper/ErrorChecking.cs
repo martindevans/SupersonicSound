@@ -53,11 +53,13 @@ namespace SupersonicSound.Wrapper
             return value;
         }
 
-        public static void Check(this RESULT result, IReadOnlyList<RESULT> suppress)
+        public static bool Check(this RESULT result, IReadOnlyList<RESULT> suppress)
         {
             if (suppress != null && suppress.Contains(result))
-                return;
+                return false;
+
             Check(result);
+            return true;
         }
 
         public static void Check(this RESULT result)

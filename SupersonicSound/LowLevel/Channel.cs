@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using FMOD;
+﻿using FMOD;
 using SupersonicSound.Wrapper;
+using System;
+using System.Collections.Generic;
 
 namespace SupersonicSound.LowLevel
 {
@@ -39,6 +39,11 @@ namespace SupersonicSound.LowLevel
             return new Channel(channel);
         }
 
+        private IReadOnlyList<RESULT> Suppressions()
+        {
+            return ErrorChecking.Suppress(_throwHandle, _throwStolen);
+        }
+
         #region equality
         public bool Equals(Channel other)
         {
@@ -65,11 +70,11 @@ namespace SupersonicSound.LowLevel
             get
             {
                 float freq;
-                return FmodChannel.getFrequency(out freq).CheckBox(freq, ErrorChecking.Suppress(_throwHandle, _throwStolen));
+                return FmodChannel.getFrequency(out freq).CheckBox(freq, Suppressions());
             }
             set
             {
-                FmodChannel.setFrequency(value.Unbox()).Check(ErrorChecking.Suppress(_throwHandle, _throwStolen));
+                FmodChannel.setFrequency(value.Unbox()).Check(Suppressions());
             }
         }
 
@@ -78,148 +83,147 @@ namespace SupersonicSound.LowLevel
             get
             {
                 int priority;
-                return FmodChannel.getPriority(out priority).CheckBox(priority, ErrorChecking.Suppress(_throwHandle, _throwStolen));
+                return FmodChannel.getPriority(out priority).CheckBox(priority, Suppressions());
             }
             set
             {
-                FmodChannel.setPriority(value.Unbox()).Check();
+                FmodChannel.setPriority(value.Unbox()).Check(Suppressions());
             }
         }
 
         public void SetPosition(uint position, TimeUnit unit)
         {
-            FmodChannel.setPosition(position, (TIMEUNIT)unit).Check();
+            FmodChannel.setPosition(position, (TIMEUNIT)unit).Check(Suppressions());
         }
 
-        public uint GetPosition(TimeUnit unit)
+        public uint? GetPosition(TimeUnit unit)
         {
             uint pos;
-            FmodChannel.getPosition(out pos, (TIMEUNIT)unit).Check();
-            return pos;
+            return FmodChannel.getPosition(out pos, (TIMEUNIT)unit).CheckBox(pos, Suppressions());
         }
 
-        public ChannelGroup ChannelGroup
+        public ChannelGroup? ChannelGroup
         {
             get
             {
                 FMOD.ChannelGroup group;
-                FmodChannel.getChannelGroup(out group).Check();
-                return ChannelGroup.FromFmod(group);
+                FmodChannel.getChannelGroup(out group).Check(Suppressions());
+                if (group == null)
+                    return null;
+                else
+                    return LowLevel.ChannelGroup.FromFmod(group);
             }
             set
             {
-                FmodChannel.setChannelGroup(value.FmodGroup).Check();
+                var group = value.Unbox();
+                FmodChannel.setChannelGroup(group.FmodGroup).Check(Suppressions());
             }
         }
 
-        public int LoopCount
+        public int? LoopCount
         {
             get
             {
                 int count;
-                FmodChannel.getLoopCount(out count).Check();
-                return count;
+                return FmodChannel.getLoopCount(out count).CheckBox(count, Suppressions());
             }
             set
             {
-                FmodChannel.setLoopCount(value).Check();
+                FmodChannel.setLoopCount(value.Unbox()).Check(Suppressions());
             }
         }
 
         public void SetLoopPoints(uint start, TimeUnit startUnit, uint end, TimeUnit endUnit)
         {
-            FmodChannel.setLoopPoints(start, (TIMEUNIT)startUnit, end, (TIMEUNIT)endUnit);
+            FmodChannel.setLoopPoints(start, (TIMEUNIT)startUnit, end, (TIMEUNIT)endUnit).Check(Suppressions());
         }
 
-        public void GetLoopPoints(out uint start, TimeUnit startUnit, out uint end, TimeUnit endUnit)
+        public void GetLoopPoints(out uint? start, TimeUnit startUnit, out uint? end, TimeUnit endUnit)
         {
-            FmodChannel.getLoopPoints(out start, (TIMEUNIT)startUnit, out end, (TIMEUNIT)endUnit);
+            uint startv;
+            uint endv;
+            bool ok = FmodChannel.getLoopPoints(out startv, (TIMEUNIT)startUnit, out endv, (TIMEUNIT)endUnit).Check(Suppressions());
+
+            start = ok ? startv : (uint?)null;
+            end = ok ? endv : (uint?)null;
         }
 
         public void Stop()
         {
-            FmodChannel.stop().Check(ErrorChecking.SuppressInvalidHandle);
+            FmodChannel.stop().Check(Suppressions());
         }
 
-        public bool Pause
+        public bool? Pause
         {
             get
             {
                 bool value;
-                FmodChannel.getPaused(out value).Check();
-
-                return value;
+                return FmodChannel.getPaused(out value).CheckBox(value, Suppressions());
             }
             set
             {
-                FmodChannel.setPaused(value).Check();
+                FmodChannel.setPaused(value.Unbox()).Check(Suppressions());
             }
         }
 
-        public float Volume
+        public float? Volume
         {
             get
             {
                 float value;
-                FmodChannel.getVolume(out value).Check();
-                return value;
+                return FmodChannel.getVolume(out value).CheckBox(value, Suppressions());
             }
             set
             {
-                FmodChannel.setVolume(value).Check();
+                FmodChannel.setVolume(value.Unbox()).Check(Suppressions());
             }
         }
 
-        public bool VolumeRamp
+        public bool? VolumeRamp
         {
             get
             {
                 bool value;
-                FmodChannel.getVolumeRamp(out value).Check();
-                return value;
+                return FmodChannel.getVolumeRamp(out value).CheckBox(value, Suppressions());
             }
             set
             {
-                FmodChannel.setVolumeRamp(value).Check();
+                FmodChannel.setVolumeRamp(value.Unbox()).Check(Suppressions());
             }
         }
 
-        public float Audibility
+        public float? Audibility
         {
             get
             {
                 float value;
-                FmodChannel.getAudibility(out value).Check();
-                return value;
+                return FmodChannel.getAudibility(out value).CheckBox(value, Suppressions());
             }
         }
 
-        public float Pitch
+        public float? Pitch
         {
             get
             {
                 float value;
-                FmodChannel.getPitch(out value).Check();
-                return value;
+                return FmodChannel.getPitch(out value).CheckBox(value, Suppressions());
             }
             set
             {
-                FmodChannel.setPitch(value).Check();
+                FmodChannel.setPitch(value.Unbox()).Check(Suppressions());
             }
         }
 
-        public bool Mute
+        public bool? Mute
         {
             get
             {
                 bool value;
-                FmodChannel.getMute(out value).Check();
-
-                return value;
+                return FmodChannel.getMute(out value).CheckBox(value, Suppressions());
             }
             set
             {
-                FmodChannel.setMute(value).Check();
+                FmodChannel.setMute(value.Unbox()).Check(Suppressions());
             }
         }
 
@@ -227,78 +231,77 @@ namespace SupersonicSound.LowLevel
         {
             set
             {
-                FmodChannel.setPan(value).Check();
+                FmodChannel.setPan(value).Check(Suppressions());
             }
         }
 
-        public bool IsPlaying
+        public bool? IsPlaying
         {
             get
             {
                 bool value;
-                FmodChannel.isPlaying(out value).Check();
-
-                return value;
+                return FmodChannel.isPlaying(out value).Check(Suppressions());
             }
         }
 
-        public Mode Mode
+        public Mode? Mode
         {
             get
             {
                 MODE value;
-                FmodChannel.getMode(out value).Check();
-                return (Mode)value;
+                var nMode = FmodChannel.getMode(out value).CheckBox(value, Suppressions());
+
+                return nMode.HasValue ? (Mode)nMode : (Mode?)null;
             }
             set
             {
-                FmodChannel.setMode((MODE)value).Check();
+                FmodChannel.setMode((MODE)value.Unbox()).Check(Suppressions());
             }
         }
 
-        public float LowPassGain
+        public float? LowPassGain
         {
             get
             {
                 float value;
-                FmodChannel.getLowPassGain(out value).Check();
-                return value;
+                return FmodChannel.getLowPassGain(out value).CheckBox(value, Suppressions());
             }
             set
             {
-                FmodChannel.setLowPassGain(value).Check();
+                FmodChannel.setLowPassGain(value.Unbox()).Check(Suppressions());
             }
         }
         #endregion
 
         #region Information only functions
-        public bool IsVirtual
+        public bool? IsVirtual
         {
             get
             {
                 bool virt;
-                FmodChannel.isVirtual(out virt).Check();
-                return virt;
+                return FmodChannel.isVirtual(out virt).CheckBox(virt, Suppressions());
             }
         }
 
-        public Sound CurrentSound
+        public Sound? CurrentSound
         {
             get
             {
                 FMOD.Sound sound;
-                FmodChannel.getCurrentSound(out sound).Check();
-                return Sound.FromFmod(sound);
+                FmodChannel.getCurrentSound(out sound).Check(Suppressions());
+                if (sound == null)
+                    return null;
+                else
+                    return Sound.FromFmod(sound);
             }
         }
 
-        public int Index
+        public int? Index
         {
             get
             {
                 int index;
-                FmodChannel.getIndex(out index).Check();
-                return index;
+                return FmodChannel.getIndex(out index).CheckBox(index, Suppressions());
             }
         }
         #endregion

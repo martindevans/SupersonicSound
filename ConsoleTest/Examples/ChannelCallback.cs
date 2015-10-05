@@ -32,20 +32,20 @@ namespace ConsoleTest.Examples
                             Console.WriteLine("Callback: Finished playing sound");
                         }
                     });
+
+                    //temp: Force GC collection to test callback handling
                     GC.Collect();
 
                     // Wait until any key is pressed
                     WaitForKeypress(() =>
                     {
+
+                        //temp: Force GC collection to test callback handling
                         GC.Collect();
-                        try
-                        {
-                            Console.WriteLine("Position {0} ms", channel.GetPosition(TimeUnit.Milliseconds));
-                        }
-                        catch (FmodInvalidHandleException)
-                        {
-                            // We need a better way of handling invalid channels!
-                        }
+
+                        var pos = channel.GetPosition(TimeUnit.Milliseconds);
+                        if (pos.HasValue)
+                            Console.WriteLine("Position {0}ms", pos.Value);
                     });
 
                     // Stop the sound playing

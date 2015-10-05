@@ -13,31 +13,31 @@ namespace SupersonicSound.LowLevel
         #region General control functionality for Channels and ChannelGroups.
         void Stop();
 
-        bool Pause { get; set; }
+        bool? Pause { get; set; }
 
-        float Volume { get; set; }
+        float? Volume { get; set; }
 
-        bool VolumeRamp { get; set; }
+        bool? VolumeRamp { get; set; }
 
-        float Audibility { get; }
+        float? Audibility { get; }
 
-        float Pitch { get; set; }
+        float? Pitch { get; set; }
 
-        bool Mute { get; set; }
+        bool? Mute { get; set; }
 
         //Unsure how we want to implement these! Depending on what instance means we may want to have a `ReverbProperties[instance] = wet` style API
         //todo: public RESULT setReverbProperties(int instance, float wet);
         //todo: public RESULT getReverbProperties(int instance, out float wet);
 
-        float LowPassGain { get; set; }
+        float? LowPassGain { get; set; }
 
-        Mode Mode { get; set; }
+        Mode? Mode { get; set; }
 
         void SetCallback(Action<ChannelControlCallbackType, IntPtr, IntPtr> callback);
 
         void RemoveCallback();
 
-        bool IsPlaying { get; }
+        bool? IsPlaying { get; }
         #endregion
 
         #region Panning and level adjustment.

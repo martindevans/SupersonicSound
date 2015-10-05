@@ -1,4 +1,5 @@
-﻿using FMOD;
+﻿using System.Collections.Generic;
+using FMOD;
 using SupersonicSound.Wrapper;
 using System;
 using System.Text;
@@ -12,6 +13,20 @@ namespace SupersonicSound.LowLevel
 
         private CallbackHandler _callbackHandler;
 
+        private bool _throwHandle;
+        public bool SuppressInvalidHandle
+        {
+            get { return !_throwHandle; }
+            set { _throwHandle = !value; }
+        }
+
+        private bool _throwStolen;
+        public bool SuppressChannelStolen
+        {
+            get { return !_throwStolen; }
+            set { _throwStolen = !value; }
+        }
+
         private ChannelGroup(FMOD.ChannelGroup group)
             : this()
         {
@@ -23,6 +38,11 @@ namespace SupersonicSound.LowLevel
             if (group == null)
                 throw new ArgumentException("group");
             return new ChannelGroup(group);
+        }
+
+        private IReadOnlyList<RESULT> Suppressions()
+        {
+            return ErrorChecking.Suppress(_throwHandle, _throwStolen);
         }
 
         //public bool IsValid()
@@ -53,33 +73,32 @@ namespace SupersonicSound.LowLevel
         #region Nested channel groups.
         public void AddChannelGroup(ChannelGroup group)
         {
-            FmodGroup.addGroup(group.FmodGroup).Check();
+            FmodGroup.addGroup(group.FmodGroup).Check(Suppressions());
         }
 
-        public int GroupCount
+        public int? GroupCount
         {
             get
             {
                 int groups;
-                FmodGroup.getNumGroups(out groups).Check();
-                return groups;
+                return FmodGroup.getNumGroups(out groups).CheckBox(groups, Suppressions());
             }
         }
 
-        public ChannelGroup GetGroup(int index)
+        public ChannelGroup? GetGroup(int index)
         {
             FMOD.ChannelGroup group;
-            FmodGroup.getGroup(index, out group).Check();
-            return new ChannelGroup(group);
+            bool ok = FmodGroup.getGroup(index, out group).Check(Suppressions());
+            return ok ? new ChannelGroup(group) : (ChannelGroup?)null;
         }
 
-        public ChannelGroup ParentGroup
+        public ChannelGroup? ParentGroup
         {
             get
             {
                 FMOD.ChannelGroup group;
-                FmodGroup.getParentGroup(out group).Check();
-                return new ChannelGroup(group);
+                bool ok = FmodGroup.getParentGroup(out group).Check(Suppressions());
+                return ok ? new ChannelGroup(group) : (ChannelGroup?)null;
             }
         }
         #endregion
@@ -90,27 +109,29 @@ namespace SupersonicSound.LowLevel
             get
             {
                 StringBuilder builder = new StringBuilder(128);
-                FmodGroup.getName(builder, builder.Capacity).Check();
+                bool ok = FmodGroup.getName(builder, builder.Capacity).Check(Suppressions());
+                if (!ok)
+                    return null;
 
                 return builder.ToString();
             }
         }
 
-        public int ChannelCount
+        public int? ChannelCount
         {
             get
             {
                 int channels;
-                FmodGroup.getNumChannels(out channels).Check();
-                return channels;
+                return FmodGroup.getNumChannels(out channels).CheckBox(channels, Suppressions());
             }
         }
 
-        public Channel GetChannel(int index)
+        public Channel? GetChannel(int index)
         {
             FMOD.Channel channel;
-            FmodGroup.getChannel(index, out channel).Check();
-            return Channel.FromFmod(channel);
+            bool ok = FmodGroup.getChannel(index, out channel).Check(Suppressions());
+
+            return ok ? Channel.FromFmod(channel) : (Channel?)null;
         }
         #endregion
 
@@ -120,85 +141,77 @@ namespace SupersonicSound.LowLevel
             FmodGroup.stop().Check(ErrorChecking.SuppressInvalidHandle);
         }
 
-        public bool Pause
+        public bool? Pause
         {
             get
             {
                 bool value;
-                FmodGroup.getPaused(out value).Check();
-
-                return value;
+                return FmodGroup.getPaused(out value).CheckBox(value, Suppressions());
             }
             set
             {
-                FmodGroup.setPaused(value).Check();
+                FmodGroup.setPaused(value.Unbox()).Check(Suppressions());
             }
         }
 
-        public float Volume
+        public float? Volume
         {
             get
             {
                 float value;
-                FmodGroup.getVolume(out value).Check();
-                return value;
+                return FmodGroup.getVolume(out value).CheckBox(value, Suppressions());
             }
             set
             {
-                FmodGroup.setVolume(value).Check();
+                FmodGroup.setVolume(value.Unbox()).Check(Suppressions());
             }
         }
 
-        public bool VolumeRamp
+        public bool? VolumeRamp
         {
             get
             {
                 bool value;
-                FmodGroup.getVolumeRamp(out value).Check();
-                return value;
+                return FmodGroup.getVolumeRamp(out value).CheckBox(value, Suppressions());
             }
             set
             {
-                FmodGroup.setVolumeRamp(value).Check();
+                FmodGroup.setVolumeRamp(value.Unbox()).Check(Suppressions());
             }
         }
 
-        public float Audibility
+        public float? Audibility
         {
             get
             {
                 float value;
-                FmodGroup.getAudibility(out value).Check();
-                return value;
+                return FmodGroup.getAudibility(out value).CheckBox(value, Suppressions());
             }
         }
 
-        public float Pitch
+        public float? Pitch
         {
             get
             {
                 float value;
-                FmodGroup.getPitch(out value).Check();
-                return value;
+                return FmodGroup.getPitch(out value).CheckBox(value, Suppressions());
             }
             set
             {
-                FmodGroup.setPitch(value).Check();
+                FmodGroup.setPitch(value.Unbox()).Check(Suppressions());
             }
         }
 
-        public bool Mute
+        public bool? Mute
         {
             get
             {
                 bool value;
-                FmodGroup.getMute(out value).Check();
-
-                return value;
+                return FmodGroup.getMute(out value).CheckBox(value, Suppressions());
             }
             set
             {
-                FmodGroup.setMute(value).Check();
+                FmodGroup.setMute(value.Unbox()).Check(Suppressions());
             }
         }
 
@@ -206,46 +219,44 @@ namespace SupersonicSound.LowLevel
         {
             set
             {
-                FmodGroup.setPan(value).Check();
+                FmodGroup.setPan(value).Check(Suppressions());
             }
         }
 
-        public bool IsPlaying
+        public bool? IsPlaying
         {
             get
             {
                 bool value;
-                FmodGroup.isPlaying(out value).Check();
-
-                return value;
+                return FmodGroup.isPlaying(out value).Check(Suppressions());
             }
         }
 
-        public Mode Mode
+        public Mode? Mode
         {
             get
             {
                 MODE value;
-                FmodGroup.getMode(out value).Check();
-                return (Mode)value;
+                var nMode = FmodGroup.getMode(out value).CheckBox(value, Suppressions());
+
+                return nMode.HasValue ? (Mode)nMode : (Mode?)null;
             }
             set
             {
-                FmodGroup.setMode((MODE)value).Check();
+                FmodGroup.setMode((MODE)value.Unbox()).Check(Suppressions());
             }
         }
 
-        public float LowPassGain
+        public float? LowPassGain
         {
             get
             {
                 float value;
-                FmodGroup.getLowPassGain(out value).Check();
-                return value;
+                return FmodGroup.getLowPassGain(out value).CheckBox(value, Suppressions());
             }
             set
             {
-                FmodGroup.setLowPassGain(value).Check();
+                FmodGroup.setLowPassGain(value.Unbox()).Check(Suppressions());
             }
         }
         #endregion
