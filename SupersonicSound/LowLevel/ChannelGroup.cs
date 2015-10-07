@@ -239,11 +239,11 @@ namespace SupersonicSound.LowLevel
                 MODE value;
                 var nMode = FmodGroup.getMode(out value).CheckBox(value, Suppressions());
 
-                return nMode.HasValue ? (Mode)nMode : (Mode?)null;
+                return nMode.HasValue ? EquivalentEnum<MODE, Mode>.Cast(nMode.Value) : (Mode?)null;
             }
             set
             {
-                FmodGroup.setMode((MODE)value.Unbox()).Check(Suppressions());
+                FmodGroup.setMode(EquivalentEnum<Mode, MODE>.Cast(value.Unbox())).Check(Suppressions());
             }
         }
 

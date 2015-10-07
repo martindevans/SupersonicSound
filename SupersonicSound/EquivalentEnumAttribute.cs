@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -95,17 +96,38 @@ namespace SupersonicSound
             if (!typeof(TOut).IsEnum)
                 throw new Exception("CastEquivalentEnum output type must be an enum (programmer error)");
 
-            //Is the input an equivalent enum?
-            var equiv = typeof(TIn).GetCustomAttributes(typeof(EquivalentEnumAttribute), true).Cast<EquivalentEnumAttribute>().SingleOrDefault();
-            if (equiv == null)
-                throw new Exception("CastEquivalentEnum input type must have EquivalentEnum Attribute (programmer error)");
+            //Assume we're inputting supersonic and outputting native FMOD
+            var native = typeof(TOut);
+            var supersonic = typeof(TIn);
 
-            //Is the output the correct type (as defined by equivalence)
-            if (!equiv.Equivalent.IsAssignableFrom(typeof(TOut)))
-                throw new Exception("CastEquivalentEnum output type must be the equivalent enum of input type (programmer error)");
+            bool ns = Check(native, supersonic);
+            bool sn = Check(supersonic, native);
+
+            //If one of the two is true, we're ok
+            if (ns ^ sn)
+                return;
+
+            //Neither has the attribute
+            if (!(ns && sn))
+                throw new Exception("CastEquivalentEnum input or output type must have EquivalentEnum Attribute, but neither do! (programmer error)");
+
+            //Both have the attribute!
+            throw new Exception("CastEquivalentEnum input xor output type must have EquivalentEnum Attribute, not both! (programmer error)");
 
             //consider checking if all the values in input are valid values of output - this is complex due to flags enums mixing stuff up
             //This checking would have to be added into the converter
+        }
+
+        private static bool Check(Type tin, Type tout)
+        {
+            var equivalent = tin.GetCustomAttributes(typeof(EquivalentEnumAttribute), true).Cast<EquivalentEnumAttribute>().SingleOrDefault();
+            if (equivalent == null)
+                return false;
+
+            if (!equivalent.Equivalent.IsAssignableFrom(tout))
+                return false;
+
+            return true;
         }
 
         static Func<TIn, TOut> GenerateConverter()

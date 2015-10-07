@@ -99,7 +99,7 @@ namespace SupersonicSound.LowLevel
         public uint? GetPosition(TimeUnit unit)
         {
             uint pos;
-            return FmodChannel.getPosition(out pos, (TIMEUNIT)unit).CheckBox(pos, Suppressions());
+            return FmodChannel.getPosition(out pos, EquivalentEnum<TimeUnit, TIMEUNIT>.Cast(unit)).CheckBox(pos, Suppressions());
         }
 
         public ChannelGroup? ChannelGroup
@@ -135,14 +135,14 @@ namespace SupersonicSound.LowLevel
 
         public void SetLoopPoints(uint start, TimeUnit startUnit, uint end, TimeUnit endUnit)
         {
-            FmodChannel.setLoopPoints(start, (TIMEUNIT)startUnit, end, (TIMEUNIT)endUnit).Check(Suppressions());
+            FmodChannel.setLoopPoints(start, EquivalentEnum<TimeUnit, TIMEUNIT>.Cast(startUnit), end, EquivalentEnum<TimeUnit, TIMEUNIT>.Cast(endUnit)).Check(Suppressions());
         }
 
         public void GetLoopPoints(out uint? start, TimeUnit startUnit, out uint? end, TimeUnit endUnit)
         {
             uint startv;
             uint endv;
-            bool ok = FmodChannel.getLoopPoints(out startv, (TIMEUNIT)startUnit, out endv, (TIMEUNIT)endUnit).Check(Suppressions());
+            bool ok = FmodChannel.getLoopPoints(out startv, EquivalentEnum<TimeUnit, TIMEUNIT>.Cast(startUnit), out endv, EquivalentEnum<TimeUnit, TIMEUNIT>.Cast(endUnit)).Check(Suppressions());
 
             start = ok ? startv : (uint?)null;
             end = ok ? endv : (uint?)null;
@@ -251,11 +251,11 @@ namespace SupersonicSound.LowLevel
                 MODE value;
                 var nMode = FmodChannel.getMode(out value).CheckBox(value, Suppressions());
 
-                return nMode.HasValue ? (Mode)nMode : (Mode?)null;
+                return nMode.HasValue ? EquivalentEnum<MODE, Mode>.Cast(nMode.Value) : (Mode?)null;
             }
             set
             {
-                FmodChannel.setMode((MODE)value.Unbox()).Check(Suppressions());
+                FmodChannel.setMode(EquivalentEnum<Mode, MODE>.Cast(value.Unbox())).Check(Suppressions());
             }
         }
 
