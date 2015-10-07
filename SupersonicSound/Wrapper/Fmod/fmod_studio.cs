@@ -393,6 +393,7 @@ namespace Studio
         LIVEUPDATE              = 0x00000001,   /* Enable live update. */
         ALLOW_MISSING_PLUGINS   = 0x00000002,   /* Load banks even if they reference plugins that have not been loaded. */
         SYNCHRONOUS_UPDATE      = 0x00000004,   /* Disable asynchronous processing and perform all processing on the calling thread instead. */
+        DEFERRED_CALLBACKS      = 0x00000008,   /* Defer timeline callbacks until the main update. See Studio::EventInstance::setCallback for more information. */
     }
 
     [Flags]
@@ -429,9 +430,11 @@ namespace Studio
 
     public enum EVENT_PROPERTY
     {
-        CHANNELPRIORITY,     	/* Priority to set on low-level channels created by this event instance (-1 to 256). */
+        CHANNELPRIORITY,        /* Priority to set on low-level channels created by this event instance (-1 to 256). */
         SCHEDULE_DELAY,         /* Schedule delay to synchronized playback for multiple tracks in DS clocks, or -1 for default. */
         SCHEDULE_LOOKAHEAD,     /* Schedule look-ahead on the timeline in DSP clocks, or -1 for default. */
+        MINIMUM_DISTANCE,       /* Override the event's 3D minimum distance, or -1 for default. */
+        MAXIMUM_DISTANCE        /* Override the event's 3D maximum distance, or -1 for default. */
     };
 
     [StructLayout(LayoutKind.Sequential)]

@@ -27,7 +27,7 @@ namespace SupersonicSound.LowLevel
         /// Called directly when a thread is created. (NOTE - 'system' will be NULL in this callback type.)
         /// </summary>
         ThreadCreated = SYSTEM_CALLBACK_TYPE.THREADCREATED,
-        
+
         /// <summary>
         /// Called when a bad connection was made with DSP::addInput. Usually called from mixer thread because that is where the connections are made.
         /// </summary>
@@ -66,6 +66,16 @@ namespace SupersonicSound.LowLevel
         /// <summary>
         /// Called at end of System::update function.
         /// </summary>
-        PostUpdate = SYSTEM_CALLBACK_TYPE.POSTUPDATE
+        PostUpdate = SYSTEM_CALLBACK_TYPE.POSTUPDATE,
+
+        /// <summary>
+        /// Called from System::update when the enumerated list of recording devices has changed.
+        /// </summary>
+        RecordListChanged = SYSTEM_CALLBACK_TYPE.RECORDLISTCHANGED,
+
+        /// <summary>
+        /// Pass this mask to System::setCallback to receive all callback types.
+        /// </summary>
+        All = SYSTEM_CALLBACK_TYPE.ALL
     }
 }

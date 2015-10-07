@@ -23,11 +23,6 @@ namespace SupersonicSound.LowLevel
         ASF = SOUND_TYPE.ASF,
 
         /// <summary>
-        /// Sony ATRAC 3 format
-        /// </summary>
-        AT3 = SOUND_TYPE.AT3,
-
-        /// <summary>
         /// Sound font / downloadable sound bank.
         /// </summary>
         DLS = SOUND_TYPE.DLS,
@@ -41,11 +36,6 @@ namespace SupersonicSound.LowLevel
         /// FMOD Sample Bank.
         /// </summary>
         FSB = SOUND_TYPE.FSB,
-
-        /// <summary>
-        /// GameCube ADPCM
-        /// </summary>
-        GCADPCM = SOUND_TYPE.GCADPCM,
 
         /// <summary>
         /// Impulse Tracker.
@@ -108,24 +98,9 @@ namespace SupersonicSound.LowLevel
         XMA = SOUND_TYPE.XMA,
 
         /// <summary>
-        /// PlayStation Portable adpcm VAG format.
-        /// </summary>
-        VAG = SOUND_TYPE.VAG,
-
-        /// <summary>
         /// iPhone hardware decoder, supports AAC, ALAC and MP3.
         /// </summary>
         AudioQueue = SOUND_TYPE.AUDIOQUEUE,
-
-        /// <summary>
-        /// Xbox360 XWMA
-        /// </summary>
-        XWMA = SOUND_TYPE.XWMA,
-
-        /// <summary>
-        /// 3DS BCWAV container format for DSP ADPCM and PCM
-        /// </summary>
-        BCWAV = SOUND_TYPE.BCWAV,
 
         /// <summary>
         /// NGP ATRAC 9 format

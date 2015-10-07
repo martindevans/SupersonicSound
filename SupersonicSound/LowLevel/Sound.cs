@@ -156,7 +156,9 @@ namespace SupersonicSound.LowLevel
                 }
                 set
                 {
-                    _fmodSound.setSubSound(index, value._fmodSound).Check();
+                    throw new NotImplementedException();
+                    //FIXME This was removed from the FMOD C# wrapper
+                    //_fmodSound.setSubSound(index, value._fmodSound).Check();
                 }
             }
 

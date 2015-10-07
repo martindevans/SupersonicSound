@@ -18,6 +18,16 @@ namespace SupersonicSound.Studio
         /// <summary>
         /// Schedule look-ahead on the timeline in DSP clocks, or -1 for default.
         /// </summary>
-        ScheduleLookahead = EVENT_PROPERTY.SCHEDULE_LOOKAHEAD
+        ScheduleLookahead = EVENT_PROPERTY.SCHEDULE_LOOKAHEAD,
+
+        /// <summary>
+        /// Override the event's 3D minimum distance, or -1 for default.
+        /// </summary>
+        MinimumDistance = EVENT_PROPERTY.MINIMUM_DISTANCE,
+
+        /// <summary>
+        /// Override the event's 3D maximum distance, or -1 for default.
+        /// </summary>
+        MaximumDistance = EVENT_PROPERTY.MAXIMUM_DISTANCE
     }
 }
