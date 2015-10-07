@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using FMOD;
@@ -11,6 +12,13 @@ namespace SupersonicSound.LowLevel
     {
         public FMOD.DSP FmodDsp { get; private set; }
 
+        private bool _throwHandle;
+        public bool SuppressInvalidHandle
+        {
+            get { return !_throwHandle; }
+            set { _throwHandle = !value; }
+        }
+
         private DSP(FMOD.DSP dsp)
             : this()
         {
@@ -22,6 +30,11 @@ namespace SupersonicSound.LowLevel
             if (dsp == null)
                 throw new ArgumentNullException("dsp");
             return new DSP(dsp);
+        }
+
+        private IReadOnlyList<RESULT> Suppressions()
+        {
+            return ErrorChecking.Suppress(_throwHandle, true);
         }
 
         //public bool IsValid()
@@ -53,58 +66,66 @@ namespace SupersonicSound.LowLevel
         #endregion
 
         #region Connection / disconnection / input and output enumeration.
-        public DspConnection AddInput(DSP target, DspConnectionType dspConnectionType = DspConnectionType.Standard)
+        public DspConnection? AddInput(DSP target, DspConnectionType dspConnectionType = DspConnectionType.Standard)
         {
-            FMOD.DSPConnection connection;
-            FmodDsp.addInput(target.FmodDsp, out connection, (DSPCONNECTION_TYPE)dspConnectionType).Check();
+            DSPConnection connection;
+            if (!FmodDsp.addInput(target.FmodDsp, out connection, EquivalentEnum<DspConnectionType, DSPCONNECTION_TYPE>.Cast(dspConnectionType)).Check(Suppressions()))
+                return null;
+
             return new DspConnection(connection);
         }
 
         public void DisconnectFrom(DSP target, DspConnection connection)
         {
-            FmodDsp.disconnectFrom(target.FmodDsp, connection.FmodDspConnection);
+            FmodDsp.disconnectFrom(target.FmodDsp, connection.FmodDspConnection).Check(Suppressions());
         }
 
         public void DisconnectAll(bool inputs, bool outputs)
         {
-            FmodDsp.disconnectAll(inputs, outputs);
+            FmodDsp.disconnectAll(inputs, outputs).Check(Suppressions());
         }
 
-        public int InputCount
+        public int? InputCount
         {
             get
             {
                 int num;
-                FmodDsp.getNumInputs(out num).Check();
-                return num;
+                return FmodDsp.getNumInputs(out num).CheckBox(num, Suppressions());
             }
         }
 
-        public int OutputCount
+        public int? OutputCount
         {
             get
             {
                 int num;
-                FmodDsp.getNumOutputs(out num).Check();
-                return num;
+                return FmodDsp.getNumOutputs(out num).CheckBox(num, Suppressions());
             }
         }
 
-        public DspConnection GetInput(int index, out DSP input)
+        public DspConnection? GetInput(int index, out DSP? input)
         {
-            FMOD.DSPConnection connection;
+            DSPConnection connection;
             FMOD.DSP dsp;
-            FmodDsp.getInput(index, out dsp, out connection).Check();
+            if (!FmodDsp.getInput(index, out dsp, out connection).Check(Suppressions()))
+            {
+                input = null;
+                return null;
+            }
 
             input = FromFmod(dsp);
             return new DspConnection(connection);
         }
 
-        public DspConnection GetOutput(int index, out DSP output)
+        public DspConnection? GetOutput(int index, out DSP? output)
         {
-            FMOD.DSPConnection connection;
+            DSPConnection connection;
             FMOD.DSP dsp;
-            FmodDsp.getOutput(index, out dsp, out connection).Check();
+            if (!FmodDsp.getOutput(index, out dsp, out connection).Check(Suppressions()))
+            {
+                output = null;
+                return null;
+            }
 
             output = FromFmod(dsp);
             return new DspConnection(connection);
@@ -112,122 +133,148 @@ namespace SupersonicSound.LowLevel
         #endregion
 
         #region DSP unit control
-        public bool Active
+        public bool? Active
         {
             get
             {
                 bool active;
-                FmodDsp.getActive(out active).Check();
-                return active;
+                return FmodDsp.getActive(out active).CheckBox(active, Suppressions());
             }
             set
             {
-                FmodDsp.setActive(value).Check();
+                FmodDsp.setActive(value.Unbox()).Check(Suppressions());
             }
         }
 
-        public bool Bypass
+        public bool? Bypass
         {
             get
             {
                 bool bypass;
-                FmodDsp.getBypass(out bypass).Check();
-                return bypass;
+                return FmodDsp.getBypass(out bypass).CheckBox(bypass, Suppressions());
             }
             set
             {
-                FmodDsp.setBypass(value).Check();
+                FmodDsp.setBypass(value.Unbox()).Check(Suppressions());
             }
         }
 
         public void SetWetDryMix(float prewet, float postwet, float dry)
         {
-            FmodDsp.setWetDryMix(prewet, postwet, dry).Check();
+            FmodDsp.setWetDryMix(prewet, postwet, dry).Check(Suppressions());
         }
 
-        public void GetWetDryMix(out float prewet, out float postwet, out float dry)
+        public void GetWetDryMix(out float? prewet, out float? postwet, out float? dry)
         {
-            FmodDsp.getWetDryMix(out prewet, out postwet, out dry).Check();
+            float pre, post, dr;
+            if (!FmodDsp.getWetDryMix(out pre, out post, out dr).Check(Suppressions()))
+            {
+                prewet = null;
+                postwet = null;
+                dry = null;
+            }
+            else
+            {
+                prewet = pre;
+                postwet = post;
+                dry = dr;
+            }
         }
 
         public void SetChannelFormat(ChannelMask channelMask, int numChannels, SpeakerMode sourceSpeakerMode)
         {
-            FmodDsp.setChannelFormat((CHANNELMASK)channelMask, numChannels, (SPEAKERMODE)sourceSpeakerMode).Check();
+            FmodDsp.setChannelFormat(EquivalentEnum<ChannelMask, CHANNELMASK>.Cast(channelMask), numChannels, EquivalentEnum<SpeakerMode, SPEAKERMODE>.Cast(sourceSpeakerMode)).Check(Suppressions());
         }
 
-        public void GetChannelFormat(out ChannelMask channelMask, out int numChannels, out SpeakerMode sourceSpeakerMode)
+        public void GetChannelFormat(out ChannelMask? channelMask, out int? numChannels, out SpeakerMode? sourceSpeakerMode)
         {
             CHANNELMASK mask;
             SPEAKERMODE sourceMode;
-            FmodDsp.getChannelFormat(out mask, out numChannels, out sourceMode).Check();
-
-            channelMask = (ChannelMask)mask;
-            sourceSpeakerMode = (SpeakerMode)sourceMode;
+            int nc;
+            if (!FmodDsp.getChannelFormat(out mask, out nc, out sourceMode).Check(Suppressions()))
+            {
+                channelMask = null;
+                numChannels = null;
+                sourceSpeakerMode = null;
+            }
+            else
+            {
+                channelMask = EquivalentEnum<CHANNELMASK, ChannelMask>.Cast(mask);
+                numChannels = nc;
+                sourceSpeakerMode = EquivalentEnum<SPEAKERMODE, SpeakerMode>.Cast(sourceMode);
+            }
         }
 
-        public void GetOutputChannelFormat(ChannelMask inmask, int inchannels, SpeakerMode inspeakermode, out ChannelMask outmask, out int outchannels, out SpeakerMode outspeakermode)
+        public void GetOutputChannelFormat(ChannelMask inmask, int inchannels, SpeakerMode inspeakermode, out ChannelMask? outmask, out int? outchannels, out SpeakerMode? outspeakermode)
         {
             CHANNELMASK mask;
             SPEAKERMODE mode;
-            FmodDsp.getOutputChannelFormat((CHANNELMASK)inmask, inchannels, (SPEAKERMODE)inspeakermode, out mask, out outchannels, out mode).Check();
-
-            outmask = (ChannelMask)mask;
-            outspeakermode = (SpeakerMode)mode;
+            int c;
+            if (!FmodDsp.getOutputChannelFormat(EquivalentEnum<ChannelMask, CHANNELMASK>.Cast(inmask), inchannels, EquivalentEnum<SpeakerMode, SPEAKERMODE>.Cast(inspeakermode), out mask, out c, out mode).Check(Suppressions()))
+            {
+                outmask = null;
+                outspeakermode = null;
+                outchannels = null;
+            }
+            else
+            {
+                outmask = EquivalentEnum<CHANNELMASK, ChannelMask>.Cast(mask);
+                outspeakermode = EquivalentEnum<SPEAKERMODE, SpeakerMode>.Cast(mode);
+                outchannels = c;
+            }
         }
 
         public void Reset()
         {
-            FmodDsp.reset().Check();
+            FmodDsp.reset().Check(Suppressions());
         }
         #endregion
 
         #region DSP parameter control
         public void SetParameter(int index, float value)
         {
-            FmodDsp.setParameterFloat(index, value);
+            FmodDsp.setParameterFloat(index, value).Check(Suppressions());
         }
 
         public void SetParameter(int index, int value)
         {
-            FmodDsp.setParameterInt(index, value).Check();
+            FmodDsp.setParameterInt(index, value).Check(Suppressions());
         }
 
         public void SetParameter(int index, bool value)
         {
-            FmodDsp.setParameterBool(index, value).Check();
+            FmodDsp.setParameterBool(index, value).Check(Suppressions());
         }
 
         public void SetParameter(int index, byte[] value)
         {
-            FmodDsp.setParameterData(index, value).Check();
+            FmodDsp.setParameterData(index, value).Check(Suppressions());
         }
 
-        public float GetParameterFloat(int index)
+        public float? GetParameterFloat(int index)
         {
             float value;
-            FmodDsp.getParameterFloat(index, out value).Check();
-            return value;
+            return FmodDsp.getParameterFloat(index, out value).CheckBox(value, Suppressions());
         }
 
-        public int GetParameterInt(int index)
+        public int? GetParameterInt(int index)
         {
             int value;
-            FmodDsp.getParameterInt(index, out value).Check();
-            return value;
+            return FmodDsp.getParameterInt(index, out value).CheckBox(value, Suppressions());
         }
 
-        public bool GetParameterBool(int index)
+        public bool? GetParameterBool(int index)
         {
             bool value;
-            FmodDsp.getParameterBool(index, out value).Check();
-            return value;
+            return FmodDsp.getParameterBool(index, out value).CheckBox(value, Suppressions());
         }
 
         public byte[] GetParameterData(int index)
         {
             IntPtr ptr;
             uint length;
-            FmodDsp.getParameterData(index, out ptr, out length).Check();
+            if (!FmodDsp.getParameterData(index, out ptr, out length).Check(Suppressions()))
+                return null;
 
             byte[] dst = new byte[length];
             Marshal.Copy(ptr, dst, 0, (int)length);
@@ -235,61 +282,76 @@ namespace SupersonicSound.LowLevel
             return dst;
         }
 
-        public int ParameterCount
+        public int? ParameterCount
         {
             get
             {
                 int num;
-                FmodDsp.getNumParameters(out num).Check();
-                return num;
+                return FmodDsp.getNumParameters(out num).CheckBox(num, Suppressions());
             }
         }
 
-        public DspParameterDescription GetParameterInfo(int index)
+        public DspParameterDescription? GetParameterInfo(int index)
         {
             DSP_PARAMETER_DESC desc;
-            FmodDsp.getParameterInfo(index, out desc).Check();
+            if (!FmodDsp.getParameterInfo(index, out desc).Check(Suppressions()))
+                return null;
             return new DspParameterDescription(ref desc);
         }
 
-        public int GetDataParameterIndex(int dataType)
+        public int? GetDataParameterIndex(int dataType)
         {
             int index;
-            FmodDsp.getDataParameterIndex(dataType, out index).Check();
-            return index;
+            return FmodDsp.getDataParameterIndex(dataType, out index).CheckBox(index, Suppressions());
         }
 
         public void ShowConfigDialog(IntPtr hwnd, bool show)
         {
-            FmodDsp.showConfigDialog(hwnd, show).Check();
+            FmodDsp.showConfigDialog(hwnd, show).Check(Suppressions());
         }
         #endregion
 
         #region  DSP attributes
-        public void GetInfo(out string name, out uint version, out int channels, out int configWidth, out int configHeight)
+        public void GetInfo(out string name, out uint? version, out int? channels, out int? configWidth, out int? configHeight)
         {
             StringBuilder n = new StringBuilder();
-            FmodDsp.getInfo(n, out version, out channels, out configWidth, out configHeight).Check();
-            name = n.ToString();
+            uint v;
+            int cha, cow, coh;
+            if (!FmodDsp.getInfo(n, out v, out cha, out cow, out coh).Check(Suppressions()))
+            {
+                name = null;
+                version = null;
+                channels = null;
+                configWidth = null;
+                configHeight = null;
+            }
+            else
+            {
+                name = n.ToString();
+                version = v;
+                channels = cha;
+                configWidth = cow;
+                configHeight = coh;
+            }
         }
 
-        public DspType Type
+        public DspType? Type
         {
             get
             {
                 DSP_TYPE type;
-                FmodDsp.getType(out type).Check();
-                return (DspType)type;
+                if (!FmodDsp.getType(out type).Check(Suppressions()))
+                    return null;
+                return EquivalentEnum<DSP_TYPE, DspType>.Cast(type);
             }
         }
 
-        public bool Idle
+        public bool? Idle
         {
             get
             {
                 bool idle;
-                FmodDsp.getIdle(out idle).Check();
-                return idle;
+                return FmodDsp.getIdle(out idle).CheckBox(idle, Suppressions());
             }
         }
         #endregion
@@ -311,37 +373,35 @@ namespace SupersonicSound.LowLevel
         #endregion
 
         #region Metering
-        public bool IsInputMeteringEnabled
+        public bool? IsInputMeteringEnabled
         {
             get
             {
                 bool input;
                 bool _;
-                FmodDsp.getMeteringEnabled(out input, out _).Check();
-                return input;
+                return FmodDsp.getMeteringEnabled(out input, out _).CheckBox(input, Suppressions());
             }
             set
             {
-                FmodDsp.setMeteringEnabled(value, IsOutputMeteringEnabled).Check();
+                FmodDsp.setMeteringEnabled(value.Unbox(), IsOutputMeteringEnabled.Unbox()).Check(Suppressions());
             }
         }
 
-        public bool IsOutputMeteringEnabled
+        public bool? IsOutputMeteringEnabled
         {
             get
             {
                 bool _;
                 bool output;
-                FmodDsp.getMeteringEnabled(out _, out output).Check();
-                return output;
+                return FmodDsp.getMeteringEnabled(out _, out output).CheckBox(output, Suppressions());
             }
             set
             {
-                FmodDsp.setMeteringEnabled(IsInputMeteringEnabled, value).Check();
+                FmodDsp.setMeteringEnabled(IsInputMeteringEnabled.Unbox(), value.Unbox()).Check(Suppressions());
             }
         }
 
-        public DspMeteringInfo MeteringInputInfo
+        public DspMeteringInfo? MeteringInputInfo
         {
             get
             {
@@ -350,13 +410,14 @@ namespace SupersonicSound.LowLevel
                     peaklevel = new float[32],
                     rmslevel = new float[32]
                 };
-                FmodDsp.getMeteringInfo(info, null).Check();
+                if (!FmodDsp.getMeteringInfo(info, null).Check(Suppressions()))
+                    return null;
 
                 return new DspMeteringInfo(ref info);
             }
         }
 
-        public DspMeteringInfo MeteringOutputInfo
+        public DspMeteringInfo? MeteringOutputInfo
         {
             get
             {
@@ -365,7 +426,8 @@ namespace SupersonicSound.LowLevel
                     peaklevel = new float[32],
                     rmslevel = new float[32]
                 };
-                FmodDsp.getMeteringInfo(null, info).Check();
+                if (!FmodDsp.getMeteringInfo(null, info).Check(Suppressions()))
+                    return null;
 
                 return new DspMeteringInfo(ref info);
             }
