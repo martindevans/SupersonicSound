@@ -22,7 +22,7 @@ namespace SupersonicSound.LowLevel
         /// </summary>
         private readonly bool _managedSystem = false;
 
-        public LowLevelSystem(int maxChannels = 1024, InitFlags flags = InitFlags.LiveUpdate, AdvancedInitializationSettings advancedSettings = default(AdvancedInitializationSettings), Action<IPreInitilizeLowLevelSystem> preInit = null)
+        public LowLevelSystem(int maxChannels = 1024, LowLevelInitFlags flags = LowLevelInitFlags.Normal, AdvancedInitializationSettings advancedSettings = default(AdvancedInitializationSettings), Action<IPreInitilizeLowLevelSystem> preInit = null)
         {
             //Load native dependencies
             Native.Load();
