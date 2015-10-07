@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using FMOD;
 using SupersonicSound.Wrapper;
 
@@ -9,12 +10,24 @@ namespace SupersonicSound.LowLevel
     {
         public DSPConnection FmodDspConnection { get; private set; }
 
+        private bool _throwHandle;
+        public bool SuppressInvalidHandle
+        {
+            get { return !_throwHandle; }
+            set { _throwHandle = !value; }
+        }
+
         internal DspConnection(DSPConnection connection)
             : this()
         {
             if (connection == null)
                 throw new ArgumentNullException("connection");
             FmodDspConnection = connection;
+        }
+
+        private IReadOnlyList<RESULT> Suppressions()
+        {
+            return ErrorChecking.Suppress(_throwHandle, true);
         }
 
         //public bool IsValid()
@@ -42,57 +55,69 @@ namespace SupersonicSound.LowLevel
         }
         #endregion
 
-        public DSP Input
+        public DSP? Input
         {
             get
             {
                 FMOD.DSP input;
-                FmodDspConnection.getInput(out input).Check();
+                if (!FmodDspConnection.getInput(out input).Check(Suppressions()))
+                    return null;
                 return DSP.FromFmod(input);
             }
         }
 
-        public DSP Output
+        public DSP? Output
         {
             get
             {
                 FMOD.DSP output;
-                FmodDspConnection.getOutput(out output).Check();
+                if (!FmodDspConnection.getOutput(out output).Check(Suppressions()))
+                    return null;
                 return DSP.FromFmod(output);
             }
         }
 
-        public float Mix
+        public float? Mix
         {
             get
             {
                 float volume;
-                FmodDspConnection.getMix(out volume).Check();
-                return volume;
+                return FmodDspConnection.getMix(out volume).CheckBox(volume, Suppressions());
             }
             set
             {
-                FmodDspConnection.setMix(value).Check();
+                FmodDspConnection.setMix(value.Unbox()).Check(Suppressions());
             }
         }
 
         public void SetMixMatrix(float[] matrix, int outChannels, int inChannels, int inChannelHop)
         {
-            FmodDspConnection.setMixMatrix(matrix, outChannels, inChannels, inChannelHop).Check();
+            FmodDspConnection.setMixMatrix(matrix, outChannels, inChannels, inChannelHop).Check(Suppressions());
         }
 
-        public void GetMatrixMatrix(float[] matrix, out int outChannels, out int inChannels, int inChannelHop)
+        public void GetMatrixMatrix(float[] matrix, out int? outChannels, out int? inChannels, int inChannelHop)
         {
-            FmodDspConnection.getMixMatrix(matrix, out outChannels, out inChannels, inChannelHop).Check();
+            int outch, inch;
+            if (!FmodDspConnection.getMixMatrix(matrix, out outch, out inch, inChannelHop).Check(Suppressions()))
+            {
+                outChannels = null;
+                inChannels = null;
+            }
+            else
+            {
+                outChannels = outch;
+                inChannels = inch;
+            }
         }
 
-        public DspConnectionType ConnectionType
+        public DspConnectionType? ConnectionType
         {
             get
             {
                 DSPCONNECTION_TYPE type;
-                FmodDspConnection.getType(out type).Check();
-                return (DspConnectionType)type;
+                if (!FmodDspConnection.getType(out type).Check(Suppressions()))
+                    return null;
+                return EquivalentEnum<DSPCONNECTION_TYPE, DspConnectionType>.Cast(type);
             }
         }
 
