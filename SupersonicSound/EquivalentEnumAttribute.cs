@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace SupersonicSound
@@ -77,6 +78,44 @@ namespace SupersonicSound
         private U GetValueFromName<U>(string name)
         {
             return (U)Enum.Parse(Equivalent, name);
+        }
+    }
+
+    static class EquivalentEnum<TIn, TOut>
+        where TIn : struct, IConvertible
+        where TOut : struct
+    {
+        public static readonly Func<TIn, TOut> Cast = GenerateConverter();
+
+        static EquivalentEnum()
+        {
+            //Basic sanity check, are we working with enums?
+            if (!typeof(TIn).IsEnum)
+                throw new Exception("CastEquivalentEnum input type must be an enum (programmer error)");
+            if (!typeof(TOut).IsEnum)
+                throw new Exception("CastEquivalentEnum output type must be an enum (programmer error)");
+
+            //Is the input an equivalent enum?
+            var equiv = typeof(TIn).GetCustomAttributes(typeof(EquivalentEnumAttribute), true).Cast<EquivalentEnumAttribute>().SingleOrDefault();
+            if (equiv == null)
+                throw new Exception("CastEquivalentEnum input type must have EquivalentEnum Attribute (programmer error)");
+
+            //Is the output the correct type (as defined by equivalence)
+            if (!equiv.Equivalent.IsAssignableFrom(typeof(TOut)))
+                throw new Exception("CastEquivalentEnum output type must be the equivalent enum of input type (programmer error)");
+
+            //consider checking if all the values in input are valid values of output - this is complex due to flags enums mixing stuff up
+            //This checking would have to be added into the converter
+        }
+
+        static Func<TIn, TOut> GenerateConverter()
+        {
+            var parameter = Expression.Parameter(typeof(TIn));
+            var dynamicMethod = Expression.Lambda<Func<TIn, TOut>>(
+                Expression.ConvertChecked(parameter, typeof(TOut)),
+                parameter
+            );
+            return dynamicMethod.Compile();
         }
     }
 }

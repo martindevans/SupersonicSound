@@ -43,7 +43,7 @@ namespace SupersonicSound.LowLevel
             SetAdvancedSettings(advancedSettings);
 
             //Initialize
-            _system.init(maxChannels, (INITFLAGS)flags, IntPtr.Zero).Check();
+            _system.init(maxChannels, EquivalentEnum<LowLevelInitFlags, INITFLAGS>.Cast(flags), IntPtr.Zero).Check();
         }
 
         internal LowLevelSystem(FMOD.System system)
