@@ -21,6 +21,8 @@ namespace ConsoleTest.Examples
                 // Create a new sound object
                 using (var sound = system.CreateSound(name: GetContentPath("test.wav"), mode: Mode.LoopNormal))
                 {
+                    Console.WriteLine("Playing sound, Length {0}ms", sound.GetLength(TimeUnit.Milliseconds));
+
                     // Begin playing the sound, this returns the "channel" which is playing this sound
                     var channel = system.PlaySound(sound, null, false);
 
