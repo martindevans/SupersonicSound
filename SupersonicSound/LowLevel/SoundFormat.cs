@@ -38,58 +38,8 @@ namespace SupersonicSound.LowLevel
         PCMFloat = SOUND_FORMAT.PCMFLOAT,
 
         /// <summary>
-        /// Compressed GameCube DSP data
+        /// Sound data is in its native compressed format.
         /// </summary>
-        GCADPCM = SOUND_FORMAT.GCADPCM,
-
-        /// <summary>
-        /// Compressed XBox ADPCM data
-        /// </summary>
-        IMAADPCM = SOUND_FORMAT.IMAADPCM,
-
-        /// <summary>
-        /// Compressed PlayStation 2 ADPCM data
-        /// </summary>
-        VAG = SOUND_FORMAT.VAG,
-
-        /// <summary>
-        /// Compressed NGP ADPCM data.
-        /// </summary>
-        HEVAG = SOUND_FORMAT.HEVAG,
-
-        /// <summary>
-        /// Compressed Xbox360 data.
-        /// </summary>
-        XMA = SOUND_FORMAT.XMA,
-
-        /// <summary>
-        /// Compressed MPEG layer 2 or 3 data.
-        /// </summary>
-        MPEG = SOUND_FORMAT.MPEG,
-
-        /// <summary>
-        /// Compressed CELT data.
-        /// </summary>
-        CELT = SOUND_FORMAT.CELT,
-
-        /// <summary>
-        /// Compressed ATRAC9 data.
-        /// </summary>
-        AT9 = SOUND_FORMAT.AT9,
-
-        /// <summary>
-        /// Compressed Xbox360 xWMA data.
-        /// </summary>
-        XWMA = SOUND_FORMAT.XWMA,
-
-        /// <summary>
-        /// Compressed Vorbis data.
-        /// </summary>
-        Vorbis = SOUND_FORMAT.VORBIS,
-
-        /// <summary>
-        /// Compressed FADPCM data.
-        /// </summary>
-        Fadpcm = SOUND_FORMAT.FADPCM
+        BitStream = SOUND_FORMAT.BITSTREAM
     }
 }

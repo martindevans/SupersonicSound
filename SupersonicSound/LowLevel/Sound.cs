@@ -154,10 +154,6 @@ namespace SupersonicSound.LowLevel
                     _fmodSound.getSubSound(index, out sound).Check();
                     return FromFmod(sound);
                 }
-                set
-                {
-                    _fmodSound.setSubSound(index, value._fmodSound).Check();
-                }
             }
 
             public Sound Parent

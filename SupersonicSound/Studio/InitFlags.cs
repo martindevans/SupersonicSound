@@ -27,5 +27,10 @@ namespace SupersonicSound.Studio
         /// Disable asynchronous processing and perform all processing on the calling thread instead.
         /// </summary>
         SynchronousUpdate = INITFLAGS.SYNCHRONOUS_UPDATE,
+
+        /// <summary>
+        /// Defer timeline callbacks until the main update. See Studio::EventInstance::setCallback for more information.
+        /// </summary>
+        DeferredCallback = INITFLAGS.DEFERRED_CALLBACKS
     }
 }

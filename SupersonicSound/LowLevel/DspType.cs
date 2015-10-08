@@ -84,7 +84,7 @@ namespace SupersonicSound.LowLevel
         /// This unit allows the use of Steinberg VST plugins
         /// </summary>
         VstPlugin = DSP_TYPE.VSTPLUGIN,
-        
+
         /// <summary>
         /// This unit allows the use of Nullsoft Winamp plugins
         /// </summary>
@@ -104,7 +104,7 @@ namespace SupersonicSound.LowLevel
         /// This unit implements SFX reverb
         /// </summary>
         SfxReverb = DSP_TYPE.SFXREVERB,
-        
+
         /// <summary>
         /// This unit filters sound using a simple lowpass with no resonance, but has flexible cutoff and is fast.
         /// </summary>
@@ -124,12 +124,12 @@ namespace SupersonicSound.LowLevel
         /// This unit allows the use of LADSPA standard plugins.
         /// </summary>
         LadspaPlugin = DSP_TYPE.LADSPAPLUGIN,
-        
+
         /// <summary>
         /// This unit sends a copy of the signal to a return DSP anywhere in the DSP tree.
         /// </summary>
         Send = DSP_TYPE.SEND,
-        
+
         /// <summary>
         /// This unit receives signals from a number of send DSPs.
         /// </summary>
@@ -144,7 +144,7 @@ namespace SupersonicSound.LowLevel
         /// This unit pans the signal, possibly upmixing or downmixing as well.
         /// </summary>
         Pan = DSP_TYPE.PAN,
-        
+
         /// <summary>
         /// This unit is a three-band equalizer.
         /// </summary>
@@ -169,5 +169,10 @@ namespace SupersonicSound.LowLevel
         /// This unit implements convolution reverb.
         /// </summary>
         ConvolutionReverb = DSP_TYPE.CONVOLUTIONREVERB,
+
+        /// <summary>
+        /// This unit provides per signal channel gain, and output channel mapping to allow 1 multichannel signal made up of many groups of signals to map to a single output signal.
+        /// </summary>
+        ChannelMix = DSP_TYPE.CHANNELMIX
     }
 }
