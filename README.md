@@ -23,8 +23,8 @@ at the nuget package manager console. Currently this package requires .Net 4.6 (
 
 Unfortunately FMOD licensing does not allow for the FMOD dlls to be distributed with the nuget package and you will need to download these yourself.
 
- - [Linux installation instructions](https://github.com/martindevans/SupersonicSound/wiki/Linux-FMOD-Studio-Installation)
- - [Windows installation instructions](https://github.com/martindevans/SupersonicSound/wiki/Windows-FMOD-Studio-Installation)
+ - [Linux installation instructions](https://github.com/martindevans/SupersonicSound/wiki/Installation:-Linux)
+ - [Windows installation instructions](https://github.com/martindevans/SupersonicSound/wiki/Installation:-Windows)
 
 ## Examples
 
