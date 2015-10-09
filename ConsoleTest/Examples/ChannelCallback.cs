@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using SupersonicSound.Exceptions;
 using SupersonicSound.LowLevel;
 
@@ -22,6 +23,7 @@ namespace ConsoleTest.Examples
         private Sound? _currentSound;
         private Channel? _currentChannel;
         private int _soundIndex;
+        private List<IDisposable> _disposeList = new List<IDisposable>();
 
         public ChannelCallback(string contentPath)
             : base(contentPath)
@@ -49,6 +51,10 @@ namespace ConsoleTest.Examples
                 // Wait until any key is pressed
                 WaitForKeypress(() =>
                 {
+                    // Dispose sounds that aren't used anymore
+                    _disposeList.ForEach(x => x.Dispose());
+                    _disposeList.Clear();
+
                     //temp: Force GC collection to test callback handling
                     GC.Collect();
 
@@ -75,7 +81,12 @@ namespace ConsoleTest.Examples
 
             var sound = system.CreateStream(name: fileName, mode: Mode.Default);
 
-            _currentSound?.Dispose();
+            if (_currentSound.HasValue)
+                // Because of some difference between Mono and CLR we can't dispose the sound here
+                // while being called from the callback. The sound has finished playing, but for some
+                // reason Mono will crash in the callback handler from the native side if we dispose here.
+                // Putting it in a list to be disposed later worked good on Mono. CLR didn't have this issue.
+                _disposeList.Add(_currentSound.Value);
 
             _currentSound = sound;
 
