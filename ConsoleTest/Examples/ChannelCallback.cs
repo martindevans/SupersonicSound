@@ -6,6 +6,7 @@ namespace ConsoleTest.Examples
 {
     public class ChannelCallback : TestBase
     {
+        //We're going to play these sounds, one by one, in order
         private readonly string[] _sounds =
         {
             "Front_Center.wav",
@@ -25,6 +26,42 @@ namespace ConsoleTest.Examples
         public ChannelCallback(string contentPath)
             : base(contentPath)
         {
+        }
+
+        public override void Execute()
+        {
+            // Create a LowLevelSystem - this is the most basic system and has no support for FMOD studio projects
+            using (var system = new LowLevelSystem())
+            {
+                // Set up the demo to call update on the system
+                Pump(system);
+
+                //Load up the first sound
+                var startSound = LoadNextSound(system);
+
+                // Begin playing the sound, this returns the "channel" which is playing this sound
+                // See inside the PlaySound method for how the callback is setup and used
+                PlaySound(system, startSound);
+
+                //temp: Force GC collection to test callback handling
+                GC.Collect();
+
+                // Wait until any key is pressed
+                WaitForKeypress(() =>
+                {
+                    //temp: Force GC collection to test callback handling
+                    GC.Collect();
+
+                    var pos = _currentChannel?.GetPosition(TimeUnit.Milliseconds);
+                    if (pos.HasValue)
+                        Console.WriteLine("Position {0}ms", pos.Value);
+                });
+
+                // Stop the sound playing
+                _currentChannel?.Stop();
+            }
+
+            Console.WriteLine("Done");
         }
 
         private Sound LoadNextSound(LowLevelSystem system)
@@ -49,59 +86,27 @@ namespace ConsoleTest.Examples
         {
             Console.WriteLine("Playing");
 
-            var channel = system.PlaySound(sound, null, false);
+            //Play the sound, but start it paused
+            var channel = system.PlaySound(sound, null, true);
 
+            //Set a callback on the channel, this is called for all events on the channel
             channel.SetCallback((type, data1, data2) =>
             {
+                //When we get the "end" event start playing the next sound
                 if (type == ChannelControlCallbackType.End)
                 {
-                    Console.WriteLine("Callback: Finished playing sound");
-
-                    var nextSound = LoadNextSound(system);
-
-                    PlaySound(system, nextSound);
+                    Console.WriteLine("Callback: Finished, playing next sound");
+                    PlaySound(system, LoadNextSound(system));
                 }
             });
 
+            //Unpause the channel
+            channel.Pause = false;
+
+            //Save this channel
             _currentChannel = channel;
 
             return channel;
-        }
-
-        public override void Execute()
-        {
-            // Create a LowLevelSystem - this is the most basic system and has no support for FMOD studio projects
-            using (var system = new LowLevelSystem())
-            {
-                // Set up the demo to call update on the system
-                Pump(system);
-
-                var startSound = LoadNextSound(system);
-
-                // Begin playing the sound, this returns the "channel" which is playing this sound
-
-                PlaySound(system, startSound);
-
-                //temp: Force GC collection to test callback handling
-                GC.Collect();
-
-                // Wait until any key is pressed
-                WaitForKeypress(() =>
-                {
-
-                    //temp: Force GC collection to test callback handling
-                    GC.Collect();
-
-                    var pos = _currentChannel?.GetPosition(TimeUnit.Milliseconds);
-                    if (pos.HasValue)
-                        Console.WriteLine("Position {0}ms", pos.Value);
-                });
-
-                // Stop the sound playing
-                _currentChannel?.Stop();
-            }
-
-            Console.WriteLine("Done");
         }
     }
 }
