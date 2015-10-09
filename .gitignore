@@ -5,6 +5,7 @@
 *.ncrunchproject
 *.ncrunchsolution
 _Resharper.SupersonicSound
+_Resharper.Caches
 
 ConsoleTest/bin
 ConsoleTest/obj
