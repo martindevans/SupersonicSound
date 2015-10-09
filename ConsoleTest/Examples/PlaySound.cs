@@ -19,7 +19,7 @@ namespace ConsoleTest.Examples
                 Pump(system);
 
                 // Create a new sound object
-                using (var sound = system.CreateSound(name: GetContentPath("test.wav"), mode: Mode.LoopNormal))
+                using (var sound = system.CreateSound(name: GetContentPath("Front_Center.wav"), mode: Mode.LoopNormal))
                 {
                     Console.WriteLine("Playing sound, Length {0}ms", sound.GetLength(TimeUnit.Milliseconds));
 
