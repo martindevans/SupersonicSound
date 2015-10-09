@@ -95,6 +95,9 @@ The supplied wrapper allocates objects to wrap up C++ handles in C# objects. If 
 
 ## Contributions
 
+ - Martin Evans - Project Owner
+ - Hakan Lindestaf - FMOD upgrades, examples and other improvements
+
 Contributions are welcome! Please open up an issue before you write any code though, just in case I'm already working on something similar.
 
 ## Known Issues
