@@ -3,18 +3,38 @@ using FMOD;
 using SupersonicSound.Extensions;
 using SupersonicSound.Wrapper;
 using System;
+using System.Collections.Generic;
 
 namespace SupersonicSound.LowLevel
 {
     public struct Reverb3D
         //: IHandle
     {
-        public FMOD.Reverb3D FmodReverb { get; private set; }
+        public FMOD.Reverb3D FmodReverb { get; }
 
-        public Reverb3D(FMOD.Reverb3D reverb)
+        private bool _throwHandle;
+        public bool SuppressInvalidHandle
+        {
+            get { return !_throwHandle; }
+            set { _throwHandle = !value; }
+        }
+
+        private Reverb3D(FMOD.Reverb3D reverb)
             : this()
         {
             FmodReverb = reverb;
+        }
+
+        public static Reverb3D FromFmod(FMOD.Reverb3D reverb)
+        {
+            if (reverb == null)
+                throw new ArgumentNullException(nameof(reverb));
+            return new Reverb3D(reverb);
+        }
+
+        private IReadOnlyList<RESULT> Suppressions()
+        {
+            return ErrorChecking.Suppress(_throwHandle, true);
         }
 
         //public bool IsValid()
@@ -22,112 +42,116 @@ namespace SupersonicSound.LowLevel
         //    return FmodReverb.isValid();
         //}
 
-        public Vector3 Position
+        public Vector3? Position
         {
             get
             {
-                Vector3 position;
-                float min;
-                float max;
-                Get3DAttributes(out position, out min, out max);
-                return position;
+                var attr = Get3DAttributes();
+                return attr?.Position;
             }
             set
             {
-                Vector3 position;
-                float min;
-                float max;
-                Get3DAttributes(out position, out min, out max);
+                var attr = Get3DAttributes();
+                if (!attr.HasValue)
+                    return;
 
-                Set3DAttributes(value, min, max);
+                Set3DAttributes(value.Unbox(), attr.Min, attr.Max);
             }
         }
 
-        public float MinimumDistance
+        public float? MinimumDistance
         {
             get
             {
-                Vector3 position;
-                float min;
-                float max;
-                Get3DAttributes(out position, out min, out max);
-                return min;
+                var attr = Get3DAttributes();
+                return attr?.Min;
             }
             set
             {
-                Vector3 position;
-                float min;
-                float max;
-                Get3DAttributes(out position, out min, out max);
+                var attr = Get3DAttributes();
+                if (!attr.HasValue)
+                    return;
 
-                Set3DAttributes(position, value, max);
+                Set3DAttributes(new Attributes(attr.Value.Position, value.Unbox(), attr.Value.Max));
             }
         }
 
-        public float MaximumDistance
+        public float? MaximumDistance
         {
             get
             {
-                Vector3 position;
-                float min;
-                float max;
-                Get3DAttributes(out position, out min, out max);
-                return max;
+                var attr = Get3DAttributes();
+                return attr?.Max;
             }
             set
             {
-                Vector3 position;
-                float min;
-                float max;
-                Get3DAttributes(out position, out min, out max);
+                var attr = Get3DAttributes();
+                if (!attr.HasValue)
+                    return;
 
-                Set3DAttributes(position, min, value);
+                Set3DAttributes(new Attributes(attr.Value.Position, attr.Value.Min, value.Unbox()));
             }
         }
 
-        public void Get3DAttributes(out Vector3 position, out float minDistance, out float maxDistance)
+        public struct Attributes
+        {
+            public readonly Vector3 Position;
+            public readonly float Min;
+            public readonly float Max;
+
+            public Attributes(Vector3 pos, float min, float max)
+                : this()
+            {
+                Position = pos;
+                Min = min;
+                Max = max;
+            }
+        }
+
+        public Attributes? Get3DAttributes()
         {
             VECTOR pos = new VECTOR();
             float min = 0, max = 0;
-            FmodReverb.get3DAttributes(ref pos, ref min, ref max).Check();
+            if (!FmodReverb.get3DAttributes(ref pos, ref min, ref max).Check(Suppressions()))
+                return null;
 
-            position = pos.FromFmod();
-            minDistance = min;
-            maxDistance = max;
+            return new Attributes(pos.FromFmod(), min, max);
         }
 
-        public void Set3DAttributes(Vector3 position, float minDistance, float maxDistance)
+        public bool Set3DAttributes(Attributes attr)
         {
-            VECTOR pos = position.ToFmod();
-            FmodReverb.set3DAttributes(ref pos, minDistance, maxDistance).Check();
+            var pos = attr.Position.ToFmod();
+            return FmodReverb.set3DAttributes(ref pos, attr.Min, attr.Max).Check(Suppressions());
         }
 
-        public ReverbProperties Properties
+        public ReverbProperties? Properties
         {
             get
             {
-                REVERB_PROPERTIES props = new REVERB_PROPERTIES();
-                FmodReverb.getProperties(ref props).Check();
+                var props = new REVERB_PROPERTIES();
+                if (!FmodReverb.getProperties(ref props).Check(Suppressions()))
+                    return null;
                 return new ReverbProperties(ref props);
             }
             set
             {
-                REVERB_PROPERTIES prop = value.ToFmod();
-                FmodReverb.setProperties(ref prop).Check();
+                var prop = value.Unbox().ToFmod();
+                FmodReverb.setProperties(ref prop).Check(Suppressions());
             }
         }
 
-        public bool Active
+        public bool? Active
         {
             get
             {
                 bool active;
-                FmodReverb.getActive(out active).Check();
+                if (!FmodReverb.getActive(out active).Check(Suppressions()))
+                    return null;
                 return active;
             }
             set
             {
-                FmodReverb.setActive(value).Check();
+                FmodReverb.setActive(value.Unbox()).Check(Suppressions());
             }
         }
 
