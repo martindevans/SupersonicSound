@@ -1,6 +1,7 @@
 ﻿using FMOD;
 using SupersonicSound.Wrapper;
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace SupersonicSound.LowLevel
@@ -9,7 +10,6 @@ namespace SupersonicSound.LowLevel
         //: IHandle
     {
         private readonly FMOD.SoundGroup _fmodGroup;
-
         public FMOD.SoundGroup FmodGroup
         {
             get
@@ -18,12 +18,25 @@ namespace SupersonicSound.LowLevel
             }
         }
 
+        private bool _throwHandle;
+        public bool SuppressInvalidHandle
+        {
+            get { return !_throwHandle; }
+            set { _throwHandle = !value; }
+        }
+
         public SoundGroup(FMOD.SoundGroup fmodSoundGroup)
+            : this()
         {
             if (fmodSoundGroup == null)
-                throw new ArgumentNullException("fmodSoundGroup");
+                throw new ArgumentNullException(nameof(fmodSoundGroup));
 
             _fmodGroup = fmodSoundGroup;
+        }
+
+        private IReadOnlyList<RESULT> Suppressions()
+        {
+            return ErrorChecking.Suppress(_throwHandle, true);
         }
 
         //public bool IsValid()
@@ -32,10 +45,8 @@ namespace SupersonicSound.LowLevel
         //}
 
         #region equality
-
         public bool Equals(SoundGroup other)
         {
-
             return other._fmodGroup == _fmodGroup;
         }
 
@@ -51,12 +62,11 @@ namespace SupersonicSound.LowLevel
         {
             return (_fmodGroup != null ? _fmodGroup.GetHashCode() : 0);
         }
-
         #endregion
 
         public void Release()
         {
-            _fmodGroup.release().Check();
+            _fmodGroup.release().Check(Suppressions());
         }
 
         //This is not implemented because it would be dangerous!
@@ -72,65 +82,63 @@ namespace SupersonicSound.LowLevel
         //}
 
         #region SoundGroup control functions.
-        public int MaxAudible
+        public int? MaxAudible
         {
             get
             {
                 int max;
-                _fmodGroup.getMaxAudible(out max).Check();
-                return max;
+                return _fmodGroup.getMaxAudible(out max).CheckBox(max, Suppressions());
             }
             set
             {
-                _fmodGroup.setMaxAudible(value).Check();
+                _fmodGroup.setMaxAudible(value.Unbox()).Check();
             }
         }
 
-        public SoundGroupBehaviour MaxAudibleBehaviour
+        public SoundGroupBehaviour? MaxAudibleBehaviour
         {
             get
             {
                 SOUNDGROUP_BEHAVIOR b;
-                _fmodGroup.getMaxAudibleBehavior(out b).Check();
-                return (SoundGroupBehaviour)b;
+                if (!_fmodGroup.getMaxAudibleBehavior(out b).Check(Suppressions()))
+                    return null;
+                return EquivalentEnum<SOUNDGROUP_BEHAVIOR, SoundGroupBehaviour>.Cast(b);
             }
             set
             {
-                _fmodGroup.setMaxAudibleBehavior((SOUNDGROUP_BEHAVIOR)value).Check();
+                _fmodGroup.setMaxAudibleBehavior(EquivalentEnum<SoundGroupBehaviour, SOUNDGROUP_BEHAVIOR>.Cast(value.Unbox())).Check();
             }
         }
 
-        public float MuteFadeSpeed
+        public float? MuteFadeSpeed
         {
             get
             {
                 float speed;
-                _fmodGroup.getMuteFadeSpeed(out speed).Check();
-                return speed;
+                return _fmodGroup.getMuteFadeSpeed(out speed).CheckBox(speed, Suppressions());
             }
             set
             {
-                _fmodGroup.setMuteFadeSpeed(value).Check();
+                _fmodGroup.setMuteFadeSpeed(value.Unbox()).Check(Suppressions());
             }
         }
 
-        public float Volume
+        public float? Volume
         {
             get
             {
                 float vol;
-                _fmodGroup.getVolume(out vol).Check();
-                return vol;
+                return _fmodGroup.getVolume(out vol).CheckBox(vol, Suppressions());
             }
             set
             {
-                _fmodGroup.setVolume(value).Check();
+                _fmodGroup.setVolume(value.Unbox()).Check();
             }
         }
 
-        public void Stop()
+        public bool Stop()
         {
-            _fmodGroup.stop().Check(ErrorChecking.SuppressInvalidHandle);
+            return _fmodGroup.stop().Check(Suppressions());
         }
         #endregion
 
@@ -139,36 +147,36 @@ namespace SupersonicSound.LowLevel
         {
             get
             {
-                StringBuilder builder = new StringBuilder(128);
-                _fmodGroup.getName(builder, builder.Capacity).Check();
+                var builder = new StringBuilder(128);
+                if (!_fmodGroup.getName(builder, builder.Capacity).Check(Suppressions()))
+                    return null;
                 return builder.ToString();
             }
         }
 
-        public int SoundCount
+        public int? SoundCount
         {
             get
             {
                 int num;
-                _fmodGroup.getNumSounds(out num).Check();
-                return num;
+                return _fmodGroup.getNumSounds(out num).CheckBox(num, Suppressions());
             }
         }
 
-        public Sound GetSound(int index)
+        public Sound? GetSound(int index)
         {
             FMOD.Sound sound;
-            _fmodGroup.getSound(index, out sound).Check();
+            if (!_fmodGroup.getSound(index, out sound).Check(Suppressions()))
+                return null;
             return Sound.FromFmod(sound);
         }
 
-        public int SoundPlayingCount
+        public int? SoundPlayingCount
         {
             get
             {
                 int num;
-                _fmodGroup.getNumPlaying(out num).Check();
-                return num;
+                return _fmodGroup.getNumPlaying(out num).CheckBox(num, Suppressions());
             }
         }
         #endregion
