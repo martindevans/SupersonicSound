@@ -609,7 +609,7 @@ namespace SupersonicSound.LowLevel
         {
             FMOD.Reverb3D reverb;
             _system.createReverb3D(out reverb).Check();
-            return new Reverb3D(reverb);
+            return Reverb3D.FromFmod(reverb);
         }
 
         public Channel PlaySound(Sound sound, ChannelGroup? channelGroup, bool paused)

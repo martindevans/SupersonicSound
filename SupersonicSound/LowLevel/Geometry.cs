@@ -10,22 +10,14 @@ namespace SupersonicSound.LowLevel
     public struct Geometry
         : IEquatable<Geometry>//, IHandle
     {
-        private readonly FMOD.Geometry _fmodGeometry;
+        public FMOD.Geometry FmodGeometry { get; }
 
-        public FMOD.Geometry FmodGeometry
-        {
-            get
-            {
-                return _fmodGeometry;
-            }
-        }
-
-        public Geometry(FMOD.Geometry geometry)
+        internal Geometry(FMOD.Geometry geometry)
             : this()
         {
             if (geometry == null)
-                throw new ArgumentNullException("geometry");
-            _fmodGeometry = geometry;
+                throw new ArgumentNullException(nameof(geometry));
+            FmodGeometry = geometry;
         }
 
         //public bool IsValid()
@@ -36,7 +28,7 @@ namespace SupersonicSound.LowLevel
         #region equality
         public bool Equals(Geometry other)
         {
-            return other._fmodGeometry == _fmodGeometry;
+            return other.FmodGeometry == FmodGeometry;
         }
 
         public override bool Equals(object obj)
@@ -49,7 +41,7 @@ namespace SupersonicSound.LowLevel
 
         public override int GetHashCode()
         {
-            return (_fmodGeometry != null ? _fmodGeometry.GetHashCode() : 0);
+            return (FmodGeometry != null ? FmodGeometry.GetHashCode() : 0);
         }
         #endregion
 
@@ -57,7 +49,7 @@ namespace SupersonicSound.LowLevel
         public int AddPolygon(float directOcclusion, float reverbOcclusion, bool doubleSided, Vector3[] vertices)
         {
             int index;
-            _fmodGeometry.addPolygon(directOcclusion, reverbOcclusion, doubleSided, vertices.Length, vertices.Select(a => a.ToFmod()).ToArray(), out index).Check();
+            FmodGeometry.addPolygon(directOcclusion, reverbOcclusion, doubleSided, vertices.Length, vertices.Select(a => a.ToFmod()).ToArray(), out index).Check();
             return index;
         }
 
@@ -66,7 +58,7 @@ namespace SupersonicSound.LowLevel
             get
             {
                 int num;
-                _fmodGeometry.getNumPolygons(out num).Check();
+                FmodGeometry.getNumPolygons(out num).Check();
                 return num;
             }
         }
@@ -77,7 +69,7 @@ namespace SupersonicSound.LowLevel
             {
                 int maxvertices;
                 int maxpolygons;
-                _fmodGeometry.getMaxPolygons(out maxpolygons, out maxvertices).Check();
+                FmodGeometry.getMaxPolygons(out maxpolygons, out maxvertices).Check();
                 return maxpolygons;
             }
         }
@@ -88,7 +80,7 @@ namespace SupersonicSound.LowLevel
             {
                 int maxvertices;
                 int maxpolygons;
-                _fmodGeometry.getMaxPolygons(out maxpolygons, out maxvertices).Check();
+                FmodGeometry.getMaxPolygons(out maxpolygons, out maxvertices).Check();
                 return maxvertices;
             }
         }
@@ -241,27 +233,27 @@ namespace SupersonicSound.LowLevel
             get
             {
                 bool active;
-                _fmodGeometry.getActive(out active).Check();
+                FmodGeometry.getActive(out active).Check();
                 return active;
             }
             set
             {
-                _fmodGeometry.setActive(value).Check();
+                FmodGeometry.setActive(value).Check();
             }
         }
 
         public void SetRotation(Vector3 forward, Vector3 up)
         {
-            VECTOR f = forward.ToFmod();
-            VECTOR u = up.ToFmod();
-            _fmodGeometry.setRotation(ref f, ref u).Check();
+            var f = forward.ToFmod();
+            var u = up.ToFmod();
+            FmodGeometry.setRotation(ref f, ref u).Check();
         }
 
         public void GetRotation(out Vector3 forward, out Vector3 up)
         {
             VECTOR f;
             VECTOR u;
-            _fmodGeometry.getRotation(out f, out u).Check();
+            FmodGeometry.getRotation(out f, out u).Check();
 
             forward = f.FromFmod();
             up = u.FromFmod();
@@ -290,7 +282,7 @@ namespace SupersonicSound.LowLevel
                 z = 2 * (y * z + w * x)
             };
 
-            _fmodGeometry.setRotation(ref f, ref u).Check();
+            FmodGeometry.setRotation(ref f, ref u).Check();
         }
 
         public Vector3 Position
@@ -298,13 +290,13 @@ namespace SupersonicSound.LowLevel
             get
             {
                 VECTOR position;
-                _fmodGeometry.getPosition(out position).Check();
+                FmodGeometry.getPosition(out position).Check();
                 return position.FromFmod();
             }
             set
             {
                 var pos = value.ToFmod();
-                _fmodGeometry.setPosition(ref pos).Check();
+                FmodGeometry.setPosition(ref pos).Check();
             }
         }
 
@@ -313,27 +305,27 @@ namespace SupersonicSound.LowLevel
             get
             {
                 VECTOR scale;
-                _fmodGeometry.getScale(out scale).Check();
+                FmodGeometry.getScale(out scale).Check();
                 return scale.FromFmod();
             }
             set
             {
                 var scale = value.ToFmod();
-                _fmodGeometry.setScale(ref scale).Check();
+                FmodGeometry.setScale(ref scale).Check();
             }
         }
 
         public ArraySegment<byte> Save()
         {
             int size;
-            _fmodGeometry.save(IntPtr.Zero, out size).Check();
+            FmodGeometry.save(IntPtr.Zero, out size).Check();
 
             byte[] buffer = new byte[size];
             unsafe
             {
                 fixed (byte* ptr = &buffer[0])
                 {
-                    _fmodGeometry.save(new IntPtr(ptr), out size).Check();
+                    FmodGeometry.save(new IntPtr(ptr), out size).Check();
                 }
             }
 
@@ -347,12 +339,12 @@ namespace SupersonicSound.LowLevel
             get
             {
                 IntPtr ptr;
-                _fmodGeometry.getUserData(out ptr).Check();
+                FmodGeometry.getUserData(out ptr).Check();
                 return ptr;
             }
             set
             {
-                _fmodGeometry.setUserData(value).Check();
+                FmodGeometry.setUserData(value).Check();
             }
         }
         #endregion

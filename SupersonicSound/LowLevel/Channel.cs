@@ -8,7 +8,7 @@ namespace SupersonicSound.LowLevel
     public struct Channel
         : IEquatable<Channel>, IChannelControl
     {
-        public FMOD.Channel FmodChannel { get; private set; }
+        public FMOD.Channel FmodChannel { get; }
 
         private CallbackHandler _callbackHandler;
 
@@ -35,7 +35,7 @@ namespace SupersonicSound.LowLevel
         public static Channel FromFmod(FMOD.Channel channel)
         {
             if (channel == null)
-                throw new ArgumentNullException("channel");
+                throw new ArgumentNullException(nameof(channel));
             return new Channel(channel);
         }
 
@@ -133,24 +133,36 @@ namespace SupersonicSound.LowLevel
             }
         }
 
+        public struct LoopPoints
+        {
+            public readonly uint Start;
+            public readonly uint End;
+
+            public LoopPoints(uint start, uint end)
+            {
+                Start = start;
+                End = end;
+            }
+        }
+
         public void SetLoopPoints(uint start, TimeUnit startUnit, uint end, TimeUnit endUnit)
         {
             FmodChannel.setLoopPoints(start, EquivalentEnum<TimeUnit, TIMEUNIT>.Cast(startUnit), end, EquivalentEnum<TimeUnit, TIMEUNIT>.Cast(endUnit)).Check(Suppressions());
         }
 
-        public void GetLoopPoints(out uint? start, TimeUnit startUnit, out uint? end, TimeUnit endUnit)
+        public LoopPoints? GetLoopPoints(TimeUnit startUnit, TimeUnit endUnit)
         {
             uint startv;
             uint endv;
-            bool ok = FmodChannel.getLoopPoints(out startv, EquivalentEnum<TimeUnit, TIMEUNIT>.Cast(startUnit), out endv, EquivalentEnum<TimeUnit, TIMEUNIT>.Cast(endUnit)).Check(Suppressions());
+            if (!FmodChannel.getLoopPoints(out startv, EquivalentEnum<TimeUnit, TIMEUNIT>.Cast(startUnit), out endv, EquivalentEnum<TimeUnit, TIMEUNIT>.Cast(endUnit)).Check(Suppressions()))
+                return null;
 
-            start = ok ? startv : (uint?)null;
-            end = ok ? endv : (uint?)null;
+            return new LoopPoints(startv, endv);
         }
 
-        public void Stop()
+        public bool Stop()
         {
-            FmodChannel.stop().Check(Suppressions());
+            return FmodChannel.stop().Check(Suppressions());
         }
 
         public bool? Pause

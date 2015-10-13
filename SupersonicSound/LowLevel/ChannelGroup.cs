@@ -9,7 +9,7 @@ namespace SupersonicSound.LowLevel
     public struct ChannelGroup
         : IEquatable<ChannelGroup>, IChannelControl
     {
-        public FMOD.ChannelGroup FmodGroup { get; private set; }
+        public FMOD.ChannelGroup FmodGroup { get; }
 
         private CallbackHandler _callbackHandler;
 
@@ -66,14 +66,14 @@ namespace SupersonicSound.LowLevel
 
         public override int GetHashCode()
         {
-            return (FmodGroup != null ? FmodGroup.GetHashCode() : 0);
+            return FmodGroup?.GetHashCode() ?? 0;
         }
         #endregion
 
         #region Nested channel groups.
-        public void AddChannelGroup(ChannelGroup group)
+        public bool AddChannelGroup(ChannelGroup group)
         {
-            FmodGroup.addGroup(group.FmodGroup).Check(Suppressions());
+            return FmodGroup.addGroup(group.FmodGroup).Check(Suppressions());
         }
 
         public int? GroupCount
@@ -88,8 +88,10 @@ namespace SupersonicSound.LowLevel
         public ChannelGroup? GetGroup(int index)
         {
             FMOD.ChannelGroup group;
-            bool ok = FmodGroup.getGroup(index, out group).Check(Suppressions());
-            return ok ? new ChannelGroup(group) : (ChannelGroup?)null;
+            if (!FmodGroup.getGroup(index, out group).Check(Suppressions()))
+                return null;
+
+            return new ChannelGroup(group);
         }
 
         public ChannelGroup? ParentGroup
@@ -97,8 +99,10 @@ namespace SupersonicSound.LowLevel
             get
             {
                 FMOD.ChannelGroup group;
-                bool ok = FmodGroup.getParentGroup(out group).Check(Suppressions());
-                return ok ? new ChannelGroup(group) : (ChannelGroup?)null;
+                if (!FmodGroup.getParentGroup(out group).Check(Suppressions()))
+                    return null;
+
+                return new ChannelGroup(group);
             }
         }
         #endregion
@@ -136,9 +140,9 @@ namespace SupersonicSound.LowLevel
         #endregion
 
         #region IChannelControl
-        public void Stop()
+        public bool Stop()
         {
-            FmodGroup.stop().Check(ErrorChecking.SuppressInvalidHandle);
+            return FmodGroup.stop().Check(Suppressions());
         }
 
         public bool? Pause

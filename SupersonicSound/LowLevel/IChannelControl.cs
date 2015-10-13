@@ -11,7 +11,7 @@ namespace SupersonicSound.LowLevel
         //: IHandle
     {
         #region General control functionality for Channels and ChannelGroups.
-        void Stop();
+        bool Stop();
 
         bool? Pause { get; set; }
 

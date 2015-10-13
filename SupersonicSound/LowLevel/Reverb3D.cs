@@ -55,7 +55,7 @@ namespace SupersonicSound.LowLevel
                 if (!attr.HasValue)
                     return;
 
-                Set3DAttributes(value.Unbox(), attr.Min, attr.Max);
+                Set3DAttributes(new Attributes(value.Unbox(), attr.Value.Min, attr.Value.Max));
             }
         }
 
