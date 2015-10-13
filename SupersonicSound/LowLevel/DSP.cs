@@ -10,7 +10,7 @@ namespace SupersonicSound.LowLevel
     public struct DSP
         : IEquatable<DSP>//, IHandle
     {
-        public FMOD.DSP FmodDsp { get; private set; }
+        public FMOD.DSP FmodDsp { get; }
 
         private bool _throwHandle;
         public bool SuppressInvalidHandle
@@ -28,7 +28,7 @@ namespace SupersonicSound.LowLevel
         public static DSP FromFmod(FMOD.DSP dsp)
         {
             if (dsp == null)
-                throw new ArgumentNullException("dsp");
+                throw new ArgumentNullException(nameof(dsp));
             return new DSP(dsp);
         }
 
@@ -43,7 +43,6 @@ namespace SupersonicSound.LowLevel
         //}
 
         #region equality
-
         public bool Equals(DSP other)
         {
 
@@ -60,7 +59,7 @@ namespace SupersonicSound.LowLevel
 
         public override int GetHashCode()
         {
-            return (FmodDsp != null ? FmodDsp.GetHashCode() : 0);
+            return FmodDsp?.GetHashCode() ?? 0;
         }
 
         #endregion
@@ -103,32 +102,54 @@ namespace SupersonicSound.LowLevel
             }
         }
 
-        public DspConnection? GetInput(int index, out DSP? input)
+        public struct DspInput
+        {
+            public readonly DspConnection Connection;
+            public readonly DSP Input;
+
+            public DspInput(DspConnection connection, DSP input)
+            {
+                Connection = connection;
+                Input = input;
+            }
+        }
+
+        public DspInput? GetInput(int index)
         {
             DSPConnection connection;
             FMOD.DSP dsp;
             if (!FmodDsp.getInput(index, out dsp, out connection).Check(Suppressions()))
-            {
-                input = null;
                 return null;
-            }
 
-            input = FromFmod(dsp);
-            return new DspConnection(connection);
+            return new DspInput(
+                new DspConnection(connection),
+                FromFmod(dsp)
+            );
         }
 
-        public DspConnection? GetOutput(int index, out DSP? output)
+        public struct DspOutput
+        {
+            public readonly DspConnection Connection;
+            public readonly DSP Output;
+
+            public DspOutput(DspConnection connection, DSP output)
+            {
+                Connection = connection;
+                Output = output;
+            }
+        }
+
+        public DspOutput? GetOutput(int index)
         {
             DSPConnection connection;
             FMOD.DSP dsp;
             if (!FmodDsp.getOutput(index, out dsp, out connection).Check(Suppressions()))
-            {
-                output = null;
                 return null;
-            }
 
-            output = FromFmod(dsp);
-            return new DspConnection(connection);
+            return new DspOutput(
+                new DspConnection(connection),
+                FromFmod(dsp)
+            );
         }
         #endregion
 
@@ -164,21 +185,27 @@ namespace SupersonicSound.LowLevel
             FmodDsp.setWetDryMix(prewet, postwet, dry).Check(Suppressions());
         }
 
-        public void GetWetDryMix(out float? prewet, out float? postwet, out float? dry)
+        public struct WetDryMix
+        {
+            public readonly float Prewet;
+            public readonly float Postwet;
+            public readonly float Dry;
+
+            public WetDryMix(float prewet, float postwet, float dry)
+            {
+                Prewet = prewet;
+                Postwet = postwet;
+                Dry = dry;
+            }
+        }
+
+        public WetDryMix? GetWetDryMix()
         {
             float pre, post, dr;
             if (!FmodDsp.getWetDryMix(out pre, out post, out dr).Check(Suppressions()))
-            {
-                prewet = null;
-                postwet = null;
-                dry = null;
-            }
-            else
-            {
-                prewet = pre;
-                postwet = post;
-                dry = dr;
-            }
+                return null;
+
+            return new WetDryMix(pre, post, dr);
         }
 
         public void SetChannelFormat(ChannelMask channelMask, int numChannels, SpeakerMode sourceSpeakerMode)
@@ -186,42 +213,66 @@ namespace SupersonicSound.LowLevel
             FmodDsp.setChannelFormat(EquivalentEnum<ChannelMask, CHANNELMASK>.Cast(channelMask), numChannels, EquivalentEnum<SpeakerMode, SPEAKERMODE>.Cast(sourceSpeakerMode)).Check(Suppressions());
         }
 
-        public void GetChannelFormat(out ChannelMask? channelMask, out int? numChannels, out SpeakerMode? sourceSpeakerMode)
+        public struct ChannelFormat
+        {
+            public readonly ChannelMask ChannelMask;
+            public readonly int NumChannels;
+            public readonly SpeakerMode SourceSpeakerMode;
+
+            public ChannelFormat(ChannelMask channelMask, int numChannels, SpeakerMode sourceSpeakerMode)
+            {
+                ChannelMask = channelMask;
+                NumChannels = numChannels;
+                SourceSpeakerMode = sourceSpeakerMode;
+            }
+        }
+
+        public ChannelFormat? GetChannelFormat()
         {
             CHANNELMASK mask;
             SPEAKERMODE sourceMode;
             int nc;
             if (!FmodDsp.getChannelFormat(out mask, out nc, out sourceMode).Check(Suppressions()))
             {
-                channelMask = null;
-                numChannels = null;
-                sourceSpeakerMode = null;
+                return null;
             }
             else
             {
-                channelMask = EquivalentEnum<CHANNELMASK, ChannelMask>.Cast(mask);
-                numChannels = nc;
-                sourceSpeakerMode = EquivalentEnum<SPEAKERMODE, SpeakerMode>.Cast(sourceMode);
+                return new ChannelFormat(
+                    EquivalentEnum<CHANNELMASK, ChannelMask>.Cast(mask),
+                    nc,
+                    EquivalentEnum<SPEAKERMODE, SpeakerMode>.Cast(sourceMode)
+                );
             }
         }
 
-        public void GetOutputChannelFormat(ChannelMask inmask, int inchannels, SpeakerMode inspeakermode, out ChannelMask? outmask, out int? outchannels, out SpeakerMode? outspeakermode)
+        public struct OutputChannelFormat
+        {
+            public readonly ChannelMask OutMask;
+            public readonly int OutChannels;
+            public readonly SpeakerMode OutSpeakerMode;
+
+            public OutputChannelFormat(ChannelMask outMask, int outChannels, SpeakerMode outSpeakerMode)
+            {
+                OutMask = outMask;
+                OutChannels = outChannels;
+                OutSpeakerMode = outSpeakerMode;
+            }
+        }
+
+        public OutputChannelFormat? GetOutputChannelFormat(ChannelMask inmask, int inchannels, SpeakerMode inspeakermode)
         {
             CHANNELMASK mask;
             SPEAKERMODE mode;
             int c;
             if (!FmodDsp.getOutputChannelFormat(EquivalentEnum<ChannelMask, CHANNELMASK>.Cast(inmask), inchannels, EquivalentEnum<SpeakerMode, SPEAKERMODE>.Cast(inspeakermode), out mask, out c, out mode).Check(Suppressions()))
-            {
-                outmask = null;
-                outspeakermode = null;
-                outchannels = null;
-            }
-            else
-            {
-                outmask = EquivalentEnum<CHANNELMASK, ChannelMask>.Cast(mask);
-                outspeakermode = EquivalentEnum<SPEAKERMODE, SpeakerMode>.Cast(mode);
-                outchannels = c;
-            }
+                return null;
+
+            return new OutputChannelFormat(
+                EquivalentEnum<CHANNELMASK, ChannelMask>.Cast(mask),
+                c,
+                EquivalentEnum<SPEAKERMODE, SpeakerMode>.Cast(mode)
+            );
         }
 
         public void Reset()
@@ -312,27 +363,33 @@ namespace SupersonicSound.LowLevel
         #endregion
 
         #region  DSP attributes
-        public void GetInfo(out string name, out uint? version, out int? channels, out int? configWidth, out int? configHeight)
+        public struct DspInfo
         {
-            StringBuilder n = new StringBuilder();
+            public readonly string Name;
+            public readonly uint Version;
+            public readonly int Channels;
+            public readonly int ConfigWidth;
+            public readonly int ConfigHeight;
+
+            public DspInfo(string name, uint version, int channels, int configWidth, int configHeight)
+            {
+                Name = name;
+                Version = version;
+                Channels = channels;
+                ConfigWidth = configWidth;
+                ConfigHeight = configHeight;
+            }
+        }
+
+        public DspInfo? GetInfo()
+        {
+            var n = new StringBuilder();
             uint v;
             int cha, cow, coh;
             if (!FmodDsp.getInfo(n, out v, out cha, out cow, out coh).Check(Suppressions()))
-            {
-                name = null;
-                version = null;
-                channels = null;
-                configWidth = null;
-                configHeight = null;
-            }
-            else
-            {
-                name = n.ToString();
-                version = v;
-                channels = cha;
-                configWidth = cow;
-                configHeight = coh;
-            }
+                return null;
+
+            return new DspInfo(n.ToString(), v, cha, cow, coh);
         }
 
         public DspType? Type
