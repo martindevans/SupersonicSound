@@ -8,7 +8,7 @@ namespace SupersonicSound.LowLevel
     public struct DspConnection
         : IEquatable<DspConnection>//, IHandle
     {
-        public DSPConnection FmodDspConnection { get; private set; }
+        public DSPConnection FmodDspConnection { get; }
 
         private bool _throwHandle;
         public bool SuppressInvalidHandle
@@ -21,7 +21,7 @@ namespace SupersonicSound.LowLevel
             : this()
         {
             if (connection == null)
-                throw new ArgumentNullException("connection");
+                throw new ArgumentNullException(nameof(connection));
             FmodDspConnection = connection;
         }
 
@@ -51,7 +51,7 @@ namespace SupersonicSound.LowLevel
 
         public override int GetHashCode()
         {
-            return (FmodDspConnection != null ? FmodDspConnection.GetHashCode() : 0);
+            return FmodDspConnection?.GetHashCode() ?? 0;
         }
         #endregion
 
@@ -95,19 +95,27 @@ namespace SupersonicSound.LowLevel
             FmodDspConnection.setMixMatrix(matrix, outChannels, inChannels, inChannelHop).Check(Suppressions());
         }
 
-        public void GetMatrixMatrix(float[] matrix, out int? outChannels, out int? inChannels, int inChannelHop)
+        public struct MixMatrix
+        {
+            public readonly float[] Matrix;
+            public readonly int OutChannels;
+            public readonly int InChannels;
+
+            public MixMatrix(float[] matrix, int outChannels, int inChannels)
+            {
+                Matrix = matrix;
+                OutChannels = outChannels;
+                InChannels = inChannels;
+            }
+        }
+
+        public MixMatrix? GetMatrixMatrix(float[] matrix, int inChannelHop)
         {
             int outch, inch;
             if (!FmodDspConnection.getMixMatrix(matrix, out outch, out inch, inChannelHop).Check(Suppressions()))
-            {
-                outChannels = null;
-                inChannels = null;
-            }
-            else
-            {
-                outChannels = outch;
-                inChannels = inch;
-            }
+                return null;
+
+            return new MixMatrix(matrix, outch, inch);
         }
 
         public DspConnectionType? ConnectionType
