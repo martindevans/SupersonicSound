@@ -175,6 +175,20 @@ namespace SupersonicSound.Studio
             return path;
         }
 
+        public int NumListeners
+        {
+            get
+            {
+                int i;
+                _system.getNumListeners(out i).Check();
+                return i;
+            }
+            set
+            {
+                _system.setNumListeners(value).Check();
+            }
+        }
+
         public Attributes3D GetListenerAttributes(int listener)
         {
             FMOD.Studio._3D_ATTRIBUTES attr;
