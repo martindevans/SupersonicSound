@@ -103,7 +103,7 @@ namespace SupersonicSound.Studio
             }
             set
             {
-                _fmodEventInstance.set3DAttributes(value.ToFmod());
+                _fmodEventInstance.set3DAttributes(value.ToFmod()).Check();
             }
         }
 
