@@ -19,7 +19,7 @@ The easiest way to get started using SupersonicSound is to use the [nuget packag
 
  > Install-Package SupersonicSound
  
-at the nuget package manager console. Currently this package requires .Net 4.6 (due to a dependency on System.Numerics).
+at the nuget package manager console. Currently this package requires .Net 4.5 (due to a dependency on System.Numerics).
 
 Unfortunately FMOD licensing does not allow for the FMOD dlls to be distributed with the nuget package and you will need to download these yourself.
 
@@ -36,7 +36,7 @@ SupersonicSound is *almost* a direct translation from the C++ API but instead do
     
 Doing the same in C# is:
 
-    return _eventInstance.Parameters[name];
+    return _eventInstance.Parameters[name]; //throws an exception if there is an error
     
 Because the two APIs are so similar you should be able to follow along with the documentation supplied with the C++ API without any trouble. If you find any places where SupersonicSound is inconsistent then please create an issue here. Here's a more complete example of how to load banks, get an event from them and then play back a sound with a varying parameter:
 
@@ -82,7 +82,7 @@ The supplied FMOD C++ wrapper is included almost unchanged in SupersonicSound/Wr
 
 #### Native DLLs
 
-Obviously a wrapper around a native API requires some native DLLs! SupersonicSound DLLs are loaded as soon as you try to create a "System" (a core part of the FMOD API). You can load the DLLs early by calling ```Native.Load()```. If you have already loaded the fmod DLLs yourself, you can instead call ```Native.SuppressLoad()``` - be warned this cause a *System.DllNotFoundException* if you have not loaded the correct DLLs.
+Obviously a wrapper around a native API requires some native DLLs! SupersonicSound DLLs are loaded as soon as you try to create a "System" (a core part of the FMOD API). You can load the DLLs early by calling ```Native.Load()```. If you have already loaded the fmod DLLs yourself, you can instead call ```Native.SuppressLoad()``` - be warned this will cause a *System.DllNotFoundException* if you have not loaded the correct DLLs.
 
 The required DLLs are:
 
@@ -91,7 +91,7 @@ The required DLLs are:
 
 #### Structs
 
-The supplied wrapper allocates objects to wrap up C++ handles in C# objects. If SupersonicSound also allocated objects to wrap these objects that would make this wrapper excessively allocation heavy. Instead all the SupersonicSound wrappers are structs which have been optimised to be very small (the most commonly used ones are pointer sized). This makes using SupersonicSound almost a zero cost abstraction.
+The wrapper supplied with FMOD allocates objects to wrap up C++ handles in C# objects. If SupersonicSound also allocated objects to wrap these objects that would make this wrapper excessively allocation heavy. Instead all the SupersonicSound wrappers are structs which have been optimised to be very small (the most commonly used ones are pointer sized). This makes using SupersonicSound almost a zero cost abstraction.
 
 ## Contributions
 
