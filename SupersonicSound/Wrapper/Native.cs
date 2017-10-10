@@ -20,7 +20,7 @@ namespace SupersonicSound.Wrapper
         [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
         private static extern bool FreeLibrary(IntPtr hModule);
 
-        private readonly static List<IntPtr> _loaded = new List<IntPtr>();
+        private static readonly List<IntPtr> Loaded = new List<IntPtr>();
 
         /// <summary>
         /// Load a dll from the Dependencies/{{ platform specific name }} directory. Automatically switches based on if this is a 32 or 64 bit process.
@@ -28,27 +28,27 @@ namespace SupersonicSound.Wrapper
         /// <param name="name"></param>
         private static void LoadSystemDependentDll(string name)
         {
-            string directory = "x86";
+            var directory = "x86";
+            var fileName = name.Split('.')[0];
             if (Environment.Is64BitProcess)
             {
-                throw new NotImplementedException("Loading DLLs for x64 not yet implemented. Why not submit a PR to https://github.com/martindevans/SupersonicSound ?");
                 directory = "x86_64";
             }
 
             var path = Path.Combine(Environment.CurrentDirectory, "Dependencies", directory, name);
 
-            lock (_loadLock)
+            lock (LoadLock)
             {
                 var ptr = LoadLibrary(path);
                 if (ptr == IntPtr.Zero)
-                    throw new DllNotFoundException(string.Format("Failed to load DLL '{0}'. See https://github.com/martindevans/SupersonicSound#installation-instructions", path));
+                    throw new DllNotFoundException($"Failed to load DLL '{path}'. See https://github.com/martindevans/SupersonicSound#installation-instructions");
 
-                _loaded.Add(ptr);
+                Loaded.Add(ptr);
             }
         }
 
         public static bool IsLoaded { get; private set; }
-        private static readonly object _loadLock = new object();
+        private static readonly object LoadLock = new object();
 
         /// <summary>
         /// Load native DLLs (if necessary)
@@ -60,7 +60,7 @@ namespace SupersonicSound.Wrapper
                 return;
 
             //Lock
-            lock (_loadLock)
+            lock (LoadLock)
             {
                 //Check again
                 if (IsLoaded)
@@ -81,7 +81,7 @@ namespace SupersonicSound.Wrapper
         /// </summary>
         public static void SuppressLoad()
         {
-            lock (_loadLock)
+            lock (LoadLock)
             {
                 if (IsLoaded)
                     throw new InvalidOperationException("FMOD already loaded");
@@ -98,14 +98,14 @@ namespace SupersonicSound.Wrapper
             if (Util.IsUnix)
                 return;
 
-            lock (_loadLock)
+            lock (LoadLock)
             {
                 if (!IsLoaded)
                     throw new InvalidOperationException("FMOD is not loaded");
 
-                foreach (var intPtr in _loaded)
+                foreach (var intPtr in Loaded)
                     FreeLibrary(intPtr);
-                _loaded.Clear();
+                Loaded.Clear();
 
                 IsLoaded = false;
             }
