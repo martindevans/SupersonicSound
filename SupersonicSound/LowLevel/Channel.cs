@@ -285,6 +285,56 @@ namespace SupersonicSound.LowLevel
         }
         #endregion
 
+        #region Clock based functionality
+        public DspClock GetDspClock()
+        {
+            FmodChannel.getDSPClock(out var clock, out var parent).Check(Suppressions());
+            return new DspClock(clock, parent);
+        }
+
+        public ChannelDelay Delay
+        {
+            get
+            {
+                FmodChannel.getDelay(out var start, out var end, out var stop).Check(Suppressions());
+                return new ChannelDelay(start, end, stop);
+            }
+            set
+            {
+                FmodChannel.setDelay(value.DspClockStart, value.DspClockEnd, value.StopChannels).Check(Suppressions());
+            }
+        }
+
+        public void AddFadePoint(ulong dspclock, float volume)
+        {
+            FmodChannel.addFadePoint(dspclock, volume).Check(Suppressions());
+        }
+
+        public void SetFadePointRamp(ulong dspclock, float volume)
+        {
+            FmodChannel.setFadePointRamp(dspclock, volume).Check(Suppressions());
+        }
+
+        public void RemoveFadePoints(ulong dspClockStart, ulong dspClockEnd)
+        {
+            FmodChannel.removeFadePoints(dspClockStart, dspClockEnd).Check(Suppressions());
+        }
+
+        public uint GetFadePointsCount()
+        {
+            uint numpoints = 0;
+            FmodChannel.getFadePoints(ref numpoints, null, null).Check(Suppressions());
+            return numpoints;
+        }
+
+        public uint GetFadePoints(ulong[] pointDspClock, float[] pointVolume)
+        {
+            uint numpoints = 0;
+            FmodChannel.getFadePoints(ref numpoints, pointDspClock, pointVolume).Check(Suppressions());
+            return numpoints;
+        }
+        #endregion
+
         #region Information only functions
         public bool? IsVirtual
         {
