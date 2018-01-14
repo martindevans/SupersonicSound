@@ -29,17 +29,17 @@ namespace SupersonicSound.Wrapper
 
             if (throwHandle)
                 return SuppressChannelStolen;
-            if (throwStolen)
-                return SuppressInvalidHandle;
 
-            return SuppressInvalidHandleAndStolenChannel;
+            return throwStolen ? 
+                SuppressInvalidHandle 
+              : SuppressInvalidHandleAndStolenChannel;
         }
         #endregion
 
         internal static T Unbox<T>(this T? value) where T : struct
         {
             if (!value.HasValue)
-                throw new ArgumentNullException("value", "Value is null");
+                throw new ArgumentNullException(nameof(value), "Value is null");
             return value.Value;
         }
 
@@ -47,8 +47,7 @@ namespace SupersonicSound.Wrapper
         {
             if (suppress != null && suppress.Contains(result))
                 return null;
-            else
-                Check(result);
+            Check(result);
 
             return value;
         }
@@ -228,7 +227,7 @@ namespace SupersonicSound.Wrapper
                 case RESULT.ERR_NOT_LOCKED:
                     throw new FmodNotLockedException();
                 default:
-                    throw new ArgumentOutOfRangeException("result");
+                    throw new ArgumentOutOfRangeException(nameof(result));
             }
         }
     }

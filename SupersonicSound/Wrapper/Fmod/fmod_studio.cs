@@ -14,10 +14,10 @@ namespace Studio
 {
     public class STUDIO_VERSION
     {
-#if WIN64
-        public const string dll    = "fmodstudio64.dll";
+#if X64
+        public const string dll    = "fmodstudio64";
 #else
-        public const string dll    = "fmodstudio.dll";
+        public const string dll    = "fmodstudio";
 #endif
     }
 

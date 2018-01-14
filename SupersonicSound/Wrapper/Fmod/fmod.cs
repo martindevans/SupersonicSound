@@ -16,8 +16,8 @@ namespace FMOD
     */
     public class VERSION
     {
-        public const int    number = 0x00010700;
-#if WIN64
+        public const int number = 0x00011000;
+#if X64
         public const string dll    = "fmod64";
 #else
         public const string dll    = "fmod";
@@ -1016,7 +1016,7 @@ namespace FMOD
         RECORDLISTCHANGED      = 0x00001000,  /* Called from System::update when the enumerated list of recording devices has changed. */
         ALL                    = 0xFFFFFFFF,  /* Pass this mask to System::setCallback to receive all callback types.  */
     }
-	
+    
     #region wrapperinternal
     [StructLayout(LayoutKind.Sequential)]
     public struct StringWrapper
@@ -4271,12 +4271,12 @@ namespace FMOD
         {
             byte[] bytes = new byte[builder.Capacity];
             Marshal.Copy(nativeMem, bytes, 0, builder.Capacity);
-			int strlen = Array.IndexOf(bytes, (byte)0);
-			if (strlen > 0)
-			{
-				String str = Encoding.UTF8.GetString(bytes, 0, strlen);
-				builder.Append(str);
-			}
+            int strlen = Array.IndexOf(bytes, (byte)0);
+            if (strlen > 0)
+            {
+                String str = Encoding.UTF8.GetString(bytes, 0, strlen);
+                builder.Append(str);
+            }
         }
     }
 }
