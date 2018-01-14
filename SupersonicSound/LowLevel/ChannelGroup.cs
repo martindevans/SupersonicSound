@@ -265,6 +265,56 @@ namespace SupersonicSound.LowLevel
         }
         #endregion
 
+        #region Clock based functionality
+        public DspClock GetDspClock()
+        {
+            FmodGroup.getDSPClock(out var clock, out var parent).Check(Suppressions());
+            return new DspClock(clock, parent);
+        }
+
+        public ChannelDelay Delay
+        {
+            get
+            {
+                FmodGroup.getDelay(out var start, out var end, out var stop).Check(Suppressions());
+                return new ChannelDelay(start, end, stop);
+            }
+            set
+            {
+                FmodGroup.setDelay(value.DspClockStart, value.DspClockEnd, value.StopChannels).Check(Suppressions());
+            }
+        }
+
+        public void AddFadePoint(ulong dspclock, float volume)
+        {
+            FmodGroup.addFadePoint(dspclock, volume).Check(Suppressions());
+        }
+
+        public void SetFadePointRamp(ulong dspclock, float volume)
+        {
+            FmodGroup.setFadePointRamp(dspclock, volume).Check(Suppressions());
+        }
+
+        public void RemoveFadePoints(ulong dspClockStart, ulong dspClockEnd)
+        {
+            FmodGroup.removeFadePoints(dspClockStart, dspClockEnd).Check(Suppressions());
+        }
+
+        public uint GetFadePointsCount()
+        {
+            uint numpoints = 0;
+            FmodGroup.getFadePoints(ref numpoints, null, null).Check(Suppressions());
+            return numpoints;
+        }
+
+        public uint GetFadePoints(ulong[] pointDspClock, float[] pointVolume)
+        {
+            uint numpoints = 0;
+            FmodGroup.getFadePoints(ref numpoints, pointDspClock, pointVolume).Check(Suppressions());
+            return numpoints;
+        }
+        #endregion
+
         #region Callback functions
         public void SetCallback(Action<ChannelControlCallbackType, IntPtr, IntPtr> callback)
         {

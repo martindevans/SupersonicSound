@@ -52,13 +52,19 @@ namespace SupersonicSound.LowLevel
         #endregion
 
         #region clock based functionality
-        //todo: public RESULT getDSPClock(out ulong dspclock, out ulong parentclock);
-        //todo: public RESULT setDelay(ulong dspclock_start, ulong dspclock_end, bool stopchannels);
-        //todo: public RESULT getDelay(out ulong dspclock_start, out ulong dspclock_end, out bool stopchannels);
-        //todo: public RESULT addFadePoint(ulong dspclock, float volume);
-        //todo: public RESULT setFadePointRamp(ulong dspclock, float volume);
-        //todo: public RESULT removeFadePoints(ulong dspclock_start, ulong dspclock_end);
-        //todo: public RESULT getFadePoints(ref uint numpoints, ulong[] point_dspclock, float[] point_volume);
+        DspClock GetDspClock();
+
+        ChannelDelay Delay { get; set; }
+
+        void AddFadePoint(ulong dspClock, float volume);
+
+        void SetFadePointRamp(ulong dspClock, float volume);
+
+        void RemoveFadePoints(ulong dspClockStart, ulong dspClockEnd);
+
+        uint GetFadePointsCount();
+
+        uint GetFadePoints(ulong[] pointDspClock, float[] pointVolume);
         #endregion
 
         #region DSP effects
