@@ -71,9 +71,16 @@ namespace SupersonicSound.LowLevel
         #endregion
 
         #region Nested channel groups.
-        public bool AddChannelGroup(ChannelGroup group)
+        public bool AddChannelGroup(ChannelGroup group, bool propagateDspClock, out DspConnection? connection)
         {
-            return FmodGroup.addGroup(group.FmodGroup).Check(Suppressions());
+            DSPConnection dspConnection;
+            var result = FmodGroup.addGroup(group.FmodGroup, propagateDspClock, out dspConnection).Check(Suppressions());
+            if (result)
+                connection = new DspConnection(dspConnection);
+            else
+                connection = null;
+
+            return result;
         }
 
         public int? GroupCount
@@ -268,7 +275,9 @@ namespace SupersonicSound.LowLevel
         #region Clock based functionality
         public DspClock GetDspClock()
         {
-            FmodGroup.getDSPClock(out var clock, out var parent).Check(Suppressions());
+            ulong clock;
+            ulong parent;
+            FmodGroup.getDSPClock(out clock, out parent).Check(Suppressions());
             return new DspClock(clock, parent);
         }
 
@@ -276,7 +285,10 @@ namespace SupersonicSound.LowLevel
         {
             get
             {
-                FmodGroup.getDelay(out var start, out var end, out var stop).Check(Suppressions());
+                ulong start;
+                ulong end;
+                bool stop;
+                FmodGroup.getDelay(out start, out end, out stop).Check(Suppressions());
                 return new ChannelDelay(start, end, stop);
             }
             set

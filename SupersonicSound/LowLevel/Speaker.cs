@@ -13,5 +13,9 @@ namespace SupersonicSound.LowLevel
         SurroundRight = SPEAKER.SURROUND_RIGHT,
         BackLeft = SPEAKER.BACK_LEFT,
         BackRight = SPEAKER.BACK_RIGHT,
+        TopFrontLeft = SPEAKER.TOP_FRONT_LEFT,
+        TopFrontRight = SPEAKER.TOP_FRONT_RIGHT,
+        TopBackLeft = SPEAKER.TOP_BACK_LEFT,
+        TopBackRight = SPEAKER.TOP_BACK_RIGHT,
     }
 }

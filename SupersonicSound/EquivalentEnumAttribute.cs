@@ -46,10 +46,24 @@ namespace SupersonicSound
         }
 
         // ReSharper disable once UnusedMember.Local
-        private void ValidateGeneric<U>(Type checkAgainst)
+        private void ValidateGeneric<TU>(Type checkAgainst)
         {
-            var actualValues = Enum.GetValues(checkAgainst).Cast<U>().ToArray();
-            var expectedValues = Enum.GetValues(Equivalent).Cast<U>().ToArray().Except(MissingMembers.Select(GetValueFromName<U>));
+            //Validate the values we've tagged as intentionally missing
+            foreach (var missingMember in MissingMembers)
+            {
+                try
+                {
+                    GetValueFromName<TU>(missingMember);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Failed to get intentionally missing member: `{missingMember}`");
+                    throw;
+                }
+            }
+
+            var actualValues = Enum.GetValues(checkAgainst).Cast<TU>().ToArray();
+            var expectedValues = Enum.GetValues(Equivalent).Cast<TU>().ToArray().Except(MissingMembers.Select(GetValueFromName<TU>));
 
             var unexpectedValues = actualValues.Where(n => !expectedValues.Contains(n)).ToArray();
             var unexpectedNames = unexpectedValues.Select(v => Enum.GetName(checkAgainst, v)).ToArray();

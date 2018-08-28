@@ -19,7 +19,7 @@ namespace SupersonicSound.Studio
         {
             get
             {
-                return _fmodSoundInfo.subsoundIndex;
+                return _fmodSoundInfo.subsoundindex;
             }
         }
 

@@ -14,6 +14,16 @@ namespace SupersonicSound.Studio
         /// <summary>
         /// Normally the playback will release any created resources when it stops, unless this flag is set.
         /// </summary>
-        SkipCleanup = COMMANDREPLAY_FLAGS.SKIP_CLEANUP
+        SkipCleanup = COMMANDREPLAY_FLAGS.SKIP_CLEANUP,
+
+        /// <summary>
+        /// Play back at maximum speed, ignoring the timing of the original replay.
+        /// </summary>
+        FastForward = COMMANDREPLAY_FLAGS.FAST_FORWARD,
+
+        /// <summary>
+        /// Skip commands related to bank loading.
+        /// </summary>
+        SkipBankLoad = COMMANDREPLAY_FLAGS.SKIP_BANK_LOAD
     }
 }

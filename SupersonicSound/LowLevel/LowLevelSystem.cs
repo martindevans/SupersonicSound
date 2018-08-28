@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 using FMOD;
@@ -508,7 +507,19 @@ namespace SupersonicSound.LowLevel
             get
             {
                 int channels;
-                _system.getChannelsPlaying(out channels).Check();
+                int _;
+                _system.getChannelsPlaying(out channels, out _).Check();
+                return channels;
+            }
+        }
+
+        public int RealChannelsPlaying
+        {
+            get
+            {
+                int channels;
+                int _;
+                _system.getChannelsPlaying(out _, out channels).Check();
                 return channels;
             }
         }

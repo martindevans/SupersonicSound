@@ -7,7 +7,7 @@ namespace SupersonicSound.Studio
     public struct VCA
         : IEquatable<VCA>, IHandle
     {
-        public FMOD.Studio.VCA FmodVca { get; private set; }
+        public FMOD.Studio.VCA FmodVca { get; }
 
         private VCA(FMOD.Studio.VCA vca)
             : this()
@@ -18,7 +18,7 @@ namespace SupersonicSound.Studio
         public static VCA FromFmod(FMOD.Studio.VCA vca)
         {
             if (vca == null)
-                throw new ArgumentNullException("vca");
+                throw new ArgumentNullException(nameof(vca));
             return new VCA(vca);
         }
 
@@ -67,17 +67,29 @@ namespace SupersonicSound.Studio
             }
         }
 
-        public float FaderLevel
+        public float Volume
         {
             get
             {
                 float volume;
-                FmodVca.getFaderLevel(out volume).Check();
+                float _;
+                FmodVca.getVolume(out volume, out _).Check();
                 return volume;
             }
             set
             {
-                FmodVca.setFaderLevel(value).Check();
+                FmodVca.setVolume(value).Check();
+            }
+        }
+
+        public float FinalVolume
+        {
+            get
+            {
+                float volume;
+                float _;
+                FmodVca.getVolume(out _, out volume).Check();
+                return volume;
             }
         }
     }

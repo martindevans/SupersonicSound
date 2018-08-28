@@ -17,8 +17,8 @@ namespace SupersonicSound.Studio
         public BufferUsage(BUFFER_USAGE usage)
             : this()
         {
-            StudioCommandQueue = new BufferInfo(usage.studioCommandQueue);
-            StudioHandle = new BufferInfo(usage.studioHandle);
+            StudioCommandQueue = new BufferInfo(usage.studiocommandqueue);
+            StudioHandle = new BufferInfo(usage.studiohandle);
         }
     }
 }

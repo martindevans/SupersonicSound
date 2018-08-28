@@ -8,35 +8,35 @@ namespace SupersonicSound.Studio
         /// <summary>
         /// Current buffer usage in bytes.
         /// </summary>
-        public int CurrentUsage { get; private set; }
+        public int CurrentUsage { get; }
         /// <summary>
         /// Peak buffer usage in bytes.
         /// </summary>
-        public int PeakUsage { get; private set; }
+        public int PeakUsage { get; }
 
         /// <summary>
         /// Buffer capacity in bytes.
         /// </summary>
-        public int Capacity { get; private set; }
+        public int Capacity { get; }
 
         /// <summary>
         /// Number of stalls due to buffer overflow.
         /// </summary>
-        public int StallCount { get; private set; }
+        public int StallCount { get; }
 
         /// <summary>
         /// Amount of time stalled due to buffer overflow, in seconds.
         /// </summary>
-        public TimeSpan StallTime { get; private set; }
+        public TimeSpan StallTime { get; }
 
         public BufferInfo(BUFFER_INFO info)
             : this()
         {
-            CurrentUsage = info.currentUsage;
-            PeakUsage = info.peakUsage;
+            CurrentUsage = info.currentusage;
+            PeakUsage = info.peakusage;
             Capacity = info.capacity;
-            StallCount = info.stallCount;
-            StallTime = TimeSpan.FromSeconds(info.stallTime);
+            StallCount = info.stallcount;
+            StallTime = TimeSpan.FromSeconds(info.stalltime);
         }
     }
 }

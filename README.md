@@ -13,6 +13,12 @@ Obviously I do no control licensing of the any FMOD technologies. You should [go
 
 This library itself is MIT licensed, see the LICENSE.md file for more details.
 
+## Compatibility
+
+SupersonicSound is currently built with compatibility for FMOD **`1.10.08`** (latest as of August 28th 2018).
+
+Upgrading or downgrading to other versions is relatively easy - just drag in the new C# wrapper and a new set of binaries (shipped with FMOD API). Methods which have been removed in FMOD will trigger a compile error as SupersonicSound tries to reference the now non-existant methods. New methods can be added on an as-needed basis (PRs much appreciated). The unit tests in the project will check all of the Enums in SupersonicSound to ensure they have equivalent values to the underlying FMOD enums.
+
 ## Installation Instructions
 
 The easiest way to get started using SupersonicSound is to use the [nuget package](https://www.nuget.org/packages/SupersonicSound/). Run:

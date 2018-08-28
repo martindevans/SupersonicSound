@@ -69,6 +69,13 @@ namespace SupersonicSound.LowLevel
         /// <summary>
         /// Slower, but adds level metering for every single DSP unit in the graph.  Use DSP.SetMeteringEnabled to turn meters off individually.
         /// </summary>
-        ProfileAll = FMOD.INITFLAGS.PROFILE_METER_ALL
+        ProfileAll = FMOD.INITFLAGS.PROFILE_METER_ALL,
+
+        /// <summary>
+        /// Using FMOD_SPEAKERMODE_5POINT1 with a stereo output device will enable the SRS Circle Surround downmixer.
+        /// By default the SRS downmixer applies a high pass filter with a cutoff frequency of 80Hz.
+        /// Use this flag to diable the high pass fitler, or use FMOD_INIT_PREFER_DOLBY_DOWNMIX to use the Dolby Pro Logic II downmix algorithm instead.
+        /// </summary>
+        DisableSRSHighpassFilter = FMOD.INITFLAGS.DISABLE_SRS_HIGHPASSFILTER,
     }
 }

@@ -55,6 +55,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>6</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -161,7 +162,6 @@
     <Compile Include="LowLevel\CreateSoundExInfo.cs" />
     <Compile Include="Studio\CommandReplay.cs" />
     <Compile Include="Studio\CommandReplayFlags.cs" />
-    <Compile Include="Studio\CueInstance.cs" />
     <Compile Include="Studio\EventInstance.cs" />
     <Compile Include="Studio\BankLoadingFlags.cs" />
     <Compile Include="Studio\BufferInfo.cs" />

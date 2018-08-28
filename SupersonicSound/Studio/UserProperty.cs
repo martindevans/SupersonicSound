@@ -58,16 +58,16 @@ namespace SupersonicSound.Studio
             switch (Type)
             {
                 case UserPropertyType.Integer:
-                    _value.IntValue = property.intValue;
+                    _value.IntValue = property.intvalue;
                     break;
                 case UserPropertyType.Single:
-                    _value.FloatValue = property.floatValue;
+                    _value.FloatValue = property.floatvalue;
                     break;
                 case UserPropertyType.Boolean:
-                    _value.BoolValue = property.boolValue;
+                    _value.BoolValue = property.boolvalue;
                     break;
                 case UserPropertyType.String:
-                    _stringValue = property.stringValue;
+                    _stringValue = property.stringvalue;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

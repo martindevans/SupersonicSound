@@ -57,6 +57,16 @@ namespace SupersonicSound.Studio
         }
         #endregion
 
+        public bool hasCue
+        {
+            get
+            {
+                bool result;
+                _fmodEventDescription.hasCue(out result).Check();
+                return result;
+            }
+        }
+
         public Guid Id
         {
             get

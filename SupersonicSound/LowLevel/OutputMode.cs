@@ -3,10 +3,13 @@
 namespace SupersonicSound.LowLevel
 {
     [EquivalentEnum(typeof(OUTPUTTYPE),
-        "XBOX360",  //
         "PS3",      // I don't anticipate this code running on any consoles, but these can be easily added if needed
         "WIIU",     //
         "AUDIOOUT", // <-- PS4+Vita
+        "XAUDIO",   // <-- XBOX
+        "WINSONIC", // <-- XBOX ONE
+        "NNAUDIO",  // <-- Nintendo switch
+        "AUDIO3D",  // <-- PS4
 
         "MAX"       // Denotes the last item in the enum, don't need this
     )]
@@ -77,9 +80,6 @@ namespace SupersonicSound.LowLevel
         /// </summary>
         CoreAudio = OUTPUTTYPE.COREAUDIO,
 
-        //OUTPUTTYPE.XBOX360,         /* Xbox 360             - XAudio.                              (Default on Xbox 360) */
-        //OUTPUTTYPE.PS3,             /* PS3                  - Audio Out.                           (Default on PS3) */
-
         /// <summary>
         /// Android - Java Audio Track. (Default on Android 2.2 and below)
         /// </summary>
@@ -90,7 +90,14 @@ namespace SupersonicSound.LowLevel
         /// </summary>
         OpenSl = OUTPUTTYPE.OPENSL,
 
-        //OUTPUTTYPE.WIIU,            /* Wii U                - AX.                                  (Default on Wii U) */
-        //OUTPUTTYPE.AUDIOOUT,        /* PS4/PSVita           - Audio Out.                           (Default on PS4 and PS Vita) */
+        /// <summary>
+        /// Web Browser - JavaScript webaudio output. (Default on JavaScript)
+        /// </summary>
+        WebAudio = OUTPUTTYPE.WEBAUDIO,
+
+        /// <summary>
+        /// Win - Dolby Atmos (WASAPI).
+        /// </summary>
+        Atmos = OUTPUTTYPE.ATMOS,
     }
 }

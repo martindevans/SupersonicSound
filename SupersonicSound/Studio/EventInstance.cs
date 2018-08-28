@@ -70,7 +70,8 @@ namespace SupersonicSound.Studio
             get
             {
                 float volume;
-                _fmodEventInstance.getVolume(out volume).Check();
+                float _;
+                _fmodEventInstance.getVolume(out volume, out _).Check();
                 return volume;
             }
             set
@@ -79,17 +80,40 @@ namespace SupersonicSound.Studio
             }
         }
 
+        public float FinalVolume
+        {
+            get
+            {
+                float volume;
+                float _;
+                _fmodEventInstance.getVolume(out _, out volume).Check();
+                return volume;
+            }
+        }
+
         public float Pitch
         {
             get
             {
                 float pitch;
-                _fmodEventInstance.getPitch(out pitch).Check();
+                float _;
+                _fmodEventInstance.getPitch(out pitch, out _).Check();
                 return pitch;
             }
             set
             {
                 _fmodEventInstance.setPitch(value).Check();
+            }
+        }
+
+        public float FinalPitch
+        {
+            get
+            {
+                float pitch;
+                float _;
+                _fmodEventInstance.getPitch(out _, out pitch).Check();
+                return pitch;
             }
         }
 
@@ -272,55 +296,6 @@ namespace SupersonicSound.Studio
             }
         }
 
-        public struct CueInstanceCollection
-        {
-            private readonly FMOD.Studio.EventInstance _instance;
-
-            public CueInstanceCollection(FMOD.Studio.EventInstance instance)
-                : this()
-            {
-                _instance = instance;
-            }
-
-            public CueInstance this[string name]
-            {
-                get
-                {
-                    FMOD.Studio.CueInstance cue;
-                    _instance.getCue(name, out cue).Check();
-                    return CueInstance.FromFmod(cue);
-                }
-            }
-
-            public CueInstance this[int index]
-            {
-                get
-                {
-                    FMOD.Studio.CueInstance cue;
-                    _instance.getCueByIndex(index, out cue).Check();
-                    return CueInstance.FromFmod(cue);
-                }
-            }
-        }
-
-        public CueInstanceCollection Cues
-        {
-            get
-            {
-                return new CueInstanceCollection(FmodEventInstance);
-            }
-        }
-
-        public int CueCount
-        {
-            get
-            {
-                int count;
-                _fmodEventInstance.getCueCount(out count).Check();
-                return count;
-            }
-        }
-
         //public RESULT setCallback(EVENT_CALLBACK callback)
         //{
         //    return FMOD_Studio_EventInstance_SetCallback(rawPtr, callback);
@@ -338,6 +313,11 @@ namespace SupersonicSound.Studio
             {
                 _fmodEventInstance.setUserData(value).Check();
             }
+        }
+        
+        public void TriggerCue()
+        {
+            _fmodEventInstance.triggerCue().Check();
         }
     }
 }

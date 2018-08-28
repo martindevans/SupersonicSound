@@ -46,5 +46,10 @@ namespace SupersonicSound.LowLevel
         /// 7.1 speaker setup.  This includes front left, front right, center, surround left, surround right, back left, back right and an LFE speaker.
         /// </summary>
         SevenPointOne = SPEAKERMODE._7POINT1,
+
+        /// <summary>
+        /// 12 speaker setup (7.1.4)  front left, front right, center, low frequency, surround left, surround right, back left, back right, top front left, top front right, top back left, top back right.
+        /// </summary>
+        SevenPointOnePoint4 = SPEAKERMODE._7POINT1POINT4,
     }
 }

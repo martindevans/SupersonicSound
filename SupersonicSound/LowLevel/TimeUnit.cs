@@ -47,10 +47,5 @@ namespace SupersonicSound.LowLevel
         /// MOD/S3M/XM/IT.  Current pattern in a sequenced module format.  Sound::getLength will return the number of patterns in the song and Channel::getPosition will return the currently playing pattern.
         /// </summary>
         MODPattern = TIMEUNIT.MODPATTERN,
-
-        /// <summary>
-        /// Time value as seen by buffered stream.  This is always ahead of audible time, and is only used for processing.
-        /// </summary>
-        Buffered = TIMEUNIT.BUFFERED
     }
 }

@@ -173,6 +173,22 @@ namespace SupersonicSound.LowLevel
         /// <summary>
         /// This unit provides per signal channel gain, and output channel mapping to allow 1 multichannel signal made up of many groups of signals to map to a single output signal.
         /// </summary>
-        ChannelMix = DSP_TYPE.CHANNELMIX
+        ChannelMix = DSP_TYPE.CHANNELMIX,
+
+        /// <summary>
+        /// This unit 'sends' and 'receives' from a selection of up to 32 different slots.  It is like a send/return but it uses global slots rather than returns as the destination.
+        /// It also has other features.  Multiple transceivers can receive from a single channel, or multiple transceivers can send to a single channel, or a combination of both.
+        /// </summary>
+        Transceiver = DSP_TYPE.TRANSCEIVER,
+
+        /// <summary>
+        /// This unit sends the signal to a 3d object encoder like Dolby Atmos.
+        /// </summary>
+        ObjectPan = DSP_TYPE.OBJECTPAN,
+
+        /// <summary>
+        /// This unit is a flexible five band parametric equalizer.
+        /// </summary>
+        MultibandEq = DSP_TYPE.MULTIBAND_EQ,
     }
 }

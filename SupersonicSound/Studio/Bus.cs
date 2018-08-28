@@ -68,17 +68,29 @@ namespace SupersonicSound.Studio
             }
         }
 
-        public float FaderLevel
+        public float Volume
         {
             get
             {
                 float volume;
-                FmodBus.getFaderLevel(out volume).Check();
+                float _;
+                FmodBus.getVolume(out volume, out _).Check();
                 return volume;
             }
             set
             {
-                FmodBus.setFaderLevel(value).Check();
+                FmodBus.setVolume(value).Check();
+            }
+        }
+
+        public float FinalVolume
+        {
+            get
+            {
+                float volume;
+                float _;
+                FmodBus.getVolume(out _, out volume).Check();
+                return volume;
             }
         }
 
