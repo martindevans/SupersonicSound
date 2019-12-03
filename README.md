@@ -9,7 +9,7 @@ The aim of the *SupersonicSound* is to present a much more C# friendly experienc
 
 ## Licensing
 
-Obviously I do no control licensing of the any FMOD technologies. You should [go here](http://www.fmod.org/sales/) to the FMOD sales page and check what the licensing conditions are before proceeding any further! As of January 1st 2015 the licensing conditions are very friendly to indies, non-commercial and educational uses.
+**I do not control licensing of any FMOD technologies!** You should [go here](http://www.fmod.org/sales/) to the FMOD sales page and check what the licensing conditions are before proceeding any further! As of January 1st 2015 the licensing conditions are very friendly to indies, non-commercial and educational uses.
 
 This library itself is MIT licensed, see the LICENSE.md file for more details.
 
